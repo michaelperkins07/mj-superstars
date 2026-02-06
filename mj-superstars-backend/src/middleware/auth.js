@@ -132,6 +132,22 @@ export const optionalAuth = async (req, res, next) => {
   }
 };
 
+// Alias for route compatibility (some routes import authenticateToken)
+export const authenticateToken = authenticate;
+
+// Admin check (email-based until admin roles are in DB)
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'michaelperkins07@gmail.com').split(',').map(e => e.trim().toLowerCase());
+
+export const requireAdmin = (req, res, next) => {
+  if (!req.user || !ADMIN_EMAILS.includes(req.user.email?.toLowerCase())) {
+    return res.status(403).json({
+      error: 'Admin access required',
+      code: 'ADMIN_REQUIRED'
+    });
+  }
+  next();
+};
+
 // Premium user check
 export const requirePremium = (req, res, next) => {
   if (!req.user.is_premium) {
@@ -177,7 +193,9 @@ export const authenticateSocket = async (socket, next) => {
 
 export default {
   authenticate,
+  authenticateToken,
   optionalAuth,
+  requireAdmin,
   requirePremium,
   authenticateSocket,
   generateAccessToken,
