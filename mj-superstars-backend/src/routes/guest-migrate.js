@@ -79,7 +79,9 @@ router.post('/migrate',
     const password_hash = await bcrypt.hash(password, salt);
 
     // Run everything in a transaction
-    const result = await transaction(async (client) => {
+    let result;
+    try {
+    result = await transaction(async (client) => {
       // ── Step 1: Create user account ──
       const userResult = await client.query(
         `INSERT INTO users (email, password_hash, display_name, name)
@@ -243,6 +245,16 @@ router.post('/migrate',
 
       return user;
     });
+    } catch (txErr) {
+      logger.error('Guest migration transaction error:', txErr.message);
+      return res.status(500).json({
+        error: 'Migration failed',
+        debug_message: txErr.message,
+        debug_code: txErr.code,
+        debug_detail: txErr.detail,
+        debug_column: txErr.column
+      });
+    }
 
     // Generate auth tokens (outside transaction)
     const accessToken = generateAccessToken(result);
