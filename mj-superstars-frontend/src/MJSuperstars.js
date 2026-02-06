@@ -8,7 +8,7 @@ import { useAuth } from './contexts/AuthContext';
 import { useData } from './contexts/DataContext';
 import AuthScreen from './components/AuthScreen';
 import Onboarding from './components/Onboarding';
-import { ConversationAPI, GuestAPI, TokenManager, MoodAPI, TaskAPI, ContentAPI, ProgressAPI } from './services/api';
+import { ConversationAPI, GuestAPI, TokenManager, MoodAPI, TaskAPI, ContentAPI, ProgressAPI, AuthAPI } from './services/api';
 
 // ============================================================
 // ICONS (inline SVG for zero dependencies)
@@ -802,8 +802,13 @@ function JournalScreen() {
 // ============================================================
 
 function ProfileScreen() {
-  const { user, profile, logout } = useAuth();
+  const { user, profile, logout, login } = useAuth();
   const [streaks, setStreaks] = useState(null);
+  const [showUpgrade, setShowUpgrade] = useState(false);
+  const [upgradeForm, setUpgradeForm] = useState({ email: '', password: '', confirmPassword: '' });
+  const [upgradeError, setUpgradeError] = useState('');
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [upgradeSuccess, setUpgradeSuccess] = useState(false);
   const isGuest = !TokenManager.isAuthenticated();
 
   useEffect(() => {
@@ -832,6 +837,61 @@ function ProfileScreen() {
 
   const displayName = profile?.display_name || profile?.name || user?.display_name || user?.email?.split('@')[0] || 'User';
 
+  // Gather guest data from localStorage for migration
+  const gatherGuestData = () => {
+    const conversations = JSON.parse(localStorage.getItem('mj_conversations') || '[]');
+    const moods = JSON.parse(localStorage.getItem('mj_guest_moods') || '[]');
+    const tasks = JSON.parse(localStorage.getItem('mj_guest_tasks') || '[]');
+    const journalEntries = JSON.parse(localStorage.getItem('mj_guest_journal') || '[]');
+    const profileData = JSON.parse(localStorage.getItem('mj_user_profile') || '{}');
+
+    return {
+      conversations,
+      moods,
+      tasks,
+      journal_entries: journalEntries,
+      profile: profileData,
+      streaks: {
+        current_streak: moods.length > 0 ? 1 : 0,
+        longest_streak: moods.length > 0 ? 1 : 0,
+        total_completions: moods.length
+      }
+    };
+  };
+
+  const handleUpgrade = async (e) => {
+    e.preventDefault();
+    setUpgradeError('');
+
+    if (upgradeForm.password !== upgradeForm.confirmPassword) {
+      setUpgradeError('Passwords do not match');
+      return;
+    }
+    if (upgradeForm.password.length < 8) {
+      setUpgradeError('Password must be at least 8 characters');
+      return;
+    }
+
+    setUpgradeLoading(true);
+    try {
+      const guestData = gatherGuestData();
+      const response = await GuestAPI.migrateToAccount(
+        upgradeForm.email,
+        upgradeForm.password,
+        displayName,
+        guestData
+      );
+
+      setUpgradeSuccess(true);
+      // Reload the page after a brief delay to reinitialize with auth
+      setTimeout(() => window.location.reload(), 1500);
+    } catch (err) {
+      setUpgradeError(err.message || 'Failed to create account. Please try again.');
+    } finally {
+      setUpgradeLoading(false);
+    }
+  };
+
   return (
     <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
       {/* Profile Header */}
@@ -841,9 +901,84 @@ function ProfileScreen() {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">{displayName}</h1>
-          <p className="text-slate-400 text-sm">{user?.email || profile?.email}</p>
+          <p className="text-slate-400 text-sm">{user?.email || profile?.email || (isGuest ? 'Guest User' : '')}</p>
         </div>
       </div>
+
+      {/* Guest Upgrade Banner */}
+      {isGuest && !showUpgrade && !upgradeSuccess && (
+        <div className="bg-gradient-to-r from-sky-900/60 to-violet-900/60 border border-sky-500/30 rounded-2xl p-5 mb-6">
+          <h2 className="text-white font-semibold mb-1">Save your progress</h2>
+          <p className="text-slate-300 text-sm mb-4">
+            Create a free account to keep your chats, moods, and tasks safe across devices.
+          </p>
+          <button
+            onClick={() => setShowUpgrade(true)}
+            className="w-full bg-sky-500 hover:bg-sky-400 text-white font-semibold rounded-xl py-3 transition-colors"
+          >
+            Create Free Account
+          </button>
+        </div>
+      )}
+
+      {/* Upgrade Form */}
+      {isGuest && showUpgrade && !upgradeSuccess && (
+        <div className="bg-slate-800 rounded-2xl p-5 mb-6">
+          <h2 className="text-white font-semibold mb-4">Create Your Account</h2>
+          <form onSubmit={handleUpgrade} className="space-y-3">
+            <input
+              type="email"
+              placeholder="Email address"
+              value={upgradeForm.email}
+              onChange={e => setUpgradeForm({ ...upgradeForm, email: e.target.value })}
+              className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-sky-500"
+              required
+            />
+            <input
+              type="password"
+              placeholder="Password (8+ characters)"
+              value={upgradeForm.password}
+              onChange={e => setUpgradeForm({ ...upgradeForm, password: e.target.value })}
+              className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-sky-500"
+              required
+              minLength={8}
+            />
+            <input
+              type="password"
+              placeholder="Confirm password"
+              value={upgradeForm.confirmPassword}
+              onChange={e => setUpgradeForm({ ...upgradeForm, confirmPassword: e.target.value })}
+              className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-sky-500"
+              required
+            />
+            {upgradeError && (
+              <p className="text-red-400 text-sm">{upgradeError}</p>
+            )}
+            <button
+              type="submit"
+              disabled={upgradeLoading}
+              className="w-full bg-sky-500 hover:bg-sky-400 disabled:bg-slate-600 text-white font-semibold rounded-xl py-3 transition-colors"
+            >
+              {upgradeLoading ? 'Creating account...' : 'Create Account & Save Data'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowUpgrade(false)}
+              className="w-full text-slate-400 text-sm py-2"
+            >
+              Cancel
+            </button>
+          </form>
+        </div>
+      )}
+
+      {/* Upgrade Success */}
+      {upgradeSuccess && (
+        <div className="bg-green-900/40 border border-green-500/30 rounded-2xl p-5 mb-6 text-center">
+          <p className="text-green-400 font-semibold text-lg mb-1">Account Created!</p>
+          <p className="text-slate-300 text-sm">Your data has been saved. Refreshing...</p>
+        </div>
+      )}
 
       {/* Streaks */}
       <div className="bg-slate-800 rounded-2xl p-5 mb-6">
@@ -867,13 +1002,15 @@ function ProfileScreen() {
 
       {/* Account Actions */}
       <div className="space-y-2">
-        <button
-          onClick={logout}
-          className="w-full bg-slate-800 hover:bg-slate-700 text-red-400 rounded-xl px-4 py-3 flex items-center gap-3 transition-colors"
-        >
-          <Icons.Logout />
-          <span className="text-sm font-medium">Sign Out</span>
-        </button>
+        {!isGuest && (
+          <button
+            onClick={logout}
+            className="w-full bg-slate-800 hover:bg-slate-700 text-red-400 rounded-xl px-4 py-3 flex items-center gap-3 transition-colors"
+          >
+            <Icons.Logout />
+            <span className="text-sm font-medium">Sign Out</span>
+          </button>
+        )}
       </div>
 
       <p className="text-center text-slate-600 text-xs mt-8">

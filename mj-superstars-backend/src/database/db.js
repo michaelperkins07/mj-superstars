@@ -6,8 +6,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import pg from 'pg';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { logger } from '../utils/logger.js';
 import * as mockDb from './mock-db.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const { Pool } = pg;
 
@@ -67,6 +73,65 @@ if (!USE_MOCK_DB) {
 }
 
 // ============================================================
+// AUTO-MIGRATION
+// ============================================================
+
+const autoRunMigrations = async (client) => {
+  try {
+    // Ensure migrations table exists
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        version VARCHAR(50) PRIMARY KEY,
+        applied_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+      )
+    `);
+
+    // Get already-applied migrations
+    const appliedResult = await client.query(
+      'SELECT version FROM schema_migrations ORDER BY version'
+    );
+    const applied = new Set(appliedResult.rows.map(r => r.version));
+
+    // Find migration files
+    const migrationsDir = path.join(__dirname, 'migrations');
+    if (!fs.existsSync(migrationsDir)) {
+      logger.info('No migrations directory found, skipping auto-migration');
+      return;
+    }
+
+    const files = fs.readdirSync(migrationsDir)
+      .filter(f => f.endsWith('.sql'))
+      .sort();
+
+    const pending = files.filter(f => !applied.has(f.replace('.sql', '')));
+
+    if (pending.length === 0) {
+      logger.info('All migrations are up to date');
+      return;
+    }
+
+    for (const file of pending) {
+      logger.info(`Running migration: ${file}`);
+      const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+      try {
+        await client.query('BEGIN');
+        await client.query(sql);
+        await client.query('COMMIT');
+        logger.info(`✅ Migration applied: ${file}`);
+      } catch (err) {
+        await client.query('ROLLBACK');
+        logger.error(`❌ Migration failed: ${file} - ${err.message}`);
+        // Don't throw — let the server start even if a migration fails
+        // The migration records itself on success via INSERT INTO schema_migrations
+        break;
+      }
+    }
+  } catch (err) {
+    logger.error('Auto-migration error:', err.message);
+  }
+};
+
+// ============================================================
 // INITIALIZATION
 // ============================================================
 
@@ -93,7 +158,8 @@ export const initializeDatabase = async () => {
     `);
 
     if (!result.rows[0].exists) {
-      logger.warn('Database tables not found. Run migrations: npm run db:migrate');
+      logger.info('Database tables not found. Auto-running migrations...');
+      await autoRunMigrations(client);
     } else {
       // Count tables for health info
       const tableCount = await client.query(`
@@ -101,6 +167,9 @@ export const initializeDatabase = async () => {
         WHERE table_schema = 'public' AND table_type = 'BASE TABLE';
       `);
       logger.info(`Database schema: ${tableCount.rows[0].count} tables found`);
+
+      // Check for pending migrations and run them
+      await autoRunMigrations(client);
     }
 
     return true;

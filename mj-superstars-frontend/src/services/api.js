@@ -157,6 +157,20 @@ export const AuthAPI = {
     }
   },
 
+  async forgotPassword(email) {
+    return request('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify({ email })
+    });
+  },
+
+  async resetPassword(token, newPassword) {
+    return request('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify({ token, new_password: newPassword })
+    });
+  },
+
   async changePassword(currentPassword, newPassword) {
     return request('/auth/change-password', {
       method: 'POST',
@@ -656,6 +670,20 @@ export const GuestAPI = {
         user_context: userContext
       })
     });
+  },
+
+  async migrateToAccount(email, password, displayName, guestData) {
+    const data = await request('/guest/migrate', {
+      method: 'POST',
+      body: JSON.stringify({
+        email,
+        password,
+        display_name: displayName,
+        guest_data: guestData
+      })
+    });
+    TokenManager.setTokens(data.tokens.access_token, data.tokens.refresh_token);
+    return data;
   }
 };
 

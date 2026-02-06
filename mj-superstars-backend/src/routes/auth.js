@@ -322,4 +322,114 @@ router.post('/change-password',
   })
 );
 
+// ============================================================
+// POST /api/auth/forgot-password - Request password reset
+// ============================================================
+router.post('/forgot-password',
+  [
+    body('email').isEmail().normalizeEmail()
+  ],
+  validate,
+  asyncHandler(async (req, res) => {
+    const { email } = req.body;
+
+    // Generate reset token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+    // Set expiration to 1 hour from now
+    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+    // Look up user by email
+    const userResult = await query(
+      'SELECT id FROM users WHERE email = $1 AND deleted_at IS NULL',
+      [email]
+    );
+
+    if (userResult.rows.length > 0) {
+      const user = userResult.rows[0];
+
+      // Store hashed token and expiration
+      await query(
+        `UPDATE users
+         SET password_reset_token = $1, password_reset_expires = $2, updated_at = NOW()
+         WHERE id = $3`,
+        [tokenHash, expiresAt, user.id]
+      );
+
+      // TODO: Send email with reset link in production
+      logger.info('Password reset token generated:', { userId: user.id, email });
+    }
+
+    // Always return success to prevent email enumeration
+    res.json({
+      message: 'If an account exists with that email, a password reset link has been sent.',
+      // DEV ONLY: Return token for testing. REMOVE IN PRODUCTION.
+      dev_token: userResult.rows.length > 0 ? resetToken : null
+    });
+  })
+);
+
+// ============================================================
+// POST /api/auth/reset-password - Reset password with token
+// ============================================================
+router.post('/reset-password',
+  [
+    body('token').notEmpty().withMessage('Reset token required'),
+    body('new_password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
+  ],
+  validate,
+  asyncHandler(async (req, res) => {
+    const { token, new_password } = req.body;
+
+    // Hash the provided token to compare
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    // Find user with valid (non-expired) reset token
+    const userResult = await query(
+      `SELECT id FROM users
+       WHERE password_reset_token = $1
+       AND password_reset_expires > NOW()
+       AND deleted_at IS NULL`,
+      [tokenHash]
+    );
+
+    if (userResult.rows.length === 0) {
+      throw new APIError('Invalid or expired reset token', 400, 'INVALID_RESET_TOKEN');
+    }
+
+    const user = userResult.rows[0];
+
+    // Hash new password
+    const salt = await bcrypt.genSalt(12);
+    const password_hash = await bcrypt.hash(new_password, salt);
+
+    // Update password and clear reset token in a transaction
+    await transaction(async (client) => {
+      await client.query(
+        `UPDATE users
+         SET password_hash = $1,
+             password_reset_token = NULL,
+             password_reset_expires = NULL,
+             updated_at = NOW()
+         WHERE id = $2`,
+        [password_hash, user.id]
+      );
+
+      // Revoke all existing sessions for security
+      await client.query(
+        `UPDATE user_sessions SET revoked_at = NOW()
+         WHERE user_id = $1 AND revoked_at IS NULL`,
+        [user.id]
+      );
+    });
+
+    logger.info('Password reset successfully:', { userId: user.id });
+
+    res.json({
+      message: 'Password has been reset successfully. Please login with your new password.'
+    });
+  })
+);
+
 export default router;

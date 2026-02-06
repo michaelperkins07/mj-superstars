@@ -36,6 +36,7 @@ import notificationRoutes from './routes/notifications.js';
 import insightsRoutes from './routes/insights.js';
 import adminRoutes from './routes/admin.js';
 import guestRoutes from './routes/guest.js';
+import guestMigrateRoutes from './routes/guest-migrate.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -216,6 +217,7 @@ app.use('/api/notifications', notificationRoutes);
 app.use('/api/insights', insightsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/guest', guestRoutes);
+app.use('/api/guest', guestMigrateRoutes);
 
 // ============================================================
 // ERROR HANDLING

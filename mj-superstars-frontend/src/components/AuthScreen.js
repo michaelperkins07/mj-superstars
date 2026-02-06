@@ -5,6 +5,7 @@
 
 import React, { useState } from 'react';
 import { useLogin, useRegister } from '../hooks/useAuth';
+import { AuthAPI } from '../services/api';
 
 // Simple input component
 function Input({ label, type = 'text', value, onChange, placeholder, error }) {
@@ -60,7 +61,7 @@ function Button({ children, onClick, loading, disabled, variant = 'primary', cla
 }
 
 // Login Form
-function LoginForm({ onSuccess, onSwitchToRegister }) {
+function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }) {
   const { email, setEmail, password, setPassword, error, loading, handleSubmit } = useLogin();
 
   const onSubmit = async (e) => {
@@ -103,6 +104,16 @@ function LoginForm({ onSuccess, onSwitchToRegister }) {
       <Button type="submit" loading={loading}>
         Sign In
       </Button>
+
+      <div className="text-center pt-2">
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          className="text-slate-500 hover:text-slate-300 text-sm"
+        >
+          Forgot your password?
+        </button>
+      </div>
 
       <div className="text-center pt-4">
         <span className="text-slate-400">Don't have an account? </span>
@@ -198,9 +209,88 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
   );
 }
 
+// Forgot Password Form
+function ForgotPasswordForm({ onBack }) {
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    try {
+      await AuthAPI.forgotPassword(email);
+      setSent(true);
+    } catch (err) {
+      setError(err.message || 'Something went wrong');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (sent) {
+    return (
+      <div className="text-center space-y-4">
+        <div className="w-16 h-16 bg-green-900/40 rounded-full mx-auto flex items-center justify-center">
+          <span className="text-3xl">📧</span>
+        </div>
+        <h2 className="text-xl font-bold text-white">Check Your Email</h2>
+        <p className="text-slate-400 text-sm">
+          If an account exists with that email, we've sent password reset instructions.
+        </p>
+        <button
+          onClick={onBack}
+          className="text-sky-400 hover:text-sky-300 text-sm font-medium"
+        >
+          Back to Sign In
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">Reset Password</h2>
+        <p className="text-slate-400">Enter your email to receive reset instructions</p>
+      </div>
+
+      {error && (
+        <div className="bg-red-900/30 border border-red-500/50 text-red-300 px-4 py-3 rounded-xl text-sm">
+          {error}
+        </div>
+      )}
+
+      <Input
+        label="Email"
+        type="email"
+        value={email}
+        onChange={setEmail}
+        placeholder="your@email.com"
+      />
+
+      <Button type="submit" loading={loading}>
+        Send Reset Link
+      </Button>
+
+      <div className="text-center pt-2">
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-slate-400 hover:text-slate-300 text-sm"
+        >
+          Back to Sign In
+        </button>
+      </div>
+    </form>
+  );
+}
+
 // Main Auth Screen
 export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
-  const [mode, setMode] = useState('login'); // 'login' | 'register'
+  const [mode, setMode] = useState('login'); // 'login' | 'register' | 'forgot'
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
@@ -216,15 +306,22 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
 
         {/* Auth Card */}
         <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-xl">
-          {mode === 'login' ? (
+          {mode === 'login' && (
             <LoginForm
               onSuccess={onSuccess}
               onSwitchToRegister={() => setMode('register')}
+              onForgotPassword={() => setMode('forgot')}
             />
-          ) : (
+          )}
+          {mode === 'register' && (
             <RegisterForm
               onSuccess={onSuccess}
               onSwitchToLogin={() => setMode('login')}
+            />
+          )}
+          {mode === 'forgot' && (
+            <ForgotPasswordForm
+              onBack={() => setMode('login')}
             />
           )}
         </div>
@@ -249,4 +346,4 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
 }
 
 // Export individual forms for flexibility
-export { LoginForm, RegisterForm };
+export { LoginForm, RegisterForm, ForgotPasswordForm };
