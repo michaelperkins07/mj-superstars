@@ -79,9 +79,7 @@ router.post('/migrate',
     const password_hash = await bcrypt.hash(password, salt);
 
     // Run everything in a transaction
-    let result;
-    try {
-    result = await transaction(async (client) => {
+    const result = await transaction(async (client) => {
       // ── Step 1: Create user account ──
       const userResult = await client.query(
         `INSERT INTO users (email, password_hash, display_name)
@@ -250,16 +248,6 @@ router.post('/migrate',
 
       return user;
     });
-    } catch (txErr) {
-      return res.status(500).json({
-        error: 'Migration failed',
-        debug_message: txErr.message,
-        debug_code: txErr.code,
-        debug_constraint: txErr.constraint,
-        debug_table: txErr.table,
-        debug_detail: txErr.detail
-      });
-    }
 
     // Generate auth tokens (outside transaction)
     const accessToken = generateAccessToken(result);
