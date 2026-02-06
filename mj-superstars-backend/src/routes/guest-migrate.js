@@ -82,16 +82,14 @@ router.post('/migrate',
     const result = await transaction(async (client) => {
       // ── Step 1: Create user account ──
       const userResult = await client.query(
-        `INSERT INTO users (email, password_hash, display_name, name, onboarding_completed, onboarding_data)
-         VALUES ($1, $2, $3, $4, $5, $6)
+        `INSERT INTO users (email, password_hash, display_name, name)
+         VALUES ($1, $2, $3, $4)
          RETURNING id, email, display_name, created_at`,
         [
           email,
           password_hash,
           display_name || profile.name || null,
-          display_name || profile.name || null,
-          true, // They completed onboarding as guest
-          JSON.stringify(profile)
+          display_name || profile.name || null
         ]
       );
 
@@ -133,13 +131,12 @@ router.post('/migrate',
           const convId = uuidv4();
 
           await client.query(
-            `INSERT INTO conversations (id, user_id, title, message_count, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, NOW())`,
+            `INSERT INTO conversations (id, user_id, title, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, NOW())`,
             [
               convId,
               user.id,
               conv.title || 'Chat with MJ',
-              (conv.messages || []).length,
               conv.started_at || conv.created_at || new Date().toISOString()
             ]
           );
@@ -150,12 +147,11 @@ router.post('/migrate',
           if (Array.isArray(conv.messages)) {
             for (const msg of conv.messages) {
               await client.query(
-                `INSERT INTO messages (id, conversation_id, user_id, role, content, created_at)
-                 VALUES ($1, $2, $3, $4, $5, $6)`,
+                `INSERT INTO messages (id, conversation_id, role, content, created_at)
+                 VALUES ($1, $2, $3, $4, $5)`,
                 [
                   uuidv4(),
                   convId,
-                  user.id,
                   msg.role || 'user',
                   msg.content || '',
                   msg.created_at || msg.timestamp || new Date().toISOString()
@@ -174,16 +170,15 @@ router.post('/migrate',
       try {
         for (const mood of moods) {
           await client.query(
-            `INSERT INTO moods (id, user_id, value, note, factors, time_of_day, day_of_week, created_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+            `INSERT INTO moods (id, user_id, mood_score, note, tags, logged_at, created_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [
               uuidv4(),
               user.id,
               mood.value || mood.mood_score || 3,
               mood.note || null,
-              mood.factors || mood.activities || '{}',
-              mood.time_of_day || null,
-              mood.day_of_week || null,
+              JSON.stringify(mood.tags || mood.factors || []),
+              mood.logged_at || mood.created_at || mood.timestamp || new Date().toISOString(),
               mood.created_at || mood.timestamp || new Date().toISOString()
             ]
           );
@@ -198,18 +193,19 @@ router.post('/migrate',
       try {
         for (const task of tasks) {
           await client.query(
-            `INSERT INTO tasks (id, user_id, title, description, category, completed, completed_at, difficulty, due_date, created_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+            `INSERT INTO tasks (id, user_id, title, description, category, priority, status, due_date, completed_at, source, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())`,
             [
               uuidv4(),
               user.id,
               task.title || 'Untitled Task',
               task.description || null,
               task.category || 'self-care',
-              task.completed || task.status === 'completed' || false,
-              task.completed_at || null,
-              task.difficulty || 'medium',
+              task.priority || 'medium',
+              task.completed || task.status === 'completed' ? 'completed' : (task.status || 'pending'),
               task.due_date || null,
+              task.completed_at || null,
+              'guest_migration',
               task.created_at || task.timestamp || new Date().toISOString()
             ]
           );
@@ -224,15 +220,17 @@ router.post('/migrate',
       try {
         for (const entry of journal_entries) {
           await client.query(
-            `INSERT INTO journal_entries (id, user_id, prompt, content, mood_detected, word_count, created_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            `INSERT INTO journal_entries (id, user_id, title, content, mood_score, tags, word_count, is_favorite, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())`,
             [
               uuidv4(),
               user.id,
-              entry.prompt || null,
+              entry.title || entry.prompt || 'Journal Entry',
               entry.content || '',
               entry.mood_score || entry.mood_detected || null,
+              JSON.stringify(entry.tags || []),
               entry.word_count || (entry.content || '').split(/\s+/).length,
+              entry.is_favorite || false,
               entry.created_at || entry.timestamp || new Date().toISOString()
             ]
           );
