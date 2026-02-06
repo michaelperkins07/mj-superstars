@@ -237,20 +237,40 @@ function ChatScreen() {
       let responseContent;
 
       if (isGuestMode) {
-        // Guest mode - use guest chat endpoint with history
+        // Guest mode - use guest chat endpoint with history + full user context
         const chatHistory = currentMessages
           .filter(m => m.id !== 'welcome')
           .map(m => ({ role: m.role, content: m.content }));
 
-        const guestName = localStorage.getItem('mj_user_profile')
-          ? JSON.parse(localStorage.getItem('mj_user_profile')).name || 'Friend'
-          : 'Friend';
+        // Gather cross-tab context from localStorage
+        const profileRaw = localStorage.getItem('mj_user_profile');
+        const profileData = profileRaw ? JSON.parse(profileRaw) : {};
+        const guestName = profileData.name || 'Friend';
+
+        const moodsRaw = localStorage.getItem('mj_guest_moods');
+        const recentMoods = moodsRaw ? JSON.parse(moodsRaw).slice(0, 5) : [];
+
+        const tasksRaw = localStorage.getItem('mj_guest_tasks');
+        const todayTasks = tasksRaw ? JSON.parse(tasksRaw) : [];
+
+        const journalRaw = localStorage.getItem('mj_guest_journal');
+        const recentJournal = journalRaw ? JSON.parse(journalRaw).slice(0, 3) : [];
 
         const response = await GuestAPI.sendMessage(
           input.trim(),
           chatHistory,
           guestName,
-          conversationId
+          conversationId,
+          {
+            profile: {
+              interests: profileData.interests || [],
+              struggles: profileData.struggles || [],
+              communicationPref: profileData.communicationPref || 'friendly'
+            },
+            recentMoods,
+            todayTasks,
+            recentJournal
+          }
         );
         responseContent = response.mj_response?.content || response.content || "I hear you. Tell me more about that.";
       } else {

@@ -23,13 +23,19 @@ router.post('/chat',
     body('session_id').optional().trim()
   ],
   asyncHandler(async (req, res) => {
-    const { content, history = [], guest_name, session_id } = req.body;
+    const { content, history = [], guest_name, session_id, user_context = {} } = req.body;
 
-    // Build a guest user context with preferences from request if available
+    // Build a guest user context, merging client-side cross-tab data
     const guestContext = {
-      personalization: req.body.preferences || {},
-      recentMoods: [],
-      todayTasks: [],
+      personalization: {
+        ...(req.body.preferences || {}),
+        ...(user_context.profile || {}),
+        interests: user_context.profile?.interests || [],
+        struggles: user_context.profile?.struggles || []
+      },
+      recentMoods: user_context.recentMoods || [],
+      todayTasks: user_context.todayTasks || [],
+      recentJournal: user_context.recentJournal || [],
       morningIntention: null,
       streaks: [],
       userName: guest_name || 'Friend',

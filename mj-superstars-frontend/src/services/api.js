@@ -645,14 +645,15 @@ export const GuestAPI = {
     });
   },
 
-  async sendMessage(content, history = [], guestName = 'Friend', sessionId = null) {
+  async sendMessage(content, history = [], guestName = 'Friend', sessionId = null, userContext = {}) {
     return request('/guest/chat', {
       method: 'POST',
       body: JSON.stringify({
         content,
         history,
         guest_name: guestName,
-        session_id: sessionId
+        session_id: sessionId,
+        user_context: userContext
       })
     });
   }
