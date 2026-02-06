@@ -92,6 +92,25 @@ const autoRunMigrations = async (client) => {
     );
     const applied = new Set(appliedResult.rows.map(r => r.version));
 
+    // If DB was created from schema.sql (tables exist but no migration records),
+    // mark baseline migrations as applied so we don't try to re-run them
+    if (applied.size === 0) {
+      const tablesExist = await client.query(`
+        SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'users')
+      `);
+      if (tablesExist.rows[0].exists) {
+        logger.info('Database exists but no migrations recorded — marking baseline migrations as applied');
+        const baselineMigrations = ['001_initial_schema', '002_sync_schema'];
+        for (const version of baselineMigrations) {
+          await client.query(
+            'INSERT INTO schema_migrations (version) VALUES ($1) ON CONFLICT DO NOTHING',
+            [version]
+          );
+          applied.add(version);
+        }
+      }
+    }
+
     // Find migration files
     const migrationsDir = path.join(__dirname, 'migrations');
     if (!fs.existsSync(migrationsDir)) {
@@ -122,8 +141,8 @@ const autoRunMigrations = async (client) => {
         await client.query('ROLLBACK');
         logger.error(`❌ Migration failed: ${file} - ${err.message}`);
         // Don't throw — let the server start even if a migration fails
-        // The migration records itself on success via INSERT INTO schema_migrations
-        break;
+        // Continue to try subsequent migrations (they may be independent)
+        continue;
       }
     }
   } catch (err) {
