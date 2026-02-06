@@ -25,9 +25,9 @@ router.post('/chat',
   asyncHandler(async (req, res) => {
     const { content, history = [], guest_name, session_id } = req.body;
 
-    // Build a minimal guest user context
+    // Build a guest user context with preferences from request if available
     const guestContext = {
-      personalization: {},
+      personalization: req.body.preferences || {},
       recentMoods: [],
       todayTasks: [],
       morningIntention: null,

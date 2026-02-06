@@ -129,10 +129,24 @@ function ChatScreen() {
         }
       }
 
+      // Time-aware welcome message
+      const hour = new Date().getHours();
+      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      const dayName = days[new Date().getDay()];
+      let greeting = 'Hey';
+      if (hour >= 5 && hour < 12) greeting = 'Good morning';
+      else if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+      else if (hour >= 17 && hour < 21) greeting = 'Good evening';
+      else greeting = 'Hey there, night owl';
+
+      const profileData = localStorage.getItem('mj_user_profile');
+      const guestName = profileData ? (JSON.parse(profileData).name || 'Friend') : 'Friend';
+      const nameGreet = guestName !== 'Friend' ? `, ${guestName}` : '';
+
       setMessages([{
         id: 'welcome',
         role: 'assistant',
-        content: "Hey! 👋 I'm MJ, your personal mental wellness companion. I'm here to listen, support, and help you navigate whatever you're going through. How are you feeling today?",
+        content: `${greeting}${nameGreet}! 👋 Happy ${dayName}! I'm MJ, your personal wellness companion. I'm here to listen, support, and help you take small steps toward feeling your best. How are you doing today?`,
         timestamp: new Date().toISOString()
       }]);
     };
@@ -289,14 +303,24 @@ function MoodScreen() {
   const [recentMoods, setRecentMoods] = useState([]);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const isGuest = !TokenManager.isAuthenticated();
 
   useEffect(() => {
     const loadMoods = async () => {
+      if (isGuest) {
+        // Load from localStorage for guest users
+        const stored = localStorage.getItem('mj_guest_moods');
+        if (stored) setRecentMoods(JSON.parse(stored));
+        return;
+      }
       try {
         const response = await MoodAPI.list();
         setRecentMoods(response.moods || response || []);
       } catch (err) {
         console.error('Failed to load moods:', err);
+        // Fallback to localStorage
+        const stored = localStorage.getItem('mj_guest_moods');
+        if (stored) setRecentMoods(JSON.parse(stored));
       }
     };
     loadMoods();
@@ -305,14 +329,20 @@ function MoodScreen() {
   const submitMood = async () => {
     if (!selectedMood || loading) return;
     setLoading(true);
+    const newMood = { mood_score: selectedMood, note, created_at: new Date().toISOString() };
     try {
-      await MoodAPI.log({
-        mood_score: selectedMood,
-        note: note || undefined,
-        source: 'manual'
-      });
+      if (!isGuest) {
+        await MoodAPI.log({
+          mood_score: selectedMood,
+          note: note || undefined,
+          source: 'manual'
+        });
+      }
+      // Always save to localStorage (backup for authenticated, primary for guest)
+      const updated = [newMood, ...recentMoods].slice(0, 50);
+      localStorage.setItem('mj_guest_moods', JSON.stringify(updated));
       setSubmitted(true);
-      setRecentMoods(prev => [{ mood_score: selectedMood, note, created_at: new Date().toISOString() }, ...prev]);
+      setRecentMoods(updated);
       setTimeout(() => {
         setSubmitted(false);
         setSelectedMood(null);
@@ -320,6 +350,12 @@ function MoodScreen() {
       }, 2000);
     } catch (err) {
       console.error('Failed to log mood:', err);
+      // Save locally even if API fails
+      const updated = [newMood, ...recentMoods].slice(0, 50);
+      localStorage.setItem('mj_guest_moods', JSON.stringify(updated));
+      setSubmitted(true);
+      setRecentMoods(updated);
+      setTimeout(() => { setSubmitted(false); setSelectedMood(null); setNote(''); }, 2000);
     } finally {
       setLoading(false);
     }
@@ -410,14 +446,27 @@ function TasksScreen() {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState('');
   const [loading, setLoading] = useState(true);
+  const isGuest = !TokenManager.isAuthenticated();
+
+  const saveTasksLocally = (taskList) => {
+    localStorage.setItem('mj_guest_tasks', JSON.stringify(taskList));
+  };
 
   useEffect(() => {
     const loadTasks = async () => {
+      if (isGuest) {
+        const stored = localStorage.getItem('mj_guest_tasks');
+        if (stored) setTasks(JSON.parse(stored));
+        setLoading(false);
+        return;
+      }
       try {
         const response = await TaskAPI.list();
         setTasks(response.tasks || response || []);
       } catch (err) {
         console.error('Failed to load tasks:', err);
+        const stored = localStorage.getItem('mj_guest_tasks');
+        if (stored) setTasks(JSON.parse(stored));
       } finally {
         setLoading(false);
       }
@@ -427,6 +476,14 @@ function TasksScreen() {
 
   const addTask = async () => {
     if (!newTask.trim()) return;
+    if (isGuest) {
+      const localTask = { id: 'task_' + Date.now(), title: newTask.trim(), difficulty: 'small', status: 'pending', created_at: new Date().toISOString() };
+      const updated = [localTask, ...tasks];
+      setTasks(updated);
+      saveTasksLocally(updated);
+      setNewTask('');
+      return;
+    }
     try {
       const response = await TaskAPI.create({ title: newTask.trim(), difficulty: 'small' });
       setTasks(prev => [response.task || response, ...prev]);
@@ -437,6 +494,12 @@ function TasksScreen() {
   };
 
   const completeTask = async (taskId) => {
+    if (isGuest) {
+      const updated = tasks.map(t => t.id === taskId ? { ...t, status: 'completed' } : t);
+      setTasks(updated);
+      saveTasksLocally(updated);
+      return;
+    }
     try {
       await TaskAPI.complete(taskId);
       setTasks(prev => prev.map(t => t.id === taskId ? { ...t, status: 'completed' } : t));
@@ -539,6 +602,19 @@ function JournalScreen() {
 
   const saveEntry = async () => {
     if (!entry.trim()) return;
+    const isGuest = !TokenManager.isAuthenticated();
+
+    if (isGuest) {
+      // Save to localStorage for guest users
+      const stored = localStorage.getItem('mj_guest_journal') || '[]';
+      const entries = JSON.parse(stored);
+      entries.unshift({ id: 'j_' + Date.now(), content: entry.trim(), prompt_text: prompt, created_at: new Date().toISOString() });
+      localStorage.setItem('mj_guest_journal', JSON.stringify(entries.slice(0, 50)));
+      setSaved(true);
+      setTimeout(() => { setSaved(false); setEntry(''); setPrompt(prompts[Math.floor(Math.random() * prompts.length)]); }, 2000);
+      return;
+    }
+
     try {
       const { JournalAPI } = await import('./services/api');
       await JournalAPI.create({
@@ -554,6 +630,13 @@ function JournalScreen() {
       }, 2000);
     } catch (err) {
       console.error('Failed to save journal entry:', err);
+      // Fallback: save locally anyway
+      const stored = localStorage.getItem('mj_guest_journal') || '[]';
+      const entries = JSON.parse(stored);
+      entries.unshift({ id: 'j_' + Date.now(), content: entry.trim(), prompt_text: prompt, created_at: new Date().toISOString() });
+      localStorage.setItem('mj_guest_journal', JSON.stringify(entries.slice(0, 50)));
+      setSaved(true);
+      setTimeout(() => { setSaved(false); setEntry(''); setPrompt(prompts[Math.floor(Math.random() * prompts.length)]); }, 2000);
     }
   };
 
@@ -607,9 +690,22 @@ function JournalScreen() {
 function ProfileScreen() {
   const { user, profile, logout } = useAuth();
   const [streaks, setStreaks] = useState(null);
+  const isGuest = !TokenManager.isAuthenticated();
 
   useEffect(() => {
     const loadProgress = async () => {
+      if (isGuest) {
+        // Calculate local streaks from guest data
+        const moods = JSON.parse(localStorage.getItem('mj_guest_moods') || '[]');
+        const tasks = JSON.parse(localStorage.getItem('mj_guest_tasks') || '[]');
+        const journal = JSON.parse(localStorage.getItem('mj_guest_journal') || '[]');
+        setStreaks([
+          { streak_type: 'mood_check_ins', current_streak: moods.length },
+          { streak_type: 'tasks_completed', current_streak: tasks.filter(t => t.status === 'completed').length },
+          { streak_type: 'journal_entries', current_streak: journal.length }
+        ]);
+        return;
+      }
       try {
         const response = await ProgressAPI.getStreaks();
         setStreaks(response.streaks || response || []);

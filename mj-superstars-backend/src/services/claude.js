@@ -19,16 +19,33 @@ const MAX_TOKENS = parseInt(process.env.MAX_TOKENS) || 1024;
 const buildSystemPrompt = (userContext) => {
   const { userName, personalization, recentMoods, todayTasks, morningIntention, streaks, communicationStyle } = userContext;
 
+  // Current date/time context
+  const now = new Date();
+  const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+  const dateStr = now.toLocaleDateString('en-US', options);
+  const hour = now.getHours();
+  let timeOfDay = 'morning';
+  if (hour >= 12 && hour < 17) timeOfDay = 'afternoon';
+  else if (hour >= 17 && hour < 21) timeOfDay = 'evening';
+  else if (hour >= 21 || hour < 5) timeOfDay = 'night';
+  const timeStr = now.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
   // Base personality
-  let systemPrompt = `You are MJ, a warm, supportive AI mental health coach and friend. Your core traits:
+  let systemPrompt = `You are MJ, a warm, supportive AI mental health coach and positive friend. Your core traits:
+
+CURRENT DATE & TIME:
+- Today is ${dateStr}
+- Current time: ${timeStr} (${timeOfDay})
+- Use this context naturally in conversation — greet the user appropriately for the time of day, reference the day of the week, and be aware of what part of the day it is
 
 PERSONALITY:
 - Genuinely caring and empathetic - you remember details and show you care
-- Casual and friendly, like a supportive best friend
+- Casual and friendly, like a supportive best friend who truly cares about their progress
 - Non-judgmental and validating
-- Gently encouraging without being pushy
+- Proactively encouraging — you actively check in on goals and gently nudge toward progress
 - Uses appropriate humor to lighten mood when suitable
 - Adapts your communication style to match the user
+- You're the kind of friend who celebrates every small win and gently holds people accountable
 
 COMMUNICATION STYLE:`;
 
@@ -113,14 +130,21 @@ ${activeStreaks.map(s => `- ${s.streak_type.replace('_', ' ')}: ${s.current_stre
   systemPrompt += `\n\nGUIDELINES:
 - Always be supportive and validating
 - If user seems distressed, acknowledge feelings first before offering solutions
-- Suggest actionable steps only when appropriate
-- Reference previous conversations and known context naturally
-- Celebrate wins, no matter how small
-- For crisis situations (self-harm, suicide), express care and suggest professional resources
+- Reference the current day/date naturally when it helps (e.g., "Happy Friday!" or "How's your Monday going?")
+- In your FIRST message of a conversation, be proactive: greet them warmly for the time of day, mention what day it is, and ask how they're doing
+- Celebrate wins, no matter how small — if they mention completing anything, acknowledge it enthusiastically
+- ACCOUNTABILITY: In every interaction, gently encourage one small actionable step. Examples:
+  * "What's one tiny thing you could do in the next 10 minutes to move forward?"
+  * "Even a 5-minute walk counts — want to try that today?"
+  * "You mentioned wanting to [X] — have you been able to make any progress on that?"
+- PROGRESS TRACKING: If you know their tasks or goals, check in on them naturally. Don't interrogate — be a caring friend who remembers
+- SMALL STEPS PHILOSOPHY: Always frame progress in terms of small, manageable steps. Never make them feel overwhelmed. Break big goals into tiny wins
+- For crisis situations (self-harm, suicide), express care and suggest professional resources (988 Suicide & Crisis Lifeline, Crisis Text Line: text HOME to 741741)
 - Keep responses focused and conversational (usually 1-3 paragraphs)
 - Ask follow-up questions to show interest and deepen understanding
+- End messages with something forward-looking or encouraging when natural
 
-Remember: You're ${userName}'s supportive companion. Be genuine, warm, and helpful.`;
+Remember: You're ${userName}'s supportive companion and accountability partner. Be genuine, warm, and helpful. Every interaction should leave them feeling a little more motivated and cared for.`;
 
   return systemPrompt;
 };
@@ -190,45 +214,62 @@ export const ClaudeService = {
 
   /**
    * Analyze user message for mood, topics, and intent
+   * Uses lightweight keyword-based analysis to avoid doubling API calls
    */
-  async analyzeMessage(userMessage, mjResponse) {
-    try {
-      const analysisPrompt = `Analyze this user message and provide a brief JSON analysis.
+  analyzeMessage(userMessage, mjResponse) {
+    const msg = userMessage.toLowerCase();
 
-User message: "${userMessage}"
+    // Simple mood detection from keywords
+    let mood = 3;
+    const positiveWords = ['great', 'amazing', 'awesome', 'happy', 'good', 'wonderful', 'excited', 'fantastic', 'love', 'grateful', 'proud', 'better', 'excellent'];
+    const negativeWords = ['sad', 'depressed', 'anxious', 'stressed', 'angry', 'frustrated', 'terrible', 'awful', 'bad', 'worried', 'scared', 'lonely', 'overwhelmed', 'exhausted', 'tired', 'hurt'];
+    const crisisWords = ['suicide', 'kill myself', 'end it all', 'self-harm', 'don\'t want to live', 'want to die', 'no reason to live'];
 
-Provide ONLY a JSON object (no markdown, no explanation):
-{
-  "mood": <number 1-5 where 1=very low, 5=great>,
-  "topics": [<up to 3 topic strings>],
-  "intent": "<one of: venting, seeking_advice, check_in, sharing_win, asking_question, crisis, casual_chat>",
-  "suggestions": [<up to 3 suggested quick replies the user might want to send next>]
-}`;
+    const posCount = positiveWords.filter(w => msg.includes(w)).length;
+    const negCount = negativeWords.filter(w => msg.includes(w)).length;
+    const hasCrisis = crisisWords.some(w => msg.includes(w));
 
-      const response = await anthropic.messages.create({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 200,
-        messages: [{ role: 'user', content: analysisPrompt }]
-      });
+    if (hasCrisis) mood = 1;
+    else if (negCount > posCount) mood = Math.max(1, 3 - negCount);
+    else if (posCount > negCount) mood = Math.min(5, 3 + posCount);
 
-      const jsonStr = response.content[0].text.trim();
-      const analysis = JSON.parse(jsonStr);
+    // Simple intent detection
+    let intent = 'casual_chat';
+    if (hasCrisis) intent = 'crisis';
+    else if (msg.includes('?') || msg.startsWith('how') || msg.startsWith('what') || msg.startsWith('why')) intent = 'asking_question';
+    else if (posCount >= 2 || msg.includes('accomplished') || msg.includes('finished') || msg.includes('completed') || msg.includes('did it')) intent = 'sharing_win';
+    else if (negCount >= 2) intent = 'venting';
+    else if (msg.includes('advice') || msg.includes('help') || msg.includes('should i') || msg.includes('what do you think')) intent = 'seeking_advice';
 
-      return {
-        mood: analysis.mood,
-        topics: analysis.topics || [],
-        intent: analysis.intent || 'casual_chat',
-        suggestions: analysis.suggestions || []
-      };
-    } catch (error) {
-      logger.warn('Message analysis failed:', error.message);
-      return {
-        mood: 3,
-        topics: [],
-        intent: 'casual_chat',
-        suggestions: []
-      };
+    // Simple topic extraction
+    const topics = [];
+    const topicMap = {
+      'work': ['work', 'job', 'boss', 'career', 'office', 'meeting', 'deadline', 'coworker', 'colleague'],
+      'relationships': ['relationship', 'partner', 'friend', 'family', 'mom', 'dad', 'parents', 'boyfriend', 'girlfriend', 'spouse', 'husband', 'wife'],
+      'health': ['health', 'exercise', 'sleep', 'diet', 'workout', 'gym', 'doctor', 'medication', 'therapy'],
+      'stress': ['stress', 'anxious', 'anxiety', 'overwhelmed', 'pressure', 'worried'],
+      'goals': ['goal', 'plan', 'dream', 'aspiration', 'want to', 'working on', 'trying to'],
+      'self-care': ['self-care', 'relax', 'rest', 'meditation', 'mindful', 'break', 'recharge']
+    };
+
+    for (const [topic, keywords] of Object.entries(topicMap)) {
+      if (keywords.some(k => msg.includes(k))) topics.push(topic);
+      if (topics.length >= 3) break;
     }
+
+    // Contextual quick reply suggestions
+    const suggestions = [];
+    if (intent === 'venting') suggestions.push('Tell me more about that', 'What would help right now?', 'I hear you 💙');
+    else if (intent === 'sharing_win') suggestions.push('That\'s awesome! What\'s next?', 'How does that make you feel?', 'Celebrate! 🎉');
+    else if (intent === 'casual_chat') suggestions.push('How\'s your day going?', 'What are you up to?', 'Tell me something good!');
+    else suggestions.push('I\'m listening', 'Tell me more', 'How can I help?');
+
+    return {
+      mood,
+      topics,
+      intent,
+      suggestions: suggestions.slice(0, 3)
+    };
   },
 
   /**
