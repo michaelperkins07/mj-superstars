@@ -18,8 +18,8 @@ dotenv.config();
 // Import error tracking (initialize early to catch startup errors)
 import errorTracking from './services/errorTracking.js';
 
-// Initialize Sentry before anything else
-errorTracking.init();
+// Initialize Sentry before anything else (async, non-blocking)
+errorTracking.init().catch(() => console.log('⚠️  Sentry init skipped'));
 
 // Import routes
 import authRoutes from './routes/auth.js';

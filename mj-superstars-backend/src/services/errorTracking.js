@@ -3,8 +3,10 @@
 // Production crash reporting and performance monitoring
 // ============================================================
 
-import * as Sentry from '@sentry/node';
-import { ProfilingIntegration } from '@sentry/profiling-node';
+// Dynamic imports - Sentry packages are optional
+// App runs fine without them (all functions check `initialized` flag)
+let Sentry = null;
+let ProfilingIntegration = null;
 
 // ============================================================
 // CONFIGURATION
@@ -41,7 +43,7 @@ const ErrorCategory = {
 
 let initialized = false;
 
-function init() {
+async function init() {
   if (!SENTRY_DSN) {
     console.log('⚠️  Sentry DSN not configured - error tracking disabled');
     return false;
@@ -49,6 +51,21 @@ function init() {
 
   if (initialized) {
     return true;
+  }
+
+  // Dynamically import Sentry packages (only when DSN is configured)
+  try {
+    const sentryModule = await import('@sentry/node');
+    Sentry = sentryModule;
+    try {
+      const profilingModule = await import('@sentry/profiling-node');
+      ProfilingIntegration = profilingModule.ProfilingIntegration;
+    } catch {
+      console.log('⚠️  @sentry/profiling-node not available - profiling disabled');
+    }
+  } catch {
+    console.log('⚠️  @sentry/node not installed - error tracking disabled');
+    return false;
   }
 
   Sentry.init({
@@ -63,13 +80,13 @@ function init() {
     // Integrations
     integrations: [
       // HTTP request tracking
-      new Sentry.Integrations.Http({ tracing: true }),
+      ...(Sentry.Integrations?.Http ? [new Sentry.Integrations.Http({ tracing: true })] : []),
       // Express middleware (auto-instrumented)
-      new Sentry.Integrations.Express(),
+      ...(Sentry.Integrations?.Express ? [new Sentry.Integrations.Express()] : []),
       // Profiling for performance
-      new ProfilingIntegration(),
+      ...(ProfilingIntegration ? [new ProfilingIntegration()] : []),
       // PostgreSQL tracking
-      new Sentry.Integrations.Postgres(),
+      ...(Sentry.Integrations?.Postgres ? [new Sentry.Integrations.Postgres()] : []),
     ],
 
     // Filter sensitive data
