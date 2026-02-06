@@ -15,6 +15,7 @@ import {
 } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
+import { sendPasswordResetEmail, sendWelcomeEmail } from '../services/email.js';
 
 const router = Router();
 
@@ -101,6 +102,11 @@ router.post('/register',
     );
 
     logger.info('New user registered:', { userId: result.id, email });
+
+    // Send welcome email (async, don't block registration)
+    sendWelcomeEmail(email, display_name).catch(err =>
+      logger.warn('Welcome email failed:', { userId: result.id, error: err.message })
+    );
 
     res.status(201).json({
       message: 'Account created successfully',
@@ -357,15 +363,18 @@ router.post('/forgot-password',
         [tokenHash, expiresAt, user.id]
       );
 
-      // TODO: Send email with reset link in production
-      logger.info('Password reset token generated:', { userId: user.id, email });
+      // Send password reset email
+      const emailResult = await sendPasswordResetEmail(email, resetToken);
+      if (emailResult.success) {
+        logger.info('Password reset email sent:', { userId: user.id, email });
+      } else {
+        logger.warn('Password reset email failed (token still valid):', { userId: user.id, email, reason: emailResult.reason });
+      }
     }
 
     // Always return success to prevent email enumeration
     res.json({
-      message: 'If an account exists with that email, a password reset link has been sent.',
-      // DEV ONLY: Return token for testing. REMOVE IN PRODUCTION.
-      dev_token: userResult.rows.length > 0 ? resetToken : null
+      message: 'If an account exists with that email, a password reset link has been sent.'
     });
   })
 );
