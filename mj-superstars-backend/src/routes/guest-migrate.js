@@ -172,18 +172,19 @@ router.post('/migrate',
       }
 
       // ── Step 5: Migrate moods ──
-      // Live DB schema: moods(id, user_id, mood_score, note, tags, created_at)
+      // Live DB schema: mood_entries(id, user_id, mood_score, energy_level, anxiety_level, note, activities, triggers, source, conversation_id, time_of_day, day_of_week, created_at)
       try {
         for (const mood of moods) {
           await client.query(
-            `INSERT INTO moods (id, user_id, mood_score, note, tags, created_at)
-             VALUES ($1, $2, $3, $4, $5, $6)`,
+            `INSERT INTO mood_entries (id, user_id, mood_score, note, activities, source, created_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
             [
               uuidv4(),
               user.id,
               mood.value || mood.mood_score || 3,
               mood.note || null,
-              JSON.stringify(mood.tags || mood.factors || []),
+              JSON.stringify(mood.tags || mood.activities || mood.factors || []),
+              'manual',
               mood.created_at || mood.timestamp || new Date().toISOString()
             ]
           );
