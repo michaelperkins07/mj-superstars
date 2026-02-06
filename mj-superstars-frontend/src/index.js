@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.css';
 
 // Initialize error tracking BEFORE rendering to catch early errors
 import errorTracking from './services/errorTracking';
