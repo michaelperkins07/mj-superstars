@@ -638,8 +638,37 @@ function ProfileScreen() {
 // ============================================================
 
 function MJSuperstars() {
-  const { isAuthenticated, profile, loading, user } = useAuth();
+  const { isAuthenticated, profile, loading, user, setProfile, completeOnboarding } = useAuth();
   const [activeTab, setActiveTab] = useState('chat');
+
+  // Handler for "Continue without account" - creates a guest profile
+  const handleSkipAuth = () => {
+    const guestProfile = {
+      id: 'guest_' + Date.now(),
+      name: 'Friend',
+      isGuest: true,
+      onboardingComplete: false,
+      createdAt: new Date().toISOString()
+    };
+    setProfile(guestProfile);
+  };
+
+  // Handler for successful login/register
+  const handleAuthSuccess = () => {
+    // Auth context already updates state via login/register methods
+    // This callback is for any additional post-auth logic
+    console.log('Auth successful');
+  };
+
+  // Handler for onboarding completion
+  const handleOnboardingComplete = async (onboardingData) => {
+    try {
+      await completeOnboarding(onboardingData);
+    } catch (err) {
+      // Even if server sync fails, local profile is updated
+      console.error('Onboarding sync error:', err);
+    }
+  };
 
   // Show loading spinner while checking auth state
   if (loading) {
@@ -657,13 +686,13 @@ function MJSuperstars() {
 
   // Show auth screen if not authenticated
   if (!isAuthenticated) {
-    return <AuthScreen />;
+    return <AuthScreen onSkip={handleSkipAuth} onSuccess={handleAuthSuccess} />;
   }
 
   // Show onboarding if not completed
   const onboardingComplete = profile?.onboarding_completed || profile?.onboardingComplete || user?.onboarding_completed;
   if (!onboardingComplete) {
-    return <Onboarding />;
+    return <Onboarding onComplete={handleOnboardingComplete} />;
   }
 
   // Main App with Tab Navigation
