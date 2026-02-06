@@ -635,6 +635,30 @@ export const InsightsAPI = {
 };
 
 // ============================================================
+// GUEST API (No authentication required)
+// ============================================================
+
+export const GuestAPI = {
+  async createSession() {
+    return request('/guest/session', {
+      method: 'POST'
+    });
+  },
+
+  async sendMessage(content, history = [], guestName = 'Friend', sessionId = null) {
+    return request('/guest/chat', {
+      method: 'POST',
+      body: JSON.stringify({
+        content,
+        history,
+        guest_name: guestName,
+        session_id: sessionId
+      })
+    });
+  }
+};
+
+// ============================================================
 // EXPORT ALL
 // ============================================================
 
@@ -643,6 +667,7 @@ export default {
   AuthAPI,
   UserAPI,
   ConversationAPI,
+  GuestAPI,
   MoodAPI,
   TaskAPI,
   RitualAPI,

@@ -8,7 +8,7 @@ import { useAuth } from './contexts/AuthContext';
 import { useData } from './contexts/DataContext';
 import AuthScreen from './components/AuthScreen';
 import Onboarding from './components/Onboarding';
-import { ConversationAPI, MoodAPI, TaskAPI, ContentAPI, ProgressAPI } from './services/api';
+import { ConversationAPI, GuestAPI, TokenManager, MoodAPI, TaskAPI, ContentAPI, ProgressAPI } from './services/api';
 
 // ============================================================
 // ICONS (inline SVG for zero dependencies)
@@ -93,6 +93,7 @@ function ChatScreen() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState(null);
+  const [isGuestMode, setIsGuestMode] = useState(false);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -104,23 +105,36 @@ function ChatScreen() {
   // Start a new conversation on mount
   useEffect(() => {
     const startConversation = async () => {
-      try {
-        const response = await ConversationAPI.create();
-        setConversationId(response.conversation?.id || response.id);
-        setMessages([{
-          id: 'welcome',
-          role: 'assistant',
-          content: "Hey! 👋 I'm MJ, your personal mental wellness companion. I'm here to listen, support, and help you navigate whatever you're going through. How are you feeling today?",
-          timestamp: new Date().toISOString()
-        }]);
-      } catch (err) {
-        setMessages([{
-          id: 'welcome',
-          role: 'assistant',
-          content: "Hey! 👋 I'm MJ. I'm here to listen and support you. How are you feeling today?",
-          timestamp: new Date().toISOString()
-        }]);
+      const hasToken = TokenManager.isAuthenticated();
+
+      if (hasToken) {
+        // Authenticated user - use normal conversation API
+        try {
+          const response = await ConversationAPI.create();
+          setConversationId(response.conversation?.id || response.id);
+          setIsGuestMode(false);
+        } catch (err) {
+          // Fallback to guest mode if auth fails
+          setIsGuestMode(true);
+          setConversationId('guest-' + Date.now());
+        }
+      } else {
+        // Guest user - use guest session
+        setIsGuestMode(true);
+        try {
+          const response = await GuestAPI.createSession();
+          setConversationId(response.session_id || response.conversation?.id || 'guest-' + Date.now());
+        } catch (err) {
+          setConversationId('guest-' + Date.now());
+        }
       }
+
+      setMessages([{
+        id: 'welcome',
+        role: 'assistant',
+        content: "Hey! 👋 I'm MJ, your personal mental wellness companion. I'm here to listen, support, and help you navigate whatever you're going through. How are you feeling today?",
+        timestamp: new Date().toISOString()
+      }]);
     };
     startConversation();
   }, []);
@@ -135,20 +149,46 @@ function ChatScreen() {
       timestamp: new Date().toISOString()
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const currentMessages = [...messages, userMessage];
+    setMessages(currentMessages);
     setInput('');
     setLoading(true);
 
     try {
-      const response = await ConversationAPI.sendMessage(conversationId, input.trim());
+      let responseContent;
+
+      if (isGuestMode) {
+        // Guest mode - use guest chat endpoint with history
+        const chatHistory = currentMessages
+          .filter(m => m.id !== 'welcome')
+          .map(m => ({ role: m.role, content: m.content }));
+
+        const guestName = localStorage.getItem('mj_user_profile')
+          ? JSON.parse(localStorage.getItem('mj_user_profile')).name || 'Friend'
+          : 'Friend';
+
+        const response = await GuestAPI.sendMessage(
+          input.trim(),
+          chatHistory,
+          guestName,
+          conversationId
+        );
+        responseContent = response.mj_response?.content || response.content || "I hear you. Tell me more about that.";
+      } else {
+        // Authenticated mode - use normal conversation API
+        const response = await ConversationAPI.sendMessage(conversationId, input.trim());
+        responseContent = response.mj_response?.content || response.message?.content || response.content || "I hear you. Tell me more about that.";
+      }
+
       const assistantMessage = {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
-        content: response.message?.content || response.content || "I hear you. Tell me more about that.",
+        content: responseContent,
         timestamp: new Date().toISOString()
       };
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err) {
+      console.error('Chat error:', err);
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         role: 'assistant',
