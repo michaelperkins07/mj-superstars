@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- App Identity -->
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>MJ's Superstars</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+
+	<!-- Launch Configuration -->
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen</string>
+	<key>UIMainStoryboardFile</key>
+	<string>Main</string>
+
+	<!-- Device Capabilities -->
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+
+	<!-- Status Bar -->
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleLightContent</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+
+	<!-- Background Modes -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
+
+	<!-- Privacy Usage Descriptions -->
+	<key>NSCameraUsageDescription</key>
+	<string>MJ's Superstars uses your camera for profile photos and sharing achievements.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MJ's Superstars uses your photo library to set your profile picture and share your progress.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>MJ's Superstars saves your progress images to your photo library when you share achievements.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>MJ's Superstars uses your microphone for voice conversations with MJ.</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>MJ's Superstars uses speech recognition to transcribe your voice messages.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>MJ's Superstars reads your health data to correlate sleep, activity, and heart rate with your mood patterns.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>MJ's Superstars can log mindful minutes to your Health app.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>MJ's Superstars uses your location to provide local resources and time-appropriate check-ins.</string>
+
+	<!-- Push Notifications -->
+	<key>aps-environment</key>
+	<string>development</string>
+
+	<!-- URL Schemes -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.mjsuperstars.app</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>mjsuperstars</string>
+			</array>
+		</dict>
+	</array>
+
+	<!-- Associated Domains (for universal links) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array>
+		<string>applinks:mjsuperstars.app</string>
+	</array>
+
+	<!-- App Groups (for sharing data with widgets) -->
+	<key>com.apple.security.application-groups</key>
+	<array>
+		<string>group.com.mjsuperstars.app</string>
+	</array>
+
+	<!-- Capacitor Specific -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+</dict>
+</plist>

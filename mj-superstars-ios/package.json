@@ -1,0 +1,45 @@
+{
+  "name": "mj-superstars",
+  "version": "1.0.0",
+  "description": "MJ's Superstars - Your daily mental wellness companion",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build:web && npx cap sync",
+    "build:web": "echo 'Web build ready'",
+    "ios": "npx cap open ios",
+    "ios:build": "npx cap build ios",
+    "ios:run": "npx cap run ios",
+    "ios:sync": "npx cap sync ios",
+    "android": "npx cap open android",
+    "android:build": "npx cap build android",
+    "sync": "npx cap sync",
+    "update": "npx cap update"
+  },
+  "keywords": [
+    "mental-health",
+    "wellness",
+    "ios",
+    "capacitor",
+    "coaching"
+  ],
+  "author": "MJ's Superstars Team",
+  "license": "MIT",
+  "dependencies": {
+    "@capacitor/android": "^6.0.0",
+    "@capacitor/app": "^6.0.0",
+    "@capacitor/core": "^6.0.0",
+    "@capacitor/haptics": "^6.0.0",
+    "@capacitor/ios": "^6.0.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/local-notifications": "^6.0.0",
+    "@capacitor/preferences": "^6.0.0",
+    "@capacitor/push-notifications": "^6.0.0",
+    "@capacitor/share": "^6.0.0",
+    "@capacitor/splash-screen": "^6.0.0",
+    "@capacitor/status-bar": "^6.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.0.0",
+    "typescript": "^5.0.0"
+  }
+}

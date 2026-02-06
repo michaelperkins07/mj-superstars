@@ -1,0 +1,120 @@
+# ============================================================
+# MJ's Superstars - Docker Compose (Development)
+# ============================================================
+
+version: '3.8'
+
+services:
+  # ============================================================
+  # BACKEND API
+  # ============================================================
+  api:
+    build:
+      context: ./mj-superstars-backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mj_superstars
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-in-production}
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - APNS_KEY_ID=${APNS_KEY_ID}
+      - APNS_TEAM_ID=${APNS_TEAM_ID}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./mj-superstars-backend/src:/app/src:ro
+    restart: unless-stopped
+    networks:
+      - mj-network
+
+  # ============================================================
+  # POSTGRESQL DATABASE
+  # ============================================================
+  db:
+    image: postgres:15-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=mj_superstars
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./mj-superstars-backend/src/database/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - mj-network
+
+  # ============================================================
+  # REDIS (for sessions & caching)
+  # ============================================================
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    networks:
+      - mj-network
+
+  # ============================================================
+  # FRONTEND (Development)
+  # ============================================================
+  frontend:
+    build:
+      context: ./mj-superstars-frontend
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:3001
+      - REACT_APP_WS_URL=ws://localhost:3001
+      - WATCHPACK_POLLING=true
+    volumes:
+      - ./mj-superstars-frontend/src:/app/src:ro
+      - ./mj-superstars-frontend/public:/app/public:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+    networks:
+      - mj-network
+
+  # ============================================================
+  # ADMINER (Database UI)
+  # ============================================================
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+    networks:
+      - mj-network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  mj-network:
+    driver: bridge
