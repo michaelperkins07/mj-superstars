@@ -34,6 +34,7 @@ import copingRoutes from './routes/coping.js';
 import contentRoutes from './routes/content.js';
 import notificationRoutes from './routes/notifications.js';
 import insightsRoutes from './routes/insights.js';
+import adminRoutes from './routes/admin.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -212,6 +213,7 @@ app.use('/api/coping', copingRoutes);
 app.use('/api/content', contentRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/insights', insightsRoutes);
+app.use('/api/admin', adminRoutes);
 
 // ============================================================
 // ERROR HANDLING
