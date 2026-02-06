@@ -127,17 +127,20 @@ router.post('/migrate',
       }
 
       // ── Step 4: Migrate conversations and messages ──
+      // Live DB schema: conversations(id, user_id, title, summary, started_at, ended_at, message_count, initial_mood, final_mood, topics, is_active, created_at, updated_at)
+      // Live DB schema: messages(id, conversation_id, user_id, role, content, mood_detected, topics, intent, is_voice, audio_url, audio_duration, input_tokens, output_tokens, created_at)
       try {
         for (const conv of conversations) {
           const convId = uuidv4();
 
           await client.query(
-            `INSERT INTO conversations (id, user_id, title, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, NOW())`,
+            `INSERT INTO conversations (id, user_id, title, message_count, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, NOW())`,
             [
               convId,
               user.id,
               conv.title || 'Chat with MJ',
+              (conv.messages || []).length,
               conv.started_at || conv.created_at || new Date().toISOString()
             ]
           );
@@ -148,11 +151,12 @@ router.post('/migrate',
           if (Array.isArray(conv.messages)) {
             for (const msg of conv.messages) {
               await client.query(
-                `INSERT INTO messages (id, conversation_id, role, content, created_at)
-                 VALUES ($1, $2, $3, $4, $5)`,
+                `INSERT INTO messages (id, conversation_id, user_id, role, content, created_at)
+                 VALUES ($1, $2, $3, $4, $5, $6)`,
                 [
                   uuidv4(),
                   convId,
+                  user.id,
                   msg.role || 'user',
                   msg.content || '',
                   msg.created_at || msg.timestamp || new Date().toISOString()
@@ -168,18 +172,18 @@ router.post('/migrate',
       }
 
       // ── Step 5: Migrate moods ──
+      // Live DB schema: moods(id, user_id, mood_score, note, tags, created_at)
       try {
         for (const mood of moods) {
           await client.query(
-            `INSERT INTO moods (id, user_id, mood_score, note, tags, logged_at, created_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+            `INSERT INTO moods (id, user_id, mood_score, note, tags, created_at)
+             VALUES ($1, $2, $3, $4, $5, $6)`,
             [
               uuidv4(),
               user.id,
               mood.value || mood.mood_score || 3,
               mood.note || null,
               JSON.stringify(mood.tags || mood.factors || []),
-              mood.logged_at || mood.created_at || mood.timestamp || new Date().toISOString(),
               mood.created_at || mood.timestamp || new Date().toISOString()
             ]
           );
@@ -191,22 +195,22 @@ router.post('/migrate',
       }
 
       // ── Step 6: Migrate tasks ──
+      // Live DB schema: tasks(id, user_id, title, description, category, difficulty, estimated_minutes, due_date, due_time, is_recurring, recurrence_rule, status, completed_at, suggested_by_mj, suggestion_context, created_at, updated_at)
       try {
         for (const task of tasks) {
           await client.query(
-            `INSERT INTO tasks (id, user_id, title, description, category, priority, status, due_date, completed_at, source, created_at, updated_at)
-             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW())`,
+            `INSERT INTO tasks (id, user_id, title, description, category, difficulty, status, due_date, completed_at, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW())`,
             [
               uuidv4(),
               user.id,
               task.title || 'Untitled Task',
               task.description || null,
-              task.category || 'self-care',
-              task.priority || 'medium',
+              task.category || 'self_care',
+              task.difficulty || 'medium',
               task.completed || task.status === 'completed' ? 'completed' : (task.status || 'pending'),
               task.due_date || null,
               task.completed_at || null,
-              'guest_migration',
               task.created_at || task.timestamp || new Date().toISOString()
             ]
           );
@@ -218,20 +222,21 @@ router.post('/migrate',
       }
 
       // ── Step 7: Migrate journal entries ──
+      // Live DB schema: journal_entries(id, user_id, title, content, prompt_id, prompt_text, mood_score, tags, word_count, is_private, created_at, updated_at)
       try {
         for (const entry of journal_entries) {
           await client.query(
-            `INSERT INTO journal_entries (id, user_id, title, content, mood_score, tags, word_count, is_favorite, created_at, updated_at)
+            `INSERT INTO journal_entries (id, user_id, title, content, prompt_text, mood_score, tags, word_count, created_at, updated_at)
              VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())`,
             [
               uuidv4(),
               user.id,
-              entry.title || entry.prompt || 'Journal Entry',
+              entry.title || 'Journal Entry',
               entry.content || '',
-              entry.mood_score || entry.mood_detected || null,
+              entry.prompt || null,
+              entry.mood_score || null,
               JSON.stringify(entry.tags || []),
               entry.word_count || (entry.content || '').split(/\s+/).length,
-              entry.is_favorite || false,
               entry.created_at || entry.timestamp || new Date().toISOString()
             ]
           );
