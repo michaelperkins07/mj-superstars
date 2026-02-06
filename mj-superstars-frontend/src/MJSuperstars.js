@@ -1071,6 +1071,13 @@ function MJSuperstars() {
     );
   }
 
+  // Show password reset screen if URL contains reset token (even if logged in)
+  const isResetPasswordUrl = window.location.pathname.includes('reset-password') &&
+    new URLSearchParams(window.location.search).get('token');
+  if (isResetPasswordUrl) {
+    return <AuthScreen onSkip={handleSkipAuth} onSuccess={handleAuthSuccess} showSkip={false} />;
+  }
+
   // Show auth screen if not authenticated
   if (!isAuthenticated) {
     return <AuthScreen onSkip={handleSkipAuth} onSuccess={handleAuthSuccess} />;
