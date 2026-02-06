@@ -94,7 +94,12 @@ function ChatScreen() {
   const [loading, setLoading] = useState(false);
   const [conversationId, setConversationId] = useState(null);
   const [isGuestMode, setIsGuestMode] = useState(false);
+  const [showChatMenu, setShowChatMenu] = useState(false);
   const messagesEndRef = useRef(null);
+  const chatMenuRef = useRef(null);
+
+  const CHAT_STORAGE_KEY = 'mj_chat_history';
+  const CONV_STORAGE_KEY = 'mj_conversation_id';
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -102,55 +107,115 @@ function ChatScreen() {
 
   useEffect(scrollToBottom, [messages]);
 
-  // Start a new conversation on mount
+  // Close menu when clicking outside
   useEffect(() => {
-    const startConversation = async () => {
+    const handleClickOutside = (e) => {
+      if (chatMenuRef.current && !chatMenuRef.current.contains(e.target)) {
+        setShowChatMenu(false);
+      }
+    };
+    if (showChatMenu) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showChatMenu]);
+
+  // Save messages to localStorage whenever they change
+  useEffect(() => {
+    if (messages.length > 0) {
+      try {
+        localStorage.setItem(CHAT_STORAGE_KEY, JSON.stringify(messages));
+      } catch (e) { /* storage full - ignore */ }
+    }
+  }, [messages]);
+
+  // Generate a time-aware welcome message
+  const createWelcomeMessage = () => {
+    const hour = new Date().getHours();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const dayName = days[new Date().getDay()];
+    let greeting = 'Hey';
+    if (hour >= 5 && hour < 12) greeting = 'Good morning';
+    else if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
+    else if (hour >= 17 && hour < 21) greeting = 'Good evening';
+    else greeting = 'Hey there, night owl';
+
+    const profileData = localStorage.getItem('mj_user_profile');
+    const guestName = profileData ? (JSON.parse(profileData).name || 'Friend') : 'Friend';
+    const nameGreet = guestName !== 'Friend' ? `, ${guestName}` : '';
+
+    return {
+      id: 'welcome',
+      role: 'assistant',
+      content: `${greeting}${nameGreet}! 👋 Happy ${dayName}! I'm MJ, your personal wellness companion. I'm here to listen, support, and help you take small steps toward feeling your best. How are you doing today?`,
+      timestamp: new Date().toISOString()
+    };
+  };
+
+  // Clear chat history and start fresh
+  const clearChat = () => {
+    localStorage.removeItem(CHAT_STORAGE_KEY);
+    localStorage.removeItem(CONV_STORAGE_KEY);
+    setShowChatMenu(false);
+    setMessages([createWelcomeMessage()]);
+    // Reset conversation ID
+    const hasToken = TokenManager.isAuthenticated();
+    if (!hasToken) {
+      const newId = 'guest-' + Date.now();
+      setConversationId(newId);
+      localStorage.setItem(CONV_STORAGE_KEY, newId);
+    }
+  };
+
+  // Restore or start conversation on mount
+  useEffect(() => {
+    const initChat = async () => {
       const hasToken = TokenManager.isAuthenticated();
 
+      // Try to restore saved chat history
+      const savedMessages = localStorage.getItem(CHAT_STORAGE_KEY);
+      const savedConvId = localStorage.getItem(CONV_STORAGE_KEY);
+
       if (hasToken) {
-        // Authenticated user - use normal conversation API
         try {
           const response = await ConversationAPI.create();
           setConversationId(response.conversation?.id || response.id);
           setIsGuestMode(false);
         } catch (err) {
-          // Fallback to guest mode if auth fails
           setIsGuestMode(true);
-          setConversationId('guest-' + Date.now());
+          setConversationId(savedConvId || 'guest-' + Date.now());
         }
       } else {
-        // Guest user - use guest session
         setIsGuestMode(true);
-        try {
-          const response = await GuestAPI.createSession();
-          setConversationId(response.session_id || response.conversation?.id || 'guest-' + Date.now());
-        } catch (err) {
-          setConversationId('guest-' + Date.now());
+        if (savedConvId) {
+          setConversationId(savedConvId);
+        } else {
+          try {
+            const response = await GuestAPI.createSession();
+            const newId = response.session_id || response.conversation?.id || 'guest-' + Date.now();
+            setConversationId(newId);
+            localStorage.setItem(CONV_STORAGE_KEY, newId);
+          } catch (err) {
+            const newId = 'guest-' + Date.now();
+            setConversationId(newId);
+            localStorage.setItem(CONV_STORAGE_KEY, newId);
+          }
         }
       }
 
-      // Time-aware welcome message
-      const hour = new Date().getHours();
-      const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-      const dayName = days[new Date().getDay()];
-      let greeting = 'Hey';
-      if (hour >= 5 && hour < 12) greeting = 'Good morning';
-      else if (hour >= 12 && hour < 17) greeting = 'Good afternoon';
-      else if (hour >= 17 && hour < 21) greeting = 'Good evening';
-      else greeting = 'Hey there, night owl';
+      // Restore saved messages or show fresh welcome
+      if (savedMessages) {
+        try {
+          const parsed = JSON.parse(savedMessages);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            setMessages(parsed);
+            return;
+          }
+        } catch (e) { /* corrupted data - start fresh */ }
+      }
 
-      const profileData = localStorage.getItem('mj_user_profile');
-      const guestName = profileData ? (JSON.parse(profileData).name || 'Friend') : 'Friend';
-      const nameGreet = guestName !== 'Friend' ? `, ${guestName}` : '';
-
-      setMessages([{
-        id: 'welcome',
-        role: 'assistant',
-        content: `${greeting}${nameGreet}! 👋 Happy ${dayName}! I'm MJ, your personal wellness companion. I'm here to listen, support, and help you take small steps toward feeling your best. How are you doing today?`,
-        timestamp: new Date().toISOString()
-      }]);
+      // No saved history — show welcome message
+      setMessages([createWelcomeMessage()]);
     };
-    startConversation();
+    initChat();
   }, []);
 
   const sendMessage = async () => {
@@ -225,13 +290,42 @@ function ChatScreen() {
     <div className="flex flex-col h-full bg-slate-900">
       {/* Chat Header */}
       <div className="px-4 py-3 bg-slate-800/80 backdrop-blur border-b border-slate-700/50">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white font-bold text-lg">
-            MJ
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white font-bold text-lg">
+              MJ
+            </div>
+            <div>
+              <h2 className="text-white font-semibold">MJ</h2>
+              <p className="text-xs text-emerald-400">Online • Ready to chat</p>
+            </div>
           </div>
-          <div>
-            <h2 className="text-white font-semibold">MJ</h2>
-            <p className="text-xs text-emerald-400">Online • Ready to chat</p>
+          {/* Chat Options Menu */}
+          <div className="relative" ref={chatMenuRef}>
+            <button
+              onClick={() => setShowChatMenu(!showChatMenu)}
+              className="w-9 h-9 rounded-lg hover:bg-slate-700/50 flex items-center justify-center text-slate-400 hover:text-white transition-colors"
+              aria-label="Chat options"
+            >
+              <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24">
+                <circle cx="12" cy="5" r="2" />
+                <circle cx="12" cy="12" r="2" />
+                <circle cx="12" cy="19" r="2" />
+              </svg>
+            </button>
+            {showChatMenu && (
+              <div className="absolute right-0 top-full mt-1 bg-slate-700 rounded-xl shadow-lg border border-slate-600/50 py-1 min-w-[180px] z-50">
+                <button
+                  onClick={clearChat}
+                  className="w-full px-4 py-2.5 text-left text-sm text-slate-200 hover:bg-slate-600/50 flex items-center gap-2.5 transition-colors"
+                >
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                  </svg>
+                  Clear Chat
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>
