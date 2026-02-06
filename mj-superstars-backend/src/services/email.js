@@ -5,7 +5,7 @@
 import { logger } from '../utils/logger.js';
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || 'MJ\'s Superstars <noreply@mjsuperstars.com>';
+const FROM_EMAIL = process.env.FROM_EMAIL || 'MJ\'s Superstars <onboarding@resend.dev>';
 const APP_URL = process.env.FRONTEND_URL || 'https://mj-superstars-app.onrender.com';
 
 /**
