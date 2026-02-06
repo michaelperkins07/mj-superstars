@@ -6,8 +6,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import { useData } from './contexts/DataContext';
-import { AuthScreen } from './components/AuthScreen';
-import { Onboarding } from './components/Onboarding';
+import AuthScreen from './components/AuthScreen';
+import Onboarding from './components/Onboarding';
 import { ConversationAPI, MoodAPI, TaskAPI, ContentAPI, ProgressAPI } from './services/api';
 
 // ============================================================
