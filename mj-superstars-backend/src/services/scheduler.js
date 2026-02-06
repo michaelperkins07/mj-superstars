@@ -418,17 +418,60 @@ export async function sendWeeklyInsights() {
 
 // Initialize scheduled jobs (call this on server start)
 export function initScheduler() {
-  // In production, use a proper job scheduler like node-cron or Bull
-  // For demo, we'll just export the functions to be called manually
+  logger.info('Notification scheduler initialized with setInterval jobs');
 
-  logger.info('Notification scheduler initialized');
+  // Check every 15 minutes which jobs should run based on current hour
+  const FIFTEEN_MINUTES = 15 * 60 * 1000;
+  const lastRun = {};
 
-  // Example cron schedule (would use node-cron in production):
-  // '0 9 * * *' - Morning check-ins at 9 AM
-  // '0 21 * * *' - Evening reflections at 9 PM
-  // '0 20 * * *' - Streak reminders at 8 PM
-  // '0 14 * * *' - Gentle nudges at 2 PM
-  // '0 10 * * 0' - Weekly insights on Sunday at 10 AM
+  const runIfDue = async (jobName, targetHour, fn) => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const today = now.toDateString();
+
+    // Only run if it's the target hour and hasn't run today
+    if (currentHour === targetHour && lastRun[jobName] !== today) {
+      try {
+        logger.info(`Running scheduled job: ${jobName}`);
+        await fn();
+        lastRun[jobName] = today;
+        logger.info(`Completed scheduled job: ${jobName}`);
+      } catch (err) {
+        logger.error(`Scheduled job ${jobName} failed:`, err);
+      }
+    }
+  };
+
+  setInterval(async () => {
+    try {
+      await runIfDue('morningCheckIns', 9, sendMorningCheckIns);
+      await runIfDue('streakReminders', 20, sendStreakReminders);
+      await runIfDue('eveningReflections', 21, sendEveningReflections);
+      await runIfDue('gentleNudges', 14, sendGentleNudges);
+
+      // Weekly insights on Sunday only
+      const now = new Date();
+      if (now.getDay() === 0) {
+        await runIfDue('weeklyInsights', 10, sendWeeklyInsights);
+      }
+    } catch (err) {
+      logger.error('Scheduler tick error:', err);
+    }
+  }, FIFTEEN_MINUTES);
+
+  // Also run an immediate check on startup (after 30s delay to let DB settle)
+  setTimeout(async () => {
+    try {
+      const now = new Date();
+      const hour = now.getHours();
+      if (hour >= 9 && hour < 10) await runIfDue('morningCheckIns', 9, sendMorningCheckIns);
+      if (hour >= 14 && hour < 15) await runIfDue('gentleNudges', 14, sendGentleNudges);
+      if (hour >= 20 && hour < 21) await runIfDue('streakReminders', 20, sendStreakReminders);
+      if (hour >= 21 && hour < 22) await runIfDue('eveningReflections', 21, sendEveningReflections);
+    } catch (err) {
+      logger.error('Scheduler startup check error:', err);
+    }
+  }, 30000);
 
   return {
     sendMorningCheckIns,

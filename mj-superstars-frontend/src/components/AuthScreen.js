@@ -83,7 +83,7 @@ function SocialButton({ provider, icon, label, onClick, loading, disabled }) {
 
 // Social Sign-In Buttons Group
 function SocialSignInButtons({ onSuccess }) {
-  const { signInWithApple, signInWithGoogle, signInWithX, signInWithInstagram, error, loading } = useSocialAuth();
+  const { signInWithApple, signInWithGoogle, error, loading } = useSocialAuth();
   const [activeProvider, setActiveProvider] = useState(null);
 
   const handleAppleSignIn = useCallback(async () => {
@@ -151,30 +151,6 @@ function SocialSignInButtons({ onSuccess }) {
     }
   }, [signInWithGoogle, onSuccess]);
 
-  const handleXSignIn = useCallback(async () => {
-    setActiveProvider('x');
-    try {
-      // X OAuth will redirect — placeholder for now
-      alert('Sign in with X is coming soon! Use email or another provider for now.');
-    } catch (err) {
-      console.error('X sign-in error:', err);
-    } finally {
-      setActiveProvider(null);
-    }
-  }, []);
-
-  const handleInstagramSignIn = useCallback(async () => {
-    setActiveProvider('instagram');
-    try {
-      // Instagram OAuth will redirect — placeholder for now
-      alert('Sign in with Instagram is coming soon! Use email or another provider for now.');
-    } catch (err) {
-      console.error('Instagram sign-in error:', err);
-    } finally {
-      setActiveProvider(null);
-    }
-  }, []);
-
   return (
     <div className="space-y-3">
       {error && (
@@ -201,24 +177,6 @@ function SocialSignInButtons({ onSuccess }) {
         disabled={loading && activeProvider !== 'google'}
       />
 
-      <div className="grid grid-cols-2 gap-3">
-        <SocialButton
-          provider="x"
-          icon={<svg viewBox="0 0 24 24" className="w-4 h-4 fill-current"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>}
-          label="X"
-          onClick={handleXSignIn}
-          loading={activeProvider === 'x'}
-          disabled={loading && activeProvider !== 'x'}
-        />
-        <SocialButton
-          provider="instagram"
-          icon={<svg viewBox="0 0 24 24" className="w-5 h-5 fill-current"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>}
-          label="Instagram"
-          onClick={handleInstagramSignIn}
-          loading={activeProvider === 'instagram'}
-          disabled={loading && activeProvider !== 'instagram'}
-        />
-      </div>
     </div>
   );
 }
@@ -474,9 +432,129 @@ function ForgotPasswordForm({ onBack }) {
   );
 }
 
+// Reset Password Form (from email link)
+function ResetPasswordForm({ token, onSuccess, onBack }) {
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
+
+    if (newPassword.length < 8) {
+      setError('Password must be at least 8 characters');
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await AuthAPI.resetPassword(token, newPassword);
+      setSuccess(true);
+    } catch (err) {
+      setError(err.message || 'Failed to reset password. The link may have expired.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (success) {
+    return (
+      <div className="text-center space-y-4">
+        <div className="w-16 h-16 bg-green-900/40 rounded-full mx-auto flex items-center justify-center">
+          <span className="text-3xl">✅</span>
+        </div>
+        <h2 className="text-xl font-bold text-white">Password Reset!</h2>
+        <p className="text-slate-400 text-sm">
+          Your password has been updated. You can now sign in with your new password.
+        </p>
+        <button
+          onClick={onBack}
+          className="text-sky-400 hover:text-sky-300 text-sm font-medium"
+        >
+          Go to Sign In
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2">Set New Password</h2>
+        <p className="text-slate-400">Choose a strong password for your account</p>
+      </div>
+
+      {error && (
+        <div className="bg-red-900/30 border border-red-500/50 text-red-300 px-4 py-3 rounded-xl text-sm">
+          {error}
+        </div>
+      )}
+
+      <Input
+        label="New Password"
+        type="password"
+        value={newPassword}
+        onChange={setNewPassword}
+        placeholder="At least 8 characters"
+      />
+
+      <Input
+        label="Confirm New Password"
+        type="password"
+        value={confirmPassword}
+        onChange={setConfirmPassword}
+        placeholder="••••••••"
+      />
+
+      <Button type="submit" loading={loading}>
+        Reset Password
+      </Button>
+
+      <div className="text-center pt-2">
+        <button
+          type="button"
+          onClick={onBack}
+          className="text-slate-400 hover:text-slate-300 text-sm"
+        >
+          Back to Sign In
+        </button>
+      </div>
+    </form>
+  );
+}
+
 // Main Auth Screen
 export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
-  const [mode, setMode] = useState('login'); // 'login' | 'register' | 'forgot'
+  const [mode, setMode] = useState('login'); // 'login' | 'register' | 'forgot' | 'reset'
+  const [resetToken, setResetToken] = useState(null);
+
+  // Detect ?token= URL parameter for password reset
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+    if (token && window.location.pathname.includes('reset-password')) {
+      setResetToken(token);
+      setMode('reset');
+      // Clean URL without reload
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
+
+  const handleBackToLogin = () => {
+    setMode('login');
+    setResetToken(null);
+    // Clean URL
+    if (window.location.search) {
+      window.history.replaceState({}, '', '/');
+    }
+  };
 
   return (
     <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
@@ -510,10 +588,17 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
               onBack={() => setMode('login')}
             />
           )}
+          {mode === 'reset' && (
+            <ResetPasswordForm
+              token={resetToken}
+              onSuccess={() => setMode('login')}
+              onBack={handleBackToLogin}
+            />
+          )}
         </div>
 
         {/* Skip Option */}
-        {showSkip && (
+        {showSkip && mode !== 'reset' && (
           <div className="text-center mt-6">
             <button
               onClick={onSkip}
@@ -532,4 +617,4 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
 }
 
 // Export individual forms for flexibility
-export { LoginForm, RegisterForm, ForgotPasswordForm, SocialSignInButtons };
+export { LoginForm, RegisterForm, ForgotPasswordForm, ResetPasswordForm, SocialSignInButtons };

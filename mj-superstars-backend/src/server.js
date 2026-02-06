@@ -47,6 +47,7 @@ import { sentryRequestHandler, sentryErrorHandler } from './services/errorTracki
 // Import services
 import { initializeDatabase, checkDatabaseHealth, closePool } from './database/db.js';
 import { setupSocketHandlers } from './services/socket.js';
+import { initScheduler } from './services/scheduler.js';
 import { logger } from './utils/logger.js';
 
 // ============================================================
@@ -251,6 +252,9 @@ const startServer = async () => {
   try {
     await initializeDatabase();
     logger.info('Database connected successfully');
+
+    // Start notification scheduler (streak reminders, check-ins, nudges)
+    initScheduler();
 
     httpServer.listen(PORT, '0.0.0.0', () => {
       logger.info(`🚀 MJ's Superstars API running on port ${PORT}`);
