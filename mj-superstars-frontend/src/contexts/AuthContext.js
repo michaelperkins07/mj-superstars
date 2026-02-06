@@ -4,7 +4,7 @@
 // ============================================================
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { AuthAPI, TokenManager, UserAPI } from '../services/api';
+import { AuthAPI, TokenManager, UserAPI, SocialAuthAPI } from '../services/api';
 import { socketService } from '../services/socket';
 
 const AuthContext = createContext(null);
@@ -129,6 +129,69 @@ export function AuthProvider({ children }) {
 
     try {
       const response = await AuthAPI.login(email, password);
+      setUser(response.user);
+      setProfile(response.user);
+
+      // Save profile locally for offline access
+      localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(response.user));
+
+      // Connect socket
+      socketService.connect();
+
+      return response;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Social login (Apple, Google, X, Instagram)
+  const socialLogin = useCallback(async (provider, providerData) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      let response;
+      switch (provider) {
+        case 'apple':
+          response = await SocialAuthAPI.signInWithApple(
+            providerData.id_token,
+            providerData.authorization_code,
+            providerData.user
+          );
+          break;
+        case 'google':
+          response = await SocialAuthAPI.signInWithGoogle(
+            providerData.id_token,
+            providerData.access_token
+          );
+          break;
+        case 'x':
+          response = await SocialAuthAPI.signInWithX(
+            providerData.oauth_token,
+            providerData.oauth_token_secret,
+            providerData.user_id,
+            providerData.screen_name,
+            providerData.name,
+            providerData.profile_image_url
+          );
+          break;
+        case 'instagram':
+          response = await SocialAuthAPI.signInWithInstagram(
+            providerData.access_token,
+            providerData.user_id,
+            providerData.username,
+            providerData.name,
+            providerData.profile_picture_url
+          );
+          break;
+        default:
+          throw new Error(`Unknown provider: ${provider}`);
+      }
+
+      // Tokens are already stored by SocialAuthAPI methods
       setUser(response.user);
       setProfile(response.user);
 
@@ -320,6 +383,7 @@ export function AuthProvider({ children }) {
     isAuthenticated: !!user || !!profile,
     register,
     login,
+    socialLogin,
     logout,
     updateProfile,
     updateCommunicationStyle,

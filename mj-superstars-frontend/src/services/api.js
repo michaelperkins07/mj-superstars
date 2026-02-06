@@ -180,6 +180,62 @@ export const AuthAPI = {
 };
 
 // ============================================================
+// SOCIAL AUTH API
+// ============================================================
+
+export const SocialAuthAPI = {
+  async signInWithApple(idToken, authorizationCode, user) {
+    const data = await request('/social-auth/apple', {
+      method: 'POST',
+      body: JSON.stringify({ id_token: idToken, authorization_code: authorizationCode, user })
+    });
+    TokenManager.setTokens(data.tokens.access_token, data.tokens.refresh_token);
+    return data;
+  },
+
+  async signInWithGoogle(idToken, accessToken) {
+    const data = await request('/social-auth/google', {
+      method: 'POST',
+      body: JSON.stringify({ id_token: idToken, access_token: accessToken })
+    });
+    TokenManager.setTokens(data.tokens.access_token, data.tokens.refresh_token);
+    return data;
+  },
+
+  async signInWithX(oauthToken, oauthTokenSecret, userId, screenName, name, profileImageUrl) {
+    const data = await request('/social-auth/x', {
+      method: 'POST',
+      body: JSON.stringify({
+        oauth_token: oauthToken, oauth_token_secret: oauthTokenSecret,
+        user_id: userId, screen_name: screenName, name, profile_image_url: profileImageUrl
+      })
+    });
+    TokenManager.setTokens(data.tokens.access_token, data.tokens.refresh_token);
+    return data;
+  },
+
+  async signInWithInstagram(accessToken, userId, username, name, profilePictureUrl) {
+    const data = await request('/social-auth/instagram', {
+      method: 'POST',
+      body: JSON.stringify({
+        access_token: accessToken, user_id: userId,
+        username, name, profile_picture_url: profilePictureUrl
+      })
+    });
+    TokenManager.setTokens(data.tokens.access_token, data.tokens.refresh_token);
+    return data;
+  },
+
+  async getLinkedAccounts() {
+    return request('/social-auth/accounts');
+  },
+
+  async unlinkAccount(provider) {
+    return request(`/social-auth/accounts/${provider}`, { method: 'DELETE' });
+  }
+};
+
+// ============================================================
 // USER API
 // ============================================================
 

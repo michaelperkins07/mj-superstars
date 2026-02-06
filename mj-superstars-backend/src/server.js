@@ -37,6 +37,7 @@ import insightsRoutes from './routes/insights.js';
 import adminRoutes from './routes/admin.js';
 import guestRoutes from './routes/guest.js';
 import guestMigrateRoutes from './routes/guest-migrate.js';
+import socialAuthRoutes from './routes/social-auth.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -147,6 +148,7 @@ const claudeLimiter = rateLimit({
 app.use('/api/', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/social-auth', authLimiter);
 app.use('/api/conversations/send', claudeLimiter);
 
 // ============================================================
@@ -218,6 +220,7 @@ app.use('/api/insights', insightsRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/guest', guestRoutes);
 app.use('/api/guest', guestMigrateRoutes);
+app.use('/api/social-auth', socialAuthRoutes);
 
 // ============================================================
 // ERROR HANDLING

@@ -200,8 +200,84 @@ export function useChangePassword() {
   };
 }
 
+/**
+ * Hook for social authentication (Apple, Google, X, Instagram)
+ */
+export function useSocialAuth() {
+  const { socialLogin, loading: authLoading, error: authError } = useAuth();
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSocialLogin = useCallback(async (provider, providerData) => {
+    setError(null);
+    setLoading(true);
+
+    try {
+      const response = await socialLogin(provider, providerData);
+      return response;
+    } catch (err) {
+      setError(err.message || `${provider} sign-in failed`);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  }, [socialLogin]);
+
+  const signInWithApple = useCallback(async (credential) => {
+    return handleSocialLogin('apple', {
+      id_token: credential.identityToken,
+      authorization_code: credential.authorizationCode,
+      user: credential.fullName ? {
+        email: credential.email,
+        name: {
+          firstName: credential.fullName.givenName,
+          lastName: credential.fullName.familyName
+        }
+      } : null
+    });
+  }, [handleSocialLogin]);
+
+  const signInWithGoogle = useCallback(async (credential) => {
+    return handleSocialLogin('google', {
+      id_token: credential.id_token || credential.credential,
+      access_token: credential.access_token
+    });
+  }, [handleSocialLogin]);
+
+  const signInWithX = useCallback(async (credential) => {
+    return handleSocialLogin('x', {
+      oauth_token: credential.oauth_token,
+      oauth_token_secret: credential.oauth_token_secret,
+      user_id: credential.user_id,
+      screen_name: credential.screen_name,
+      name: credential.name,
+      profile_image_url: credential.profile_image_url
+    });
+  }, [handleSocialLogin]);
+
+  const signInWithInstagram = useCallback(async (credential) => {
+    return handleSocialLogin('instagram', {
+      access_token: credential.access_token,
+      user_id: credential.user_id,
+      username: credential.username,
+      name: credential.name,
+      profile_picture_url: credential.profile_picture_url
+    });
+  }, [handleSocialLogin]);
+
+  return {
+    signInWithApple,
+    signInWithGoogle,
+    signInWithX,
+    signInWithInstagram,
+    error: error || authError,
+    loading: loading || authLoading
+  };
+}
+
 export default {
   useLogin,
   useRegister,
-  useChangePassword
+  useChangePassword,
+  useSocialAuth
 };
