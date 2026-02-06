@@ -76,7 +76,7 @@ export function init() {
 
   if (BrowserTracing) {
     integrations.push(new BrowserTracing({
-      tracingOrigins: ['localhost', /^\//],
+      tracingOrigins: ['localhost', 'mj-superstars.onrender.com', /^\//],
     }));
   }
 

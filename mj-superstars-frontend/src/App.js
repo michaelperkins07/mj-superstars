@@ -16,8 +16,8 @@ import { SentryErrorBoundary, errors as sentryErrors } from './services/errorTra
 
 // Environment configuration
 const config = {
-  apiUrl: process.env.REACT_APP_API_URL || 'http://localhost:3000/api',
-  socketUrl: process.env.REACT_APP_SOCKET_URL || 'http://localhost:3000',
+  apiUrl: process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api',
+  socketUrl: process.env.REACT_APP_SOCKET_URL || 'https://mj-superstars.onrender.com',
   isDev: process.env.NODE_ENV === 'development'
 };
 

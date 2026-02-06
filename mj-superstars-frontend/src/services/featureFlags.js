@@ -9,7 +9,7 @@ import { Preferences } from '@capacitor/preferences';
 // CONFIGURATION
 // ============================================================
 
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+const API_URL = process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api';
 const CACHE_KEY = 'mj_feature_flags';
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 const STALE_WHILE_REVALIDATE = 60 * 60 * 1000; // 1 hour
