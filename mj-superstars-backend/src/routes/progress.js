@@ -280,7 +280,7 @@ router.put('/insights/:id/viewed',
       [req.params.id, req.user.id]
     );
 
-    res.json({ message: 'Insight marked as viewed' });
+    res.json({ success: true, message: 'Insight marked as viewed' });
   })
 );
 

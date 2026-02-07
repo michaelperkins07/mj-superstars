@@ -8,6 +8,7 @@ import { query } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { NotificationService } from '../services/notifications.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -40,6 +41,7 @@ router.post('/subscribe',
     body('keys').isObject(),
     body('device_type').optional().isIn(['ios', 'android', 'web'])
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { endpoint, keys, device_type } = req.body;
 
@@ -51,7 +53,7 @@ router.post('/subscribe',
       [req.user.id, endpoint, JSON.stringify(keys), device_type || 'web']
     );
 
-    res.json({ message: 'Subscribed to notifications' });
+    res.json({ success: true, message: 'Subscribed to notifications' });
   })
 );
 
@@ -74,7 +76,7 @@ router.delete('/unsubscribe',
       );
     }
 
-    res.json({ message: 'Unsubscribed from notifications' });
+    res.json({ success: true, message: 'Unsubscribed from notifications' });
   })
 );
 
@@ -102,6 +104,7 @@ router.post('/scheduled',
     body('days_of_week').isArray(),
     body('message_template').optional().trim()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { checkin_type, scheduled_time, days_of_week, message_template } = req.body;
 
@@ -120,6 +123,7 @@ router.post('/scheduled',
 // PUT /api/notifications/scheduled/:id - Update scheduled check-in
 // ============================================================
 router.put('/scheduled/:id',
+  validate,
   asyncHandler(async (req, res) => {
     const { scheduled_time, days_of_week, message_template, is_active } = req.body;
 
@@ -157,7 +161,7 @@ router.delete('/scheduled/:id',
       throw new APIError('Check-in not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ message: 'Check-in deleted' });
+    res.json({ success: true, message: 'Check-in deleted' });
   })
 );
 
@@ -180,7 +184,7 @@ router.post('/test',
       body: 'This is a test notification from MJ!'
     });
 
-    res.json({ message: 'Test notification sent' });
+    res.json({ success: true, message: 'Test notification sent' });
   })
 );
 

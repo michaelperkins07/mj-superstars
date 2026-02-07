@@ -7,6 +7,7 @@ import { body, param } from 'express-validator';
 import { query } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -53,6 +54,7 @@ router.get('/tools',
 // ============================================================
 router.get('/tools/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const result = await query(
       `SELECT * FROM coping_tools WHERE id = $1 AND (user_id = $2 OR user_id IS NULL)`,
@@ -92,6 +94,7 @@ router.post('/tools',
     body('steps').optional().isArray(),
     body('duration_minutes').optional().isInt({ min: 1, max: 120 })
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { name, description, category, steps = [], duration_minutes } = req.body;
 
@@ -114,6 +117,7 @@ router.post('/tools',
 // ============================================================
 router.put('/tools/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { name, description, steps, duration_minutes } = req.body;
 
@@ -149,6 +153,7 @@ router.put('/tools/:id',
 // ============================================================
 router.delete('/tools/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const result = await query(
       `DELETE FROM coping_tools WHERE id = $1 AND user_id = $2 AND is_custom = true RETURNING id`,
@@ -159,7 +164,7 @@ router.delete('/tools/:id',
       throw new APIError('Tool not found or not deletable', 404, 'NOT_FOUND');
     }
 
-    res.json({ message: 'Tool removed' });
+    res.json({ success: true, message: 'Tool removed' });
   })
 );
 
@@ -174,6 +179,7 @@ router.post('/tools/:id/use',
     body('effectiveness').optional().isInt({ min: 1, max: 5 }),
     body('notes').optional().trim()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { mood_before, mood_after, effectiveness, notes } = req.body;
 

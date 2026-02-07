@@ -8,6 +8,7 @@ import { query } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { ClaudeService } from '../services/claude.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -63,6 +64,7 @@ router.get('/',
 // ============================================================
 router.get('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const result = await query(
       `SELECT * FROM journal_entries WHERE id = $1 AND user_id = $2`,
@@ -89,6 +91,7 @@ router.post('/',
     body('mood_score').optional().isInt({ min: 1, max: 5 }),
     body('tags').optional().isArray()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { content, title, prompt_id, prompt_text, mood_score, tags = [] } = req.body;
 
@@ -123,6 +126,7 @@ router.post('/',
 // ============================================================
 router.put('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { content, title, mood_score, tags } = req.body;
 
@@ -163,6 +167,7 @@ router.put('/:id',
 // ============================================================
 router.delete('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const result = await query(
       `DELETE FROM journal_entries WHERE id = $1 AND user_id = $2 RETURNING id`,
@@ -173,7 +178,7 @@ router.delete('/:id',
       throw new APIError('Entry not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ message: 'Entry deleted' });
+    res.json({ success: true, message: 'Entry deleted' });
   })
 );
 

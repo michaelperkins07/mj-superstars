@@ -8,6 +8,7 @@ import { query, transaction } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -124,6 +125,7 @@ router.post('/',
     body('due_time').optional().matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
     body('estimated_minutes').optional().isInt({ min: 1, max: 480 })
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const {
       title,
@@ -166,6 +168,7 @@ router.post('/',
 // ============================================================
 router.put('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const updates = req.body;
@@ -212,6 +215,7 @@ router.put('/:id',
 // ============================================================
 router.post('/:id/complete',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { mood_before, mood_after, notes } = req.body;
@@ -321,6 +325,7 @@ router.post('/:id/complete',
 // ============================================================
 router.post('/:id/skip',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { reason } = req.body;
@@ -349,6 +354,7 @@ router.post('/:id/skip',
 // ============================================================
 router.delete('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const result = await query(
       `DELETE FROM tasks WHERE id = $1 AND user_id = $2 RETURNING id`,
@@ -359,7 +365,7 @@ router.delete('/:id',
       throw new APIError('Task not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ message: 'Task deleted' });
+    res.json({ success: true, message: 'Task deleted' });
   })
 );
 

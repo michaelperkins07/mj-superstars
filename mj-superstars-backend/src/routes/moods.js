@@ -8,6 +8,7 @@ import { query } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -91,6 +92,7 @@ router.post('/',
     body('triggers').optional().isArray(),
     body('source').optional().isIn(['manual', 'check_in', 'conversation', 'widget'])
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const {
       mood_score,
@@ -266,6 +268,7 @@ router.get('/today',
 // ============================================================
 router.delete('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const result = await query(
       `DELETE FROM mood_entries WHERE id = $1 AND user_id = $2 RETURNING id`,
@@ -276,7 +279,7 @@ router.delete('/:id',
       throw new APIError('Mood entry not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ message: 'Mood entry deleted' });
+    res.json({ success: true, message: 'Mood entry deleted' });
   })
 );
 

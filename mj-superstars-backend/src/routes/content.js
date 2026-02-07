@@ -162,7 +162,7 @@ router.post('/:id/interact',
       [req.user.id, req.params.id, interaction_type]
     );
 
-    res.json({ message: 'Interaction logged' });
+    res.json({ success: true, message: 'Interaction logged' });
   })
 );
 

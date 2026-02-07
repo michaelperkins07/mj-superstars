@@ -4,6 +4,7 @@
 // ============================================================
 
 import { isNative } from './native';
+import React from 'react';
 import {
   trackSubscriptionViewed,
   trackSubscriptionStarted,
@@ -485,9 +486,6 @@ export function useSubscription() {
     checkLimit: checkUsageLimit
   };
 }
-
-// Need to import React for the hook
-import React from 'react';
 
 export default {
   init: initSubscription,

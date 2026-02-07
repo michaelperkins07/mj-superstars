@@ -7,6 +7,7 @@ import { body } from 'express-validator';
 import { query } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -44,6 +45,7 @@ router.put('/me',
     body('timezone').optional().trim(),
     body('avatar_url').optional().isURL()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { display_name, timezone, avatar_url } = req.body;
 
@@ -191,7 +193,7 @@ router.post('/me/onboarding',
       }
     }
 
-    res.json({ message: 'Onboarding completed', onboarding_completed: true });
+    res.json({ success: true, message: 'Onboarding completed', onboarding_completed: true });
   })
 );
 
@@ -206,7 +208,7 @@ router.delete('/me',
       [req.user.id]
     );
 
-    res.json({ message: 'Account scheduled for deletion' });
+    res.json({ success: true, message: 'Account scheduled for deletion' });
   })
 );
 

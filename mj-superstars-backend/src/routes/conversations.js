@@ -9,6 +9,7 @@ import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { ClaudeService } from '../services/claude.js';
 import { logger } from '../utils/logger.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 
@@ -59,6 +60,7 @@ router.post('/',
     body('initial_mood').optional().isInt({ min: 1, max: 5 }),
     body('title').optional().trim().isLength({ max: 255 })
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { initial_mood, title } = req.body;
 
@@ -94,6 +96,7 @@ router.post('/',
 // ============================================================
 router.get('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { message_limit = 50 } = req.query;
@@ -136,6 +139,7 @@ router.post('/:id/messages',
     body('is_voice').optional().isBoolean(),
     body('audio_url').optional().isURL()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { content, is_voice = false, audio_url, audio_duration } = req.body;
@@ -233,6 +237,7 @@ router.post('/:id/messages',
 // ============================================================
 router.post('/:id/end',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { final_mood, summary } = req.body;
@@ -264,6 +269,7 @@ router.post('/:id/end',
 // ============================================================
 router.delete('/:id',
   [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     const { id } = req.params;
 
@@ -276,7 +282,7 @@ router.delete('/:id',
       throw new APIError('Conversation not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ message: 'Conversation deleted' });
+    res.json({ success: true, message: 'Conversation deleted' });
   })
 );
 

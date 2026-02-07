@@ -8,6 +8,7 @@ import { query, transaction } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -63,6 +64,7 @@ router.post('/morning',
     body('focus_word').optional().trim().isLength({ max: 50 }),
     body('mood_score').optional().isInt({ min: 1, max: 5 })
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { intention_text, focus_word, mood_score } = req.body;
 
@@ -126,6 +128,7 @@ router.put('/morning/reflect',
     body('reflection').trim().isLength({ max: 1000 }),
     body('intention_met').isBoolean()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { reflection, intention_met } = req.body;
 
@@ -202,6 +205,7 @@ router.post('/evening',
     body('evening_mood').optional().isInt({ min: 1, max: 5 }),
     body('sleep_readiness').optional().isInt({ min: 1, max: 5 })
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const {
       went_well,

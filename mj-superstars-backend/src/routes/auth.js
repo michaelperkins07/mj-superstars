@@ -262,7 +262,7 @@ router.post('/logout',
       );
     }
 
-    res.json({ message: 'Logged out successfully' });
+    res.json({ success: true, message: 'Logged out successfully' });
   })
 );
 
@@ -277,7 +277,7 @@ router.post('/logout-all',
       [req.user.id]
     );
 
-    res.json({ message: 'Logged out from all devices' });
+    res.json({ success: true, message: 'Logged out from all devices' });
   })
 );
 
@@ -324,7 +324,7 @@ router.post('/change-password',
 
     logger.info('Password changed:', { userId: req.user.id });
 
-    res.json({ message: 'Password changed successfully. Please login again.' });
+    res.json({ success: true, message: 'Password changed successfully. Please login again.' });
   })
 );
 

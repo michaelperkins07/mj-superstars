@@ -41,6 +41,7 @@ import socialAuthRoutes from './routes/social-auth.js';
 import featureFlagRoutes from './routes/featureFlags.js';
 import gdprRoutes from './routes/gdpr.js';
 import webhookRoutes from './routes/webhooks.js';
+import subscriptionRoutes from './routes/subscriptions.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -228,6 +229,7 @@ app.use('/api/social-auth', socialAuthRoutes);
 app.use('/api/flags', featureFlagRoutes);
 app.use('/api/gdpr', gdprRoutes);
 app.use('/api/webhooks', webhookRoutes);
+app.use('/api/subscriptions', subscriptionRoutes);
 
 // ============================================================
 // ERROR HANDLING

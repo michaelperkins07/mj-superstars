@@ -45,7 +45,7 @@ router.put('/:id/read',
       [req.params.id, req.user.id]
     );
 
-    res.json({ message: 'Marked as read' });
+    res.json({ success: true, message: 'Marked as read' });
   })
 );
 

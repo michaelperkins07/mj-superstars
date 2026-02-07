@@ -426,7 +426,7 @@ router.delete('/accounts/:provider',
       [req.user.id, provider]
     );
 
-    res.json({ message: `${provider} account unlinked successfully` });
+    res.json({ success: true, message: `${provider} account unlinked successfully` });
   })
 );
 

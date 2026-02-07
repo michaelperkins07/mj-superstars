@@ -9,6 +9,7 @@ import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { ClaudeService } from '../services/claude.js';
 import { logger } from '../utils/logger.js';
 import { v4 as uuidv4 } from 'uuid';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 
@@ -22,6 +23,7 @@ router.post('/chat',
     body('guest_name').optional().trim().isLength({ max: 100 }),
     body('session_id').optional().trim()
   ],
+  validate,
   asyncHandler(async (req, res) => {
     const { content, history = [], guest_name, session_id, user_context = {} } = req.body;
 
