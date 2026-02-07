@@ -1,4 +1,4 @@
-Welcome to Perkins! This is our initial release featuring:
+Welcome to Mike! This is our initial release featuring:
 
 - AI coaching conversations that remember your context
 - Daily mood check-ins with trend tracking

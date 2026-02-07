@@ -307,7 +307,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
           label="Name (optional)"
           value={displayName}
           onChange={setDisplayName}
-          placeholder="What should Perkins call you?"
+          placeholder="What should Mike call you?"
         />
 
         <Input
@@ -564,7 +564,7 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
           <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-violet-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
             <span className="text-3xl">🌟</span>
           </div>
-          <h1 className="text-3xl font-bold text-white">Perkins</h1>
+          <h1 className="text-3xl font-bold text-white">Mike</h1>
           <p className="text-slate-400 mt-2">Your daily mental wellness companion</p>
         </div>
 

@@ -1,13 +1,15 @@
-# Perkins — Origin Story & Philosophy
+# Mike — Origin Story & Philosophy
 ## By Michael Perkins
 
 ---
 
-### Why It's Called "Perkins"
+### Why It's Called "Mike"
 
-The app is named after my mom. Consuelo Perkins. She's the one who created the discipline in my life. She worked two jobs — one of them at McDonald's, where she'd bring home a frozen bag of fries or nuggets for me and Cheryl. Mom wasn't perfect, but she was always there to make sure we lived our best lives.
+That's what everyone calls me. Simple, clean. Someone says "Mike helped me" and nobody has to know it's an app. It's personal.
 
-That's the energy behind Perkins. You don't have to be perfect. You just have to show up. Every day. For the people you love. Mom showed up when it was hard, when it was exhausting, when nobody was watching. That's the standard.
+But the heart of it is my mom. Consuelo Perkins. She's the one who created the discipline in my life. She worked two jobs — one of them at McDonald's, where she'd bring home a frozen bag of fries or nuggets for me and Cheryl. Mom wasn't perfect, but she was always there to make sure we lived our best lives.
+
+That's the energy behind Mike. You don't have to be perfect. You just have to show up. Every day. For the people you love. Mom showed up when it was hard, when it was exhausting, when nobody was watching. That's the standard.
 
 ---
 
@@ -75,15 +77,15 @@ We want people to believe that they can start anything. AI is often hard for peo
 
 ### The Vision
 
-We're about to take out McKinsey dawg. I knew they were useless because I'm master of all trades and they're jack of all trades. Everyone pays consultants to tell them what they already know. Perkins puts that same strategic thinking power in everyone's pocket — for free. No $500K engagement. No 6-month timeline. Just tell it what you want and get a strategy right now.
+We're about to take out McKinsey dawg. I knew they were useless because I'm master of all trades and they're jack of all trades. Everyone pays consultants to tell them what they already know. Mike puts that same strategic thinking power in everyone's pocket — for free. No $500K engagement. No 6-month timeline. Just tell it what you want and get a strategy right now.
 
 ---
 
-### Why Perkins Exists
+### Why Mike Exists
 
 This app exists because most people don't have a framework for challenging their own minds. They don't have a system for processing their thoughts, tracking their moods, journaling their breakthroughs, or having honest conversations with themselves.
 
-Perkins is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
+Mike is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
 
 It's named after the woman who showed us what showing up looks like. Mom, this one's for you.
 

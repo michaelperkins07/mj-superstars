@@ -1,4 +1,4 @@
-# Perkins — Launch Checklist
+# Mike — Launch Checklist
 
 Everything you need to do to go live. Run these commands from your Mac terminal in the project directory.
 
@@ -93,13 +93,13 @@ cd ~/Desktop/"Project MJ"
 fastlane ios upload_metadata
 ```
 
-This uploads the "Perkins" name, description, screenshots, and all metadata to App Store Connect. It won't submit for review yet.
+This uploads the "Mike" name, description, screenshots, and all metadata to App Store Connect. It won't submit for review yet.
 
 **Verify in App Store Connect:**
 1. Go to https://appstoreconnect.apple.com
-2. Open "Perkins" (was "MJ's Superstars")
+2. Open "Mike" (was "MJ's Superstars")
 3. Check that all metadata, screenshots, and descriptions look correct
-4. Verify the name shows "Perkins"
+4. Verify the name shows "Mike"
 
 ---
 
