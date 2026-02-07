@@ -13,8 +13,10 @@ echo ""
 # ============================================================
 # Step 1: Push the new commit to GitHub
 # ============================================================
-echo "📤 Step 1: Pushing commit 30abd2d to GitHub..."
+echo "📤 Step 1: Pushing all local commits to GitHub..."
 cd ~/Desktop/"Project MJ"
+echo "   Local commits to push:"
+git log --oneline origin/main..HEAD 2>/dev/null || echo "   (will push all unpushed commits)"
 git push origin main
 echo "✅ Pushed to GitHub — Render will auto-deploy"
 echo ""
@@ -82,7 +84,7 @@ echo ""
 echo "=================================================="
 echo "🎉 All done! Here's what was deployed:"
 echo ""
-echo "  ✅ Commit 30abd2d pushed (push token wiring + offline handling)"
+echo "  ✅ All commits pushed (push services, offline handling, App Store prep)"
 echo "  ✅ ADMIN_SECRET set on Render"
 echo "  ✅ Migration 003 run (device_token column added)"
 echo ""

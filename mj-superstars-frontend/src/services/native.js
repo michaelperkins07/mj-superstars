@@ -218,6 +218,206 @@ export const KeyboardService = {
 };
 
 // ============================================================
+// PUSH NOTIFICATIONS SERVICE
+// ============================================================
+
+const PushNotificationsPlugin = getCapPlugin('PushNotifications');
+
+export const PushService = {
+  async requestPermission() {
+    if (!PushNotificationsPlugin) return false;
+    try {
+      const result = await PushNotificationsPlugin.requestPermissions();
+      if (result.receive === 'granted') {
+        await PushNotificationsPlugin.register();
+        return true;
+      }
+      return false;
+    } catch (e) {
+      console.warn('Push permission request failed:', e);
+      return false;
+    }
+  },
+
+  async checkPermission() {
+    if (!PushNotificationsPlugin) return 'unsupported';
+    try {
+      const result = await PushNotificationsPlugin.checkPermissions();
+      return result.receive; // 'granted', 'denied', 'prompt'
+    } catch (e) {
+      return 'unsupported';
+    }
+  },
+
+  onRegistration(callback) {
+    if (!PushNotificationsPlugin) return null;
+    try {
+      return PushNotificationsPlugin.addListener('registration', callback);
+    } catch (e) {
+      console.warn('Failed to add registration listener:', e);
+      return null;
+    }
+  },
+
+  onRegistrationError(callback) {
+    if (!PushNotificationsPlugin) return null;
+    try {
+      return PushNotificationsPlugin.addListener('registrationError', callback);
+    } catch (e) {
+      console.warn('Failed to add registration error listener:', e);
+      return null;
+    }
+  },
+
+  onPushReceived(callback) {
+    if (!PushNotificationsPlugin) return null;
+    try {
+      return PushNotificationsPlugin.addListener('pushNotificationReceived', callback);
+    } catch (e) {
+      console.warn('Failed to add push received listener:', e);
+      return null;
+    }
+  },
+
+  onPushTapped(callback) {
+    if (!PushNotificationsPlugin) return null;
+    try {
+      return PushNotificationsPlugin.addListener('pushNotificationActionPerformed', callback);
+    } catch (e) {
+      console.warn('Failed to add push tapped listener:', e);
+      return null;
+    }
+  },
+
+  async removeAllDelivered() {
+    if (!PushNotificationsPlugin) return;
+    try {
+      await PushNotificationsPlugin.removeAllDeliveredNotifications();
+    } catch (e) {
+      console.warn('Failed to remove delivered notifications:', e);
+    }
+  }
+};
+
+// ============================================================
+// LOCAL NOTIFICATIONS SERVICE
+// ============================================================
+
+const LocalNotificationsPlugin = getCapPlugin('LocalNotifications');
+
+export const LocalNotificationService = {
+  async requestPermission() {
+    if (!LocalNotificationsPlugin) return false;
+    try {
+      const result = await LocalNotificationsPlugin.requestPermissions();
+      return result.display === 'granted';
+    } catch (e) {
+      console.warn('Local notification permission failed:', e);
+      return false;
+    }
+  },
+
+  async schedule(options) {
+    if (!LocalNotificationsPlugin) return;
+    try {
+      await LocalNotificationsPlugin.schedule({ notifications: Array.isArray(options) ? options : [options] });
+    } catch (e) {
+      console.warn('Failed to schedule local notification:', e);
+    }
+  },
+
+  async scheduleCheckIn(hour, minute = 0) {
+    if (!LocalNotificationsPlugin) return;
+    try {
+      await LocalNotificationsPlugin.schedule({
+        notifications: [{
+          id: 1001,
+          title: "Hey, how are you doing?",
+          body: "Take a moment to check in with MJ.",
+          schedule: {
+            on: { hour, minute },
+            repeats: true,
+            allowWhileIdle: true
+          },
+          extra: { action: 'open_mood_log' }
+        }]
+      });
+    } catch (e) {
+      console.warn('Failed to schedule check-in:', e);
+    }
+  },
+
+  async cancelAll() {
+    if (!LocalNotificationsPlugin) return;
+    try {
+      const pending = await LocalNotificationsPlugin.getPending();
+      if (pending.notifications.length > 0) {
+        await LocalNotificationsPlugin.cancel(pending);
+      }
+    } catch (e) {
+      console.warn('Failed to cancel local notifications:', e);
+    }
+  },
+
+  onTapped(callback) {
+    if (!LocalNotificationsPlugin) return null;
+    try {
+      return LocalNotificationsPlugin.addListener('localNotificationActionPerformed', callback);
+    } catch (e) {
+      console.warn('Failed to add local notification tap listener:', e);
+      return null;
+    }
+  },
+
+  onReceived(callback) {
+    if (!LocalNotificationsPlugin) return null;
+    try {
+      return LocalNotificationsPlugin.addListener('localNotificationReceived', callback);
+    } catch (e) {
+      console.warn('Failed to add local notification received listener:', e);
+      return null;
+    }
+  }
+};
+
+// ============================================================
+// APP SERVICE (Deep Links, URL Opens)
+// ============================================================
+
+const AppPlugin = getCapPlugin('App');
+
+export const AppService = {
+  onUrlOpen(callback) {
+    if (!AppPlugin) return null;
+    try {
+      return AppPlugin.addListener('appUrlOpen', callback);
+    } catch (e) {
+      console.warn('Failed to add URL open listener:', e);
+      return null;
+    }
+  },
+
+  onStateChange(callback) {
+    if (!AppPlugin) return null;
+    try {
+      return AppPlugin.addListener('appStateChange', callback);
+    } catch (e) {
+      console.warn('Failed to add state change listener:', e);
+      return null;
+    }
+  },
+
+  async getInfo() {
+    if (!AppPlugin) return null;
+    try {
+      return await AppPlugin.getInfo();
+    } catch (e) {
+      return null;
+    }
+  }
+};
+
+// ============================================================
 // SAFE AREA
 // ============================================================
 
@@ -251,5 +451,8 @@ export default {
   HapticsService,
   StatusBarService,
   KeyboardService,
+  PushService,
+  LocalNotificationService,
+  AppService,
   getSafeAreaInsets,
 };

@@ -103,6 +103,10 @@ window.Capacitor = {
       schedule: jest.fn(),
       cancel: jest.fn()
     },
+    App: {
+      addListener: jest.fn(),
+      getInfo: jest.fn(() => Promise.resolve({ id: 'com.mjsuperstars.app', name: 'MJ\'s Superstars', version: '1.0.0', build: '7' }))
+    },
     StatusBar: {
       setStyle: jest.fn()
     },
