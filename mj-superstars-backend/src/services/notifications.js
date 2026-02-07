@@ -112,7 +112,7 @@ export const NotificationService = {
     const templates = {
       daily: {
         title: 'Hey, checking in! 👋',
-        body: 'How are you feeling today? MJ would love to hear from you.'
+        body: 'How are you feeling today? White Mike would love to hear from you.'
       },
       morning: {
         title: 'Good morning! ☀️',
@@ -124,7 +124,7 @@ export const NotificationService = {
       },
       gentle: {
         title: "It's been a while 💭",
-        body: "Just wanted to check in. MJ is here whenever you need."
+        body: "Just wanted to check in. White Mike is here whenever you need."
       },
       celebration: {
         title: "You're on a streak! 🔥",

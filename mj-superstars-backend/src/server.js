@@ -289,7 +289,7 @@ const startServer = async () => {
     initScheduler();
 
     httpServer.listen(PORT, '0.0.0.0', () => {
-      logger.info(`🚀 MJ's Superstars API running on port ${PORT}`);
+      logger.info(`🚀 White Mike API running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`Health check: http://0.0.0.0:${PORT}/health`);
     });

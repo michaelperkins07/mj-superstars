@@ -64,7 +64,7 @@ const NOTIFICATION_TEMPLATES = {
     ]
   },
   gentleNudge: {
-    title: "Hey, it's MJ 💙",
+    title: "Hey, it's White Mike 💙",
     bodies: [
       "Just checking in. How are you?",
       "Thinking of you. How's your day going?",

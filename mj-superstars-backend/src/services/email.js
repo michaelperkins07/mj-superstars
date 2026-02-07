@@ -77,7 +77,7 @@ export async function sendPasswordResetEmail(email, resetToken) {
 <body>
   <div class="container">
     <div class="logo">
-      <span class="logo-text">MJ's Superstars ⭐</span>
+      <span class="logo-text">White Mike ⭐</span>
     </div>
     <div class="card">
       <h1>Reset Your Password</h1>
@@ -90,18 +90,18 @@ export async function sendPasswordResetEmail(email, resetToken) {
       <p class="url-fallback">Or copy this link: ${resetUrl}</p>
     </div>
     <div class="footer">
-      <p>MJ's Superstars — Your AI coaching companion</p>
+      <p>White Mike — Your AI coaching companion</p>
       <p>You're receiving this because a password reset was requested for ${email}</p>
     </div>
   </div>
 </body>
 </html>`;
 
-  const text = `Reset your MJ's Superstars password\n\nSomeone requested a password reset for your account. Visit this link to set a new password:\n\n${resetUrl}\n\nThis link expires in 1 hour.\n\nIf you didn't request this, you can safely ignore this email.`;
+  const text = `Reset your White Mike password\n\nSomeone requested a password reset for your account. Visit this link to set a new password:\n\n${resetUrl}\n\nThis link expires in 1 hour.\n\nIf you didn't request this, you can safely ignore this email.`;
 
   return sendEmail({
     to: email,
-    subject: "Reset your MJ's Superstars password",
+    subject: "Reset your White Mike password",
     html,
     text
   });
@@ -134,7 +134,7 @@ export async function sendWelcomeEmail(email, displayName) {
 <body>
   <div class="container">
     <div class="logo">
-      <span class="logo-text">MJ's Superstars ⭐</span>
+      <span class="logo-text">White Mike ⭐</span>
     </div>
     <div class="card">
       <h1>Welcome to the team, ${name}! 🎉</h1>
@@ -144,17 +144,17 @@ export async function sendWelcomeEmail(email, displayName) {
       <p>Let's get it! 💪</p>
     </div>
     <div class="footer">
-      <p>MJ's Superstars — Your AI coaching companion</p>
+      <p>White Mike — Your AI coaching companion</p>
     </div>
   </div>
 </body>
 </html>`;
 
-  const text = `Welcome to MJ's Superstars, ${name}!\n\nI'm MJ, your personal AI coach. Everything is reps — every conversation, every mood you track, every task you crush adds up.\n\nStart by telling me what's on your mind. Let's get it!`;
+  const text = `Welcome to White Mike, ${name}!\n\nI'm White Mike, your personal AI coach. Everything is reps — every conversation, every mood you track, every task you crush adds up.\n\nStart by telling me what's on your mind. Let's get it!`;
 
   return sendEmail({
     to: email,
-    subject: `Welcome to MJ's Superstars, ${name}! 🎉`,
+    subject: `Welcome to White Mike, ${name}! 🎉`,
     html,
     text
   });

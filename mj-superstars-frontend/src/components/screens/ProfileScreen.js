@@ -211,7 +211,7 @@ function ProfileScreen() {
       </div>
 
       <p className="text-center text-slate-600 text-xs mt-8">
-        MJ's Superstars v1.0.0
+        White Mike v1.0.0
       </p>
     </div>
   );

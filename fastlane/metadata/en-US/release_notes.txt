@@ -1,4 +1,4 @@
-Welcome to MJ's Superstars! This is our initial release featuring:
+Welcome to White Mike! This is our initial release featuring:
 
 - AI coaching conversations that remember your context
 - Daily mood check-ins with trend tracking

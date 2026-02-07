@@ -1,4 +1,4 @@
-# MJ - Having a 1% Mindset — Origin Story & Philosophy
+# White Mike — Origin Story & Philosophy
 ## By Michael Perkins
 
 ---
@@ -75,7 +75,7 @@ We're about to take out McKinsey dawg. I knew they were useless because I'm mast
 
 This app exists because most people don't have a framework for challenging their own minds. They don't have a system for processing their thoughts, tracking their moods, journaling their breakthroughs, or having honest conversations with themselves.
 
-MJ - Having a 1% Mindset is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
+White Mike is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
 
 ---
 
