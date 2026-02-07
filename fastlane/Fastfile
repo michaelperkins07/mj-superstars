@@ -1,0 +1,77 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Upload metadata and screenshots to App Store Connect"
+  lane :upload_metadata do
+    api_key = app_store_connect_api_key(
+      key_id: "TS9A6TPWWR",
+      issuer_id: "7e6f7a23-b6f4-45ba-a169-32cb4d378fc2",
+      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8"
+    )
+
+    deliver(
+      api_key: api_key,
+      app_identifier: "com.mjsuperstars.app",
+      metadata_path: "./fastlane/metadata",
+      screenshots_path: "./fastlane/screenshots",
+      skip_metadata: false,
+      skip_screenshots: false,
+      skip_binary_upload: true,
+      overwrite_screenshots: true,
+      submit_for_review: false,
+      force: true,
+      primary_category: "MZGenre.HealthAndFitness",
+      secondary_category: "MZGenre.Lifestyle"
+    )
+  end
+
+  desc "Upload screenshots only"
+  lane :upload_screenshots do
+    api_key = app_store_connect_api_key(
+      key_id: "TS9A6TPWWR",
+      issuer_id: "7e6f7a23-b6f4-45ba-a169-32cb4d378fc2",
+      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8"
+    )
+
+    deliver(
+      api_key: api_key,
+      app_identifier: "com.mjsuperstars.app",
+      screenshots_path: "./fastlane/screenshots",
+      skip_metadata: true,
+      skip_binary_upload: true,
+      overwrite_screenshots: true,
+      submit_for_review: false,
+      force: true
+    )
+  end
+
+  desc "Submit for App Store review"
+  lane :submit_for_review do
+    api_key = app_store_connect_api_key(
+      key_id: "TS9A6TPWWR",
+      issuer_id: "7e6f7a23-b6f4-45ba-a169-32cb4d378fc2",
+      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8"
+    )
+
+    deliver(
+      api_key: api_key,
+      app_identifier: "com.mjsuperstars.app",
+      metadata_path: "./fastlane/metadata",
+      screenshots_path: "./fastlane/screenshots",
+      skip_metadata: false,
+      skip_screenshots: false,
+      skip_binary_upload: true,
+      overwrite_screenshots: true,
+      submit_for_review: true,
+      automatic_release: false,
+      force: true,
+      submission_information: {
+        add_id_info_uses_idfa: false,
+        export_compliance_uses_encryption: true,
+        export_compliance_is_exempt: true,
+        export_compliance_contains_proprietary_cryptography: false,
+        export_compliance_contains_third_party_cryptography: false
+      }
+    )
+  end
+end

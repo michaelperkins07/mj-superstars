@@ -1,0 +1,37 @@
+# Deliverfile - fastlane deliver configuration
+# Upload metadata AND screenshots to App Store Connect
+
+# App identifier
+app_identifier("com.mjsuperstars.app")
+
+# Metadata path
+metadata_path("./fastlane/metadata")
+
+# Screenshots path
+screenshots_path("./fastlane/screenshots")
+
+# Upload both metadata and screenshots
+skip_metadata(false)
+skip_screenshots(false)
+skip_binary_upload(true)
+
+# Overwrite existing screenshots
+overwrite_screenshots(true)
+
+# Don't submit for review yet
+submit_for_review(false)
+
+# Force - don't ask for confirmation
+force(true)
+
+# Price tier (free)
+# price_tier already set manually in App Store Connect
+
+# App Rating - 12+ for mental health content
+# app_rating_config_path("./fastlane/rating_config.json")
+
+# Primary category
+primary_category("MZGenre.HealthAndFitness")
+
+# Secondary category
+secondary_category("MZGenre.Lifestyle")

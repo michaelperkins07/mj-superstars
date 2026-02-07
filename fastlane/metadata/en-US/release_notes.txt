@@ -1,0 +1,10 @@
+Welcome to MJ's Superstars! This is our initial release featuring:
+
+- AI coaching conversations that remember your context
+- Daily mood check-ins with trend tracking
+- Guided 4-7-8 breathing exercises
+- Habit tracking with streak monitoring
+- Private, encrypted journaling
+- Progress dashboard with weekly insights
+- Apple Sign-In support
+- Push notification reminders
