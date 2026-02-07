@@ -52,7 +52,7 @@ class ErrorBoundary extends React.Component {
               Something went wrong
             </h1>
             <p className="text-slate-400 mb-6">
-              White Mike hit a bump. Let's try again.
+              Perkins hit a bump. Let's try again.
             </p>
             <button
               onClick={() => window.location.reload()}
