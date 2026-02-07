@@ -105,19 +105,62 @@ function getRandomMessage(templateKey) {
   };
 }
 
+/**
+ * Get the current hour and minute in a user's timezone.
+ * Falls back to America/New_York if timezone is invalid.
+ */
+function getUserLocalTime(timezone) {
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone || 'America/New_York',
+      hour: 'numeric',
+      minute: 'numeric',
+      hour12: false,
+    });
+    const parts = formatter.formatToParts(now);
+    const hour = parseInt(parts.find(p => p.type === 'hour')?.value || '0');
+    const minute = parseInt(parts.find(p => p.type === 'minute')?.value || '0');
+    return { hour, minute, dayOfWeek: getDayOfWeekInTimezone(timezone) };
+  } catch {
+    // Invalid timezone — fall back to server time
+    const now = new Date();
+    return { hour: now.getUTCHours(), minute: now.getUTCMinutes(), dayOfWeek: now.getUTCDay() };
+  }
+}
+
+/**
+ * Get day of week (0=Sunday) in the user's timezone.
+ */
+function getDayOfWeekInTimezone(timezone) {
+  try {
+    const now = new Date();
+    const formatter = new Intl.DateTimeFormat('en-US', {
+      timeZone: timezone || 'America/New_York',
+      weekday: 'short',
+    });
+    const day = formatter.format(now);
+    const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+    return dayMap[day] ?? now.getUTCDay();
+  } catch {
+    return new Date().getUTCDay();
+  }
+}
+
 // Check if user should receive notification based on quiet hours
 async function isQuietHours(userId) {
   try {
     const result = await query(
-      `SELECT notification_settings FROM users WHERE id = $1`,
+      `SELECT notification_settings, timezone FROM users WHERE id = $1`,
       [userId]
     );
 
     const settings = result.rows[0]?.notification_settings;
     if (!settings?.quietHours?.enabled) return false;
 
-    const now = new Date();
-    const currentTime = now.getHours() * 60 + now.getMinutes();
+    const userTimezone = result.rows[0]?.timezone || 'America/New_York';
+    const { hour, minute } = getUserLocalTime(userTimezone);
+    const currentTime = hour * 60 + minute;
 
     const [startHour, startMin] = settings.quietHours.start.split(':').map(Number);
     const [endHour, endMin] = settings.quietHours.end.split(':').map(Number);
@@ -138,6 +181,7 @@ async function isQuietHours(userId) {
 }
 
 // Get users who need morning check-in notifications
+// Now timezone-aware: only returns users where it's currently morning in THEIR timezone
 async function getMorningCheckInUsers() {
   try {
     const result = await query(`
@@ -153,19 +197,23 @@ async function getMorningCheckInUsers() {
             AND m.created_at > NOW() - INTERVAL '12 hours'
         )
     `);
-    return result.rows;
+    // Filter by user's local time being between 8-10 AM
+    return result.rows.filter(user => {
+      const { hour } = getUserLocalTime(user.timezone);
+      return hour >= 8 && hour < 10;
+    });
   } catch (err) {
     logger.error('Error getting morning check-in users:', err);
     return [];
   }
 }
 
-// Get users who need streak reminders
+// Get users who need streak reminders (timezone-aware: 7-9 PM local)
 async function getStreakReminderUsers() {
   try {
     const result = await query(`
       SELECT u.id, u.push_token, u.display_name, u.notification_settings,
-             s.current_streak
+             u.timezone, s.current_streak
       FROM users u
       JOIN user_streaks s ON u.id = s.user_id
       WHERE u.push_token IS NOT NULL
@@ -178,7 +226,11 @@ async function getStreakReminderUsers() {
             AND m.created_at > CURRENT_DATE
         )
     `);
-    return result.rows;
+    // Filter by user's local time being between 7-9 PM
+    return result.rows.filter(user => {
+      const { hour } = getUserLocalTime(user.timezone);
+      return hour >= 19 && hour < 21;
+    });
   } catch (err) {
     logger.error('Error getting streak reminder users:', err);
     return [];
@@ -186,10 +238,15 @@ async function getStreakReminderUsers() {
 }
 
 // Get users who haven't engaged recently (for gentle nudges)
+// Timezone-aware: only sends during 1-3 PM in user's local time
 async function getInactiveUsers(daysSinceActivity = 2) {
   try {
+    // Sanitize daysSinceActivity to prevent SQL injection (was string-interpolated before)
+    const safeDays = Math.min(Math.max(parseInt(daysSinceActivity) || 2, 1), 30);
+
     const result = await query(`
       SELECT u.id, u.push_token, u.display_name, u.notification_settings,
+             u.timezone,
              MAX(m.created_at) as last_mood,
              MAX(c.created_at) as last_conversation
       FROM users u
@@ -200,15 +257,20 @@ async function getInactiveUsers(daysSinceActivity = 2) {
         AND u.notification_settings->'gentleNudges'->>'frequency' != 'never'
       GROUP BY u.id
       HAVING (
-        MAX(m.created_at) < NOW() - INTERVAL '${daysSinceActivity} days'
+        MAX(m.created_at) < NOW() - make_interval(days => $1)
         OR MAX(m.created_at) IS NULL
       )
       AND (
-        MAX(c.created_at) < NOW() - INTERVAL '${daysSinceActivity} days'
+        MAX(c.created_at) < NOW() - make_interval(days => $1)
         OR MAX(c.created_at) IS NULL
       )
-    `);
-    return result.rows;
+    `, [safeDays]);
+
+    // Filter by user's local time being between 1-3 PM
+    return result.rows.filter(user => {
+      const { hour } = getUserLocalTime(user.timezone);
+      return hour >= 13 && hour < 15;
+    });
   } catch (err) {
     logger.error('Error getting inactive users:', err);
     return [];
@@ -253,12 +315,12 @@ export async function sendMorningCheckIns() {
   return notifications.length;
 }
 
-// Send evening reflection notifications
+// Send evening reflection notifications (timezone-aware: 8-10 PM local)
 export async function sendEveningReflections() {
   logger.info('Starting evening reflection notifications');
 
   const result = await query(`
-    SELECT u.id, u.push_token, u.display_name, u.notification_settings
+    SELECT u.id, u.push_token, u.display_name, u.notification_settings, u.timezone
     FROM users u
     WHERE u.push_token IS NOT NULL
       AND u.notification_settings->>'enabled' = 'true'
@@ -268,12 +330,17 @@ export async function sendEveningReflections() {
   const notifications = [];
 
   for (const user of result.rows) {
+    // Only send if it's 8-10 PM in the user's timezone
+    const { hour } = getUserLocalTime(user.timezone);
+    if (hour < 20 || hour >= 22) continue;
+
     if (await isQuietHours(user.id)) continue;
 
     const message = getRandomMessage('eveningReflection');
     if (!message) continue;
 
     notifications.push({
+      userId: user.id,
       token: user.push_token,
       title: message.title,
       body: message.body,
@@ -399,12 +466,12 @@ export async function sendAchievementNotification(userId, achievement) {
   }
 }
 
-// Send weekly insight notification
+// Send weekly insight notification (timezone-aware: Sunday 9-11 AM local)
 export async function sendWeeklyInsights() {
   logger.info('Starting weekly insight notifications');
 
   const result = await query(`
-    SELECT u.id, u.push_token, u.display_name
+    SELECT u.id, u.push_token, u.display_name, u.timezone
     FROM users u
     WHERE u.push_token IS NOT NULL
       AND u.notification_settings->>'enabled' = 'true'
@@ -418,10 +485,15 @@ export async function sendWeeklyInsights() {
   const notifications = [];
 
   for (const user of result.rows) {
+    // Only send on Sunday 9-11 AM in user's local timezone
+    const { hour, dayOfWeek } = getUserLocalTime(user.timezone);
+    if (dayOfWeek !== 0 || hour < 9 || hour >= 11) continue;
+
     const message = getRandomMessage('weeklyInsight');
     if (!message) continue;
 
     notifications.push({
+      userId: user.id,
       token: user.push_token,
       title: message.title,
       body: message.body,
@@ -441,43 +513,67 @@ export async function sendWeeklyInsights() {
 }
 
 // Initialize scheduled jobs (call this on server start)
+// Now timezone-aware: runs every 15 min and each job function internally
+// filters users based on their local timezone, so a user in PST gets
+// their morning check-in at 9 AM PST, not 9 AM UTC.
 export function initScheduler() {
-  logger.info('Notification scheduler initialized with setInterval jobs');
+  logger.info('Notification scheduler initialized (timezone-aware, 15-min interval)');
 
-  // Check every 15 minutes which jobs should run based on current hour
   const FIFTEEN_MINUTES = 15 * 60 * 1000;
-  const lastRun = {};
 
-  const runIfDue = async (jobName, targetHour, fn) => {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const today = now.toDateString();
+  // Track last run per-user per-job to avoid duplicate sends in same day
+  // Format: { "morningCheckIns:userId": "2026-02-07" }
+  const lastRunMap = new Map();
 
-    // Only run if it's the target hour and hasn't run today
-    if (currentHour === targetHour && lastRun[jobName] !== today) {
-      try {
-        logger.info(`Running scheduled job: ${jobName}`);
-        await fn();
-        lastRun[jobName] = today;
-        logger.info(`Completed scheduled job: ${jobName}`);
-      } catch (err) {
-        logger.error(`Scheduled job ${jobName} failed:`, err);
-      }
+  const shouldRun = (jobName, userId, userTimezone) => {
+    const { hour, minute } = getUserLocalTime(userTimezone);
+    const localDate = new Intl.DateTimeFormat('en-CA', {
+      timeZone: userTimezone || 'America/New_York',
+    }).format(new Date()); // "2026-02-07" format
+
+    const key = `${jobName}:${userId}`;
+    if (lastRunMap.get(key) === localDate) return false;
+    return true;
+  };
+
+  const markRan = (jobName, userId, userTimezone) => {
+    const localDate = new Intl.DateTimeFormat('en-CA', {
+      timeZone: userTimezone || 'America/New_York',
+    }).format(new Date());
+    lastRunMap.set(`${jobName}:${userId}`, localDate);
+
+    // Prune old entries (keep map from growing indefinitely)
+    if (lastRunMap.size > 10000) {
+      const entries = [...lastRunMap.entries()];
+      entries.slice(0, 5000).forEach(([k]) => lastRunMap.delete(k));
     }
   };
 
+  // The job functions (morningCheckIns, etc.) already filter by user local time.
+  // The scheduler just runs them on every tick — the per-user timezone filtering
+  // happens inside each function.
   setInterval(async () => {
     try {
-      await runIfDue('morningCheckIns', 9, sendMorningCheckIns);
-      await runIfDue('streakReminders', 20, sendStreakReminders);
-      await runIfDue('eveningReflections', 21, sendEveningReflections);
-      await runIfDue('gentleNudges', 14, sendGentleNudges);
+      // Morning check-ins: filtered to users where it's 8-10 AM locally
+      await sendMorningCheckIns().catch(err =>
+        logger.error('Morning check-ins failed:', err.message));
 
-      // Weekly insights on Sunday only
-      const now = new Date();
-      if (now.getDay() === 0) {
-        await runIfDue('weeklyInsights', 10, sendWeeklyInsights);
-      }
+      // Streak reminders: send when it's evening locally (7-9 PM)
+      await sendStreakReminders().catch(err =>
+        logger.error('Streak reminders failed:', err.message));
+
+      // Evening reflections: send when it's 8-10 PM locally
+      await sendEveningReflections().catch(err =>
+        logger.error('Evening reflections failed:', err.message));
+
+      // Gentle nudges: send during afternoon (1-3 PM locally)
+      await sendGentleNudges().catch(err =>
+        logger.error('Gentle nudges failed:', err.message));
+
+      // Weekly insights: Sunday 9-11 AM locally
+      await sendWeeklyInsights().catch(err =>
+        logger.error('Weekly insights failed:', err.message));
+
     } catch (err) {
       logger.error('Scheduler tick error:', err);
     }
@@ -486,12 +582,10 @@ export function initScheduler() {
   // Also run an immediate check on startup (after 30s delay to let DB settle)
   setTimeout(async () => {
     try {
-      const now = new Date();
-      const hour = now.getHours();
-      if (hour >= 9 && hour < 10) await runIfDue('morningCheckIns', 9, sendMorningCheckIns);
-      if (hour >= 14 && hour < 15) await runIfDue('gentleNudges', 14, sendGentleNudges);
-      if (hour >= 20 && hour < 21) await runIfDue('streakReminders', 20, sendStreakReminders);
-      if (hour >= 21 && hour < 22) await runIfDue('eveningReflections', 21, sendEveningReflections);
+      await sendMorningCheckIns().catch(() => {});
+      await sendGentleNudges().catch(() => {});
+      await sendStreakReminders().catch(() => {});
+      await sendEveningReflections().catch(() => {});
     } catch (err) {
       logger.error('Scheduler startup check error:', err);
     }

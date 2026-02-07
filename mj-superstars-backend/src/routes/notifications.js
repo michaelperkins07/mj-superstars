@@ -37,21 +37,34 @@ router.get('/history',
 // ============================================================
 router.post('/subscribe',
   [
-    body('endpoint').notEmpty(),
-    body('keys').isObject(),
+    body('endpoint').optional(),
+    body('keys').optional().isObject(),
+    body('device_token').optional().isString().isLength({ min: 10, max: 200 }),
     body('device_type').optional().isIn(['ios', 'android', 'web'])
   ],
   validate,
   asyncHandler(async (req, res) => {
-    const { endpoint, keys, device_type } = req.body;
+    const { endpoint, keys, device_token, device_type } = req.body;
 
-    // Upsert subscription
-    await query(
-      `INSERT INTO push_subscriptions (user_id, endpoint, keys, device_type)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (user_id, endpoint) DO UPDATE SET keys = $3, is_active = true`,
-      [req.user.id, endpoint, JSON.stringify(keys), device_type || 'web']
-    );
+    if (device_type === 'ios' && device_token) {
+      // iOS APNs subscription — store device token
+      await query(
+        `INSERT INTO push_subscriptions (user_id, endpoint, device_token, device_type, is_active)
+         VALUES ($1, $2, $3, 'ios', true)
+         ON CONFLICT (user_id, endpoint) DO UPDATE SET device_token = $3, is_active = true`,
+        [req.user.id, `apns://${device_token}`, device_token]
+      );
+    } else if (endpoint) {
+      // Web push subscription
+      await query(
+        `INSERT INTO push_subscriptions (user_id, endpoint, keys, device_type)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (user_id, endpoint) DO UPDATE SET keys = $3, is_active = true`,
+        [req.user.id, endpoint, JSON.stringify(keys), device_type || 'web']
+      );
+    } else {
+      throw new APIError('Either endpoint or device_token is required', 400, 'MISSING_PARAMS');
+    }
 
     res.json({ success: true, message: 'Subscribed to notifications' });
   })

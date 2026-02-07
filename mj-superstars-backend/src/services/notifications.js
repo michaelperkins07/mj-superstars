@@ -5,6 +5,7 @@
 import webPush from 'web-push';
 import { query } from '../database/db.js';
 import { logger } from '../utils/logger.js';
+import { sendToUserIOS } from './apns.js';
 
 // Configure web-push
 if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
@@ -75,6 +76,21 @@ export const NotificationService = {
         }
       }
 
+      // Also send to iOS devices via APNs
+      let iosSent = 0;
+      let iosFailed = 0;
+      try {
+        const iosResult = await sendToUserIOS(userId, {
+          title: notification.title,
+          body: notification.body,
+          data: { ...data, timestamp: Date.now() },
+        });
+        iosSent = iosResult.sent;
+        iosFailed = iosResult.failed;
+      } catch (iosError) {
+        logger.warn('iOS push notification failed:', { userId, error: iosError.message });
+      }
+
       // Log notification
       await query(
         `INSERT INTO notification_history (user_id, notification_type, title, body, data)
@@ -82,7 +98,7 @@ export const NotificationService = {
         [userId, data.type || 'general', notification.title, notification.body, JSON.stringify(data)]
       );
 
-      return { sent, failed };
+      return { sent: sent + iosSent, failed: failed + iosFailed };
     } catch (error) {
       logger.error('Notification service error:', error);
       throw error;
@@ -177,34 +193,61 @@ export const NotificationService = {
    * Process scheduled check-ins (called by cron job)
    */
   async processScheduledCheckIns() {
-    const now = new Date();
-    const currentTime = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    const dayOfWeek = now.getDay();
-
-    // Find check-ins due now
-    const dueCheckIns = await query(
-      `SELECT sc.*, u.display_name
+    // Timezone-aware: compare scheduled_time against the user's local time
+    // We query all active check-ins and filter by each user's timezone
+    const allCheckIns = await query(
+      `SELECT sc.*, u.display_name, u.timezone
        FROM scheduled_checkins sc
        JOIN users u ON sc.user_id = u.id
        WHERE sc.is_active = true
-       AND sc.scheduled_time = $1
-       AND $2 = ANY(sc.days_of_week)
-       AND (sc.last_sent_at IS NULL OR sc.last_sent_at < CURRENT_DATE)`,
-      [currentTime, dayOfWeek]
+       AND (sc.last_sent_at IS NULL OR sc.last_sent_at < CURRENT_DATE)`
     );
 
-    logger.info(`Processing ${dueCheckIns.rows.length} scheduled check-ins`);
+    let processed = 0;
 
-    for (const checkin of dueCheckIns.rows) {
-      await this.sendCheckIn(checkin.user_id, checkin.checkin_type);
+    for (const checkin of allCheckIns.rows) {
+      try {
+        const tz = checkin.timezone || 'America/New_York';
+        const now = new Date();
 
-      await query(
-        `UPDATE scheduled_checkins SET last_sent_at = NOW() WHERE id = $1`,
-        [checkin.id]
-      );
+        // Get current time in user's timezone
+        const formatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false,
+        });
+        const parts = formatter.formatToParts(now);
+        const userHour = parseInt(parts.find(p => p.type === 'hour')?.value || '0');
+        const userMinute = parseInt(parts.find(p => p.type === 'minute')?.value || '0');
+        const userTime = `${userHour.toString().padStart(2, '0')}:${userMinute.toString().padStart(2, '0')}`;
+
+        // Get day of week in user's timezone
+        const dayFormatter = new Intl.DateTimeFormat('en-US', {
+          timeZone: tz,
+          weekday: 'short',
+        });
+        const dayStr = dayFormatter.format(now);
+        const dayMap = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+        const userDayOfWeek = dayMap[dayStr] ?? now.getUTCDay();
+
+        // Check if this check-in is due now in the user's timezone
+        if (checkin.scheduled_time === userTime &&
+            checkin.days_of_week.includes(userDayOfWeek)) {
+          await this.sendCheckIn(checkin.user_id, checkin.checkin_type);
+          await query(
+            `UPDATE scheduled_checkins SET last_sent_at = NOW() WHERE id = $1`,
+            [checkin.id]
+          );
+          processed++;
+        }
+      } catch (err) {
+        logger.warn('Failed to process check-in:', { id: checkin.id, error: err.message });
+      }
     }
 
-    return { processed: dueCheckIns.rows.length };
+    logger.info(`Processed ${processed} scheduled check-ins`);
+    return { processed };
   },
 
   /**

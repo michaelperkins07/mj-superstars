@@ -53,6 +53,7 @@ import { sentryRequestHandler, sentryErrorHandler } from './services/errorTracki
 import { initializeDatabase, checkDatabaseHealth, closePool } from './database/db.js';
 import { setupSocketHandlers } from './services/socket.js';
 import { initScheduler } from './services/scheduler.js';
+import { initAPNS, shutdownAPNS } from './services/apns.js';
 import { logger } from './utils/logger.js';
 
 // ============================================================
@@ -275,6 +276,9 @@ const startServer = async () => {
     await initializeDatabase();
     logger.info('Database connected successfully');
 
+    // Initialize Apple Push Notification Service (APNs)
+    initAPNS();
+
     // Start notification scheduler (streak reminders, check-ins, nudges)
     initScheduler();
 
@@ -307,6 +311,9 @@ const gracefulShutdown = async (signal) => {
 
     // Close database pool
     await closePool();
+
+    // Shutdown APNs provider
+    shutdownAPNS();
 
     // Flush any pending error reports
     await errorTracking.flush(3000).catch(() => {});

@@ -69,7 +69,8 @@ CREATE TABLE push_subscriptions (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID REFERENCES users(id) ON DELETE CASCADE,
     endpoint TEXT NOT NULL,
-    keys JSONB NOT NULL,
+    keys JSONB,
+    device_token VARCHAR(200), -- iOS APNs device token
     device_type VARCHAR(20), -- 'ios', 'android', 'web'
     is_active BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMPTZ DEFAULT NOW(),

@@ -7,6 +7,7 @@ import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
+import jwksClient from 'jwks-rsa';
 import { query, transaction } from '../database/db.js';
 import {
   generateAccessToken,
@@ -15,6 +16,72 @@ import {
 } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
+
+// ============================================================
+// Apple JWKS client for verifying Sign in with Apple tokens
+// ============================================================
+const appleJwksClient = jwksClient({
+  jwksUri: 'https://appleid.apple.com/auth/keys',
+  cache: true,
+  cacheMaxAge: 86400000, // 24 hours
+  rateLimit: true,
+  jwksRequestsPerMinute: 5,
+});
+
+/**
+ * Verify an Apple ID token against Apple's public JWKS keys.
+ * Returns the verified & decoded payload, or throws on invalid token.
+ */
+async function verifyAppleToken(idToken) {
+  // 1. Decode header to get kid
+  const decoded = jwt.decode(idToken, { complete: true });
+  if (!decoded || !decoded.header || !decoded.header.kid) {
+    throw new APIError('Invalid Apple ID token format', 401, 'INVALID_TOKEN');
+  }
+
+  // 2. Fetch the signing key from Apple's JWKS endpoint
+  const key = await appleJwksClient.getSigningKey(decoded.header.kid);
+  const signingKey = key.getPublicKey();
+
+  // 3. Verify signature, issuer, and expiry
+  const payload = jwt.verify(idToken, signingKey, {
+    algorithms: ['RS256'],
+    issuer: 'https://appleid.apple.com',
+    // audience is your app's bundle ID (or Services ID for web)
+    audience: process.env.APPLE_CLIENT_ID || process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app',
+  });
+
+  return payload;
+}
+
+// ============================================================
+// Google token verification helper
+// ============================================================
+const googleJwksClient = jwksClient({
+  jwksUri: 'https://www.googleapis.com/oauth2/v3/certs',
+  cache: true,
+  cacheMaxAge: 86400000,
+  rateLimit: true,
+  jwksRequestsPerMinute: 5,
+});
+
+async function verifyGoogleToken(idToken) {
+  const decoded = jwt.decode(idToken, { complete: true });
+  if (!decoded || !decoded.header || !decoded.header.kid) {
+    throw new APIError('Invalid Google ID token format', 401, 'INVALID_TOKEN');
+  }
+
+  const key = await googleJwksClient.getSigningKey(decoded.header.kid);
+  const signingKey = key.getPublicKey();
+
+  const payload = jwt.verify(idToken, signingKey, {
+    algorithms: ['RS256'],
+    issuer: ['https://accounts.google.com', 'accounts.google.com'],
+    audience: process.env.GOOGLE_CLIENT_ID,
+  });
+
+  return payload;
+}
 
 const router = Router();
 
@@ -169,11 +236,17 @@ router.post('/apple',
   asyncHandler(async (req, res) => {
     const { id_token, authorization_code, user: appleUser } = req.body;
 
-    // Decode Apple's id_token (JWT)
-    // In production, verify against Apple's public keys
-    const decoded = jwt.decode(id_token);
-    if (!decoded || !decoded.sub) {
-      throw new APIError('Invalid Apple ID token', 401, 'INVALID_TOKEN');
+    // Verify Apple's id_token against Apple's JWKS public keys
+    let decoded;
+    try {
+      decoded = await verifyAppleToken(id_token);
+    } catch (verifyError) {
+      logger.warn('Apple token verification failed:', { error: verifyError.message });
+      throw new APIError('Invalid or expired Apple ID token', 401, 'INVALID_TOKEN');
+    }
+
+    if (!decoded.sub) {
+      throw new APIError('Invalid Apple ID token: missing subject', 401, 'INVALID_TOKEN');
     }
 
     const providerData = {
@@ -223,9 +296,22 @@ router.post('/google',
   asyncHandler(async (req, res) => {
     const { id_token, access_token: googleAccessToken } = req.body;
 
-    // Decode Google's id_token
-    // In production, verify with Google's public keys
-    const decoded = jwt.decode(id_token);
+    // Verify Google's id_token against Google's JWKS public keys
+    let decoded;
+    if (process.env.GOOGLE_CLIENT_ID) {
+      try {
+        decoded = await verifyGoogleToken(id_token);
+      } catch (verifyError) {
+        logger.warn('Google token verification failed:', { error: verifyError.message });
+        throw new APIError('Invalid or expired Google ID token', 401, 'INVALID_TOKEN');
+      }
+    } else {
+      // Fallback: decode without verification if GOOGLE_CLIENT_ID not set
+      // (logs warning — should be configured in production)
+      decoded = jwt.decode(id_token);
+      logger.warn('Google token NOT verified: GOOGLE_CLIENT_ID env var not set');
+    }
+
     if (!decoded || !decoded.sub) {
       throw new APIError('Invalid Google ID token', 401, 'INVALID_TOKEN');
     }
