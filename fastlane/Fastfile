@@ -1,16 +1,24 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Upload metadata and screenshots to App Store Connect"
-  lane :upload_metadata do
-    api_key = app_store_connect_api_key(
+  # Shared API key helper — uses api_key.json (gitignored)
+  def get_api_key
+    key_file = "./fastlane/api_key.json"
+    unless File.exist?(key_file)
+      UI.user_error!("Missing #{key_file} — copy your App Store Connect API key JSON here")
+    end
+    app_store_connect_api_key(
       key_id: "TS9A6TPWWR",
       issuer_id: "7e6f7a23-b6f4-45ba-a169-32cb4d378fc2",
-      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8"
+      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8",
+      in_house: false
     )
+  end
 
+  desc "Upload metadata and screenshots to App Store Connect"
+  lane :upload_metadata do
     deliver(
-      api_key: api_key,
+      api_key: get_api_key,
       app_identifier: "com.mjsuperstars.app",
       metadata_path: "./fastlane/metadata",
       screenshots_path: "./fastlane/screenshots",
@@ -27,14 +35,8 @@ platform :ios do
 
   desc "Upload screenshots only"
   lane :upload_screenshots do
-    api_key = app_store_connect_api_key(
-      key_id: "TS9A6TPWWR",
-      issuer_id: "7e6f7a23-b6f4-45ba-a169-32cb4d378fc2",
-      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8"
-    )
-
     deliver(
-      api_key: api_key,
+      api_key: get_api_key,
       app_identifier: "com.mjsuperstars.app",
       screenshots_path: "./fastlane/screenshots",
       skip_metadata: true,
@@ -47,14 +49,8 @@ platform :ios do
 
   desc "Submit for App Store review"
   lane :submit_for_review do
-    api_key = app_store_connect_api_key(
-      key_id: "TS9A6TPWWR",
-      issuer_id: "7e6f7a23-b6f4-45ba-a169-32cb4d378fc2",
-      key_filepath: "/Users/michaelperkins/Downloads/AuthKey_TS9A6TPWWR.p8"
-    )
-
     deliver(
-      api_key: api_key,
+      api_key: get_api_key,
       app_identifier: "com.mjsuperstars.app",
       metadata_path: "./fastlane/metadata",
       screenshots_path: "./fastlane/screenshots",

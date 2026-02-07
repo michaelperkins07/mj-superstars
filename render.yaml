@@ -1,5 +1,5 @@
 # ============================================================
-# MJ's Superstars - Render Blueprint (Full Stack)
+# White Mike - Render Blueprint (Full Stack)
 # One-click deployment for the complete application
 # ============================================================
 # Deploy: Connect repo to Render → Select "Blueprint" → Deploy
@@ -65,7 +65,7 @@ services:
       - key: VAPID_PRIVATE_KEY
         sync: false
       - key: VAPID_SUBJECT
-        value: "mailto:support@mjsuperstars.com"
+        value: "mailto:michaelperkins07@gmail.com"
 
       # Error Tracking (Sentry)
       - key: SENTRY_DSN

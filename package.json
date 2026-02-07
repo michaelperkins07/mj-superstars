@@ -29,5 +29,8 @@
   "license": "UNLICENSED",
   "engines": {
     "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "supertest": "^7.2.2"
   }
 }
