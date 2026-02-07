@@ -141,7 +141,15 @@ export const authenticateToken = authenticate;
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'michaelperkins07@gmail.com').split(',').map(e => e.trim().toLowerCase());
 
 export const requireAdmin = (req, res, next) => {
-  if (!req.user || !ADMIN_EMAILS.includes(req.user.email?.toLowerCase())) {
+  if (!process.env.ADMIN_EMAILS && process.env.NODE_ENV === 'production') {
+    console.warn('⚠️  ADMIN_EMAILS not set — using hardcoded default.');
+  }
+
+  const adminSecret = req.headers['x-admin-secret'];
+  const isAdminBySecret = adminSecret && process.env.ADMIN_SECRET && adminSecret === process.env.ADMIN_SECRET;
+  const isAdminByEmail = req.user && ADMIN_EMAILS.includes(req.user.email?.toLowerCase());
+
+  if (!isAdminBySecret && !isAdminByEmail) {
     return res.status(403).json({
       error: 'Admin access required',
       code: 'ADMIN_REQUIRED'

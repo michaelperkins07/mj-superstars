@@ -1,16 +1,240 @@
 // ============================================================
 // MJ's Superstars - Webhook API Routes
-// Manage webhooks for external integrations
+// Manage webhooks for external integrations + App Store notifications
 // ============================================================
 
 import express from 'express';
 import { authenticateToken } from '../middleware/auth.js';
+import { asyncHandler } from '../middleware/errorHandler.js';
+import { query } from '../database/db.js';
 import webhooks, { WebhookEvents, EventCategories } from '../services/webhooks.js';
+import appStoreVerification from '../services/appStoreVerification.js';
 import { logger } from '../utils/logger.js';
 
 const router = express.Router();
 
-// All webhook routes require authentication
+// ============================================================
+// APP STORE SERVER NOTIFICATIONS V2 (PUBLIC)
+// Receive and process App Store Server notifications
+// ============================================================
+
+/**
+ * POST /api/webhooks/app-store
+ * Handle Apple App Store Server Notifications v2
+ * These are NOT authenticated (Apple sends them)
+ */
+router.post('/app-store',
+  asyncHandler(async (req, res) => {
+    const { signedPayload } = req.body;
+
+    if (!signedPayload) {
+      logger.warn('App Store notification received without signedPayload');
+      return res.status(400).json({
+        success: false,
+        error: 'Missing signedPayload'
+      });
+    }
+
+    try {
+      // Verify and decode the notification
+      const notification = await appStoreVerification.handleNotificationSafe(signedPayload);
+
+      if (!notification.valid && !notification.gracefulDegrade) {
+        logger.warn('App Store notification verification failed:', notification.error);
+        return res.status(400).json({
+          success: false,
+          error: 'Notification verification failed'
+        });
+      }
+
+      logger.info('App Store notification processed:', {
+        notificationType: notification.notificationType,
+        subtype: notification.subtype
+      });
+
+      const notificationType = notification.notificationType;
+      const subtype = notification.subtype;
+      const txnInfo = notification.transactionInfo;
+
+      // Handle different notification types
+      if (notificationType === 'SUBSCRIPTION_EVENT') {
+        await handleSubscriptionEvent(subtype, txnInfo, notification);
+      } else if (notificationType === 'TRANSACTION' || notificationType === 'RENEWAL') {
+        await handleTransactionEvent(subtype, txnInfo, notification);
+      } else if (notificationType === 'REFUND') {
+        await handleRefundEvent(subtype, txnInfo, notification);
+      }
+
+      // Always respond with 200 to acknowledge receipt
+      res.json({
+        success: true,
+        message: 'Notification processed'
+      });
+    } catch (error) {
+      logger.error('App Store notification processing error:', error.message);
+
+      // Still acknowledge to prevent Apple from resending
+      res.status(200).json({
+        success: true,
+        message: 'Notification received (processing failed, will retry)'
+      });
+    }
+  })
+);
+
+/**
+ * Handle subscription events (renewal, upgrade, downgrade, etc.)
+ */
+async function handleSubscriptionEvent(subtype, txnInfo, notification) {
+  if (!txnInfo) {
+    logger.debug('No transaction info in subscription event');
+    return;
+  }
+
+  const transactionId = txnInfo.transactionId || txnInfo.originalTransactionId;
+  const productId = txnInfo.productId;
+  const expiresDate = txnInfo.expiresDate ? new Date(parseInt(txnInfo.expiresDate, 10)) : null;
+  const revocationDate = txnInfo.revocationDate ? new Date(parseInt(txnInfo.revocationDate, 10)) : null;
+
+  logger.info('Handling subscription event:', {
+    subtype,
+    transactionId,
+    productId,
+    expiresDate,
+    revoked: !!revocationDate
+  });
+
+  // Try to find the user associated with this subscription
+  try {
+    const result = await query(
+      `SELECT user_id FROM subscriptions WHERE transaction_id = $1 LIMIT 1`,
+      [transactionId]
+    );
+
+    if (result.rows.length === 0) {
+      logger.debug('No subscription found for transaction:', transactionId);
+      return;
+    }
+
+    const userId = result.rows[0].user_id;
+
+    // Update subscription status based on event
+    const isActive = !revocationDate && expiresDate && expiresDate > new Date();
+
+    await query(
+      `UPDATE subscriptions SET
+        is_active = $1,
+        expiration_date = $2,
+        auto_renews = $3,
+        updated_at = NOW()
+      WHERE transaction_id = $4`,
+      [isActive, expiresDate, !revocationDate, transactionId]
+    );
+
+    // Update user's premium status
+    await query(
+      `UPDATE users SET is_premium = $1 WHERE id = $2`,
+      [isActive, userId]
+    );
+
+    logger.info('Updated subscription:', {
+      userId,
+      transactionId,
+      isActive,
+      subtype
+    });
+  } catch (error) {
+    if (error.code === '42P01') {
+      logger.debug('Subscriptions table does not exist yet');
+      return;
+    }
+    logger.error('Failed to update subscription:', error.message);
+  }
+}
+
+/**
+ * Handle transaction events (purchase, renewal)
+ */
+async function handleTransactionEvent(subtype, txnInfo, notification) {
+  if (!txnInfo) {
+    logger.debug('No transaction info in transaction event');
+    return;
+  }
+
+  logger.info('Handling transaction event:', {
+    subtype,
+    transactionId: txnInfo.transactionId,
+    productId: txnInfo.productId
+  });
+
+  // Transaction events are typically initial purchases or renewals
+  // They're also captured via subscription events, so minimal action needed here
+}
+
+/**
+ * Handle refund/revocation events
+ */
+async function handleRefundEvent(subtype, txnInfo, notification) {
+  if (!txnInfo) {
+    logger.debug('No transaction info in refund event');
+    return;
+  }
+
+  const transactionId = txnInfo.transactionId || txnInfo.originalTransactionId;
+
+  logger.info('Handling refund event:', {
+    subtype,
+    transactionId,
+    productId: txnInfo.productId
+  });
+
+  try {
+    const result = await query(
+      `SELECT user_id FROM subscriptions WHERE transaction_id = $1 LIMIT 1`,
+      [transactionId]
+    );
+
+    if (result.rows.length === 0) {
+      logger.debug('No subscription found for refunded transaction:', transactionId);
+      return;
+    }
+
+    const userId = result.rows[0].user_id;
+
+    // Mark subscription as inactive
+    await query(
+      `UPDATE subscriptions SET
+        is_active = false,
+        updated_at = NOW()
+      WHERE transaction_id = $1`,
+      [transactionId]
+    );
+
+    // Update user's premium status
+    await query(
+      `UPDATE users SET is_premium = false WHERE id = $1`,
+      [userId]
+    );
+
+    logger.info('Processed refund/revocation:', {
+      userId,
+      transactionId,
+      subtype
+    });
+  } catch (error) {
+    if (error.code === '42P01') {
+      logger.debug('Subscriptions table does not exist yet');
+      return;
+    }
+    logger.error('Failed to process refund:', error.message);
+  }
+}
+
+// ============================================================
+// USER-DEFINED WEBHOOKS (AUTHENTICATED)
+// ============================================================
+
+// All subsequent webhook routes require authentication
 router.use(authenticateToken);
 
 // ============================================================

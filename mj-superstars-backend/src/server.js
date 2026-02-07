@@ -69,7 +69,13 @@ app.set('trust proxy', 1);
 // Parse allowed origins from env (comma-separated for multiple frontends)
 const getAllowedOrigins = () => {
   const clientUrl = process.env.CLIENT_URL;
-  if (!clientUrl) return '*';
+  if (!clientUrl) {
+    if (process.env.NODE_ENV === 'production') {
+      logger.warn('⚠️  CLIENT_URL not set in production — CORS restricted to same-origin only');
+      return false; // Deny all cross-origin requests
+    }
+    return '*'; // Allow all in development only
+  }
 
   // Support comma-separated origins
   const origins = clientUrl.split(',').map(o => o.trim());

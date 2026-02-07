@@ -186,7 +186,13 @@ function sanitizeObject(obj, depth = 0) {
 // ENCRYPTION UTILITIES
 // ============================================================
 
-const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY || crypto.randomBytes(32).toString('hex');
+const ENCRYPTION_KEY = (() => {
+  if (process.env.ENCRYPTION_KEY) return process.env.ENCRYPTION_KEY;
+  if (process.env.NODE_ENV === 'production') {
+    console.error('❌ ENCRYPTION_KEY is required in production — encrypted data will be inconsistent without it');
+  }
+  return crypto.randomBytes(32).toString('hex');
+})();
 const ALGORITHM = 'aes-256-gcm';
 
 /**
