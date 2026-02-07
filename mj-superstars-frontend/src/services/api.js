@@ -2,6 +2,8 @@
 // MJ's Superstars - API Client Service
 // ============================================================
 
+import { isQueueable, enqueue, initOfflineSync } from './offlineQueue';
+
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api';
 
 // ============================================================
@@ -94,6 +96,11 @@ async function request(endpoint, options = {}) {
   } catch (error) {
     // Detect offline vs server errors
     if (!navigator.onLine || error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      // Queue mutation requests for replay when back online
+      if (isQueueable(endpoint, options.method)) {
+        enqueue(endpoint, options);
+      }
+
       const offlineError = new Error('You\'re offline. This will sync when you reconnect.');
       offlineError.code = 'OFFLINE';
       offlineError.status = 0;
@@ -104,6 +111,9 @@ async function request(endpoint, options = {}) {
     throw error;
   }
 }
+
+// Initialize offline sync - replays queued requests when connection returns
+initOfflineSync(request);
 
 async function handleResponse(response) {
   const data = await response.json();

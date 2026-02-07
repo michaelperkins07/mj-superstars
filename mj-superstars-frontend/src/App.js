@@ -107,6 +107,18 @@ function NetworkIndicator() {
     };
   }, [wasOffline]);
 
+  // Listen for offline queue sync completion
+  React.useEffect(() => {
+    const handleSynced = (event) => {
+      const { succeeded, failed } = event.detail || {};
+      if (succeeded > 0) {
+        console.log(`Synced ${succeeded} offline changes${failed > 0 ? `, ${failed} failed` : ''}`);
+      }
+    };
+    window.addEventListener('offline:synced', handleSynced);
+    return () => window.removeEventListener('offline:synced', handleSynced);
+  }, []);
+
   if (showReconnected) {
     return (
       <div className="fixed top-0 left-0 right-0 bg-emerald-600 text-white text-center py-2 text-sm z-50 transition-all">
