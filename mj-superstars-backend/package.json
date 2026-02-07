@@ -11,7 +11,7 @@
     "db:migrate": "node src/database/migrate.js",
     "db:seed": "node src/database/seed.js",
     "health": "curl -s http://localhost:${PORT:-10000}/health | node -e \"process.stdin.on('data',d=>{const h=JSON.parse(d);console.log(h.status==='healthy'?'✅ Healthy':'❌ Unhealthy',JSON.stringify(h,null,2))})\"",
-    "test": "jest",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest",
     "generate:vapid": "npx web-push generate-vapid-keys --json"
   },
   "dependencies": {
@@ -40,7 +40,7 @@
   "devDependencies": {
     "jest": "^29.7.0",
     "nodemon": "^3.1.0",
-    "supertest": "^7.0.0"
+    "supertest": "^7.2.2"
   },
   "engines": {
     "node": ">=20.0.0"
