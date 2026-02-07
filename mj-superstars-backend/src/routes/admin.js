@@ -13,12 +13,15 @@ import { logger } from '../utils/logger.js';
 const router = Router();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-// Admin auth middleware - requires ADMIN_SECRET or JWT_SECRET
+// Admin auth middleware - requires dedicated ADMIN_SECRET
 const adminAuth = (req, res, next) => {
   const adminKey = req.headers['x-admin-key'];
-  const validKey = process.env.ADMIN_SECRET || process.env.JWT_SECRET;
 
-  if (!adminKey || adminKey !== validKey) {
+  if (!process.env.ADMIN_SECRET) {
+    return res.status(503).json({ error: 'Admin authentication not configured' });
+  }
+
+  if (!adminKey || adminKey !== process.env.ADMIN_SECRET) {
     return res.status(403).json({ error: 'Unauthorized' });
   }
   next();
@@ -94,7 +97,8 @@ router.get('/db-status', adminAuth, async (req, res) => {
     const counts = {};
     for (const row of tables.rows) {
       try {
-        const countResult = await query(`SELECT COUNT(*) FROM "${row.table_name}"`);
+        const safeName = row.table_name.replace(/"/g, '""');
+        const countResult = await query(`SELECT COUNT(*) FROM "${safeName}"`);
         counts[row.table_name] = parseInt(countResult.rows[0].count);
       } catch {
         counts[row.table_name] = 'error';

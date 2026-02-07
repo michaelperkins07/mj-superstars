@@ -101,7 +101,8 @@ router.post('/scheduled',
   [
     body('checkin_type').isIn(['daily', 'mood', 'task_reminder', 'custom']),
     body('scheduled_time').matches(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/),
-    body('days_of_week').isArray(),
+    body('days_of_week').isArray({ min: 1, max: 7 }),
+    body('days_of_week.*').isInt({ min: 0, max: 6 }),
     body('message_template').optional().trim()
   ],
   validate,

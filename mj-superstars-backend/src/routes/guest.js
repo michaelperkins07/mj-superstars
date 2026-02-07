@@ -19,7 +19,9 @@ const router = Router();
 router.post('/chat',
   [
     body('content').trim().notEmpty().isLength({ max: 10000 }),
-    body('history').optional().isArray(),
+    body('history').optional().isArray({ max: 50 }),
+    body('history.*.role').isIn(['user', 'assistant']),
+    body('history.*.content').isString().isLength({ max: 5000 }),
     body('guest_name').optional().trim().isLength({ max: 100 }),
     body('session_id').optional().trim()
   ],

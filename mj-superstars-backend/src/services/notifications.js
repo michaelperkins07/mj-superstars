@@ -48,10 +48,11 @@ export const NotificationService = {
 
       for (const sub of subscriptions.rows) {
         try {
+          const parsedKeys = typeof sub.keys === 'string' ? JSON.parse(sub.keys) : sub.keys;
           await webPush.sendNotification(
             {
               endpoint: sub.endpoint,
-              keys: sub.keys
+              keys: parsedKeys
             },
             payload
           );

@@ -72,7 +72,8 @@ CREATE TABLE push_subscriptions (
     keys JSONB NOT NULL,
     device_type VARCHAR(20), -- 'ios', 'android', 'web'
     is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, endpoint)
 );
 
 CREATE INDEX idx_push_user ON push_subscriptions(user_id);
@@ -583,7 +584,8 @@ CREATE TABLE content_interactions (
 
     interaction_type VARCHAR(20), -- 'viewed', 'liked', 'saved', 'shared', 'dismissed'
 
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE(user_id, content_id, interaction_type)
 );
 
 CREATE INDEX idx_content_interactions_user ON content_interactions(user_id);

@@ -134,7 +134,7 @@ router.put('/morning/reflect',
 
     const result = await query(
       `UPDATE morning_intentions
-       SET reflection = $3, intention_met = $4, reflected_at = NOW()
+       SET reflection = $2, intention_met = $3, reflected_at = NOW()
        WHERE user_id = $1 AND date = CURRENT_DATE
        RETURNING *`,
       [req.user.id, reflection, intention_met]

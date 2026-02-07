@@ -304,6 +304,9 @@ const gracefulShutdown = async (signal) => {
     // Close database pool
     await closePool();
 
+    // Flush any pending error reports
+    await errorTracking.flush(3000).catch(() => {});
+
     logger.info('Graceful shutdown complete');
     process.exit(0);
   });
