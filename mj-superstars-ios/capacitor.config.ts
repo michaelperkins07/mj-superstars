@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.mjsuperstars.app',
-  appName: "MJ's Superstars",
+  appName: "White Mike",
   webDir: 'www',
   bundledWebRuntime: false,
 
