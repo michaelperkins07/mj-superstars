@@ -24,8 +24,8 @@ platform :ios do
       overwrite_screenshots: true,
       submit_for_review: false,
       force: true,
-      primary_category: "MZGenre.HealthAndFitness",
-      secondary_category: "MZGenre.Lifestyle"
+      primary_category: "HEALTH_AND_FITNESS",
+      secondary_category: "LIFESTYLE"
     )
   end
 

@@ -31,7 +31,7 @@ force(true)
 # app_rating_config_path("./fastlane/rating_config.json")
 
 # Primary category
-primary_category("MZGenre.HealthAndFitness")
+primary_category("HEALTH_AND_FITNESS")
 
 # Secondary category
-secondary_category("MZGenre.Lifestyle")
+secondary_category("LIFESTYLE")
