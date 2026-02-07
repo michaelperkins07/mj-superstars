@@ -4,7 +4,7 @@
 // ============================================================
 
 import crypto from 'crypto';
-import { pool } from '../database/db.js';
+import pool from '../database/db.js';
 import { logger } from '../utils/logger.js';
 import jobQueue from './jobQueue.js';
 

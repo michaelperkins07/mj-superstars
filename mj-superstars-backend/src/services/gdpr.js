@@ -3,7 +3,7 @@
 // Data export, deletion, and consent management
 // ============================================================
 
-import { pool } from '../database/db.js';
+import pool from '../database/db.js';
 import { logger } from '../utils/logger.js';
 import crypto from 'crypto';
 import { Readable } from 'stream';

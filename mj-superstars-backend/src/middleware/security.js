@@ -3,10 +3,10 @@
 // Input validation, rate limiting, and security hardening
 // ============================================================
 
-const crypto = require('crypto');
-const rateLimit = require('express-rate-limit');
-const helmet = require('helmet');
-const xss = require('xss');
+import crypto from 'crypto';
+import rateLimit from 'express-rate-limit';
+import helmet from 'helmet';
+import xss from 'xss';
 
 // ============================================================
 // HELMET SECURITY HEADERS
@@ -473,9 +473,9 @@ function securityLogger(req, res, next) {
 // EXPORTS
 // ============================================================
 
-module.exports = {
+export {
   // Helmet
-  helmet: helmetConfig,
+  helmetConfig as helmet,
 
   // Rate limiting
   generalLimiter,
@@ -516,5 +516,32 @@ module.exports = {
   corsOptions,
 
   // Logging
+  securityLogger
+};
+
+export default {
+  helmet: helmetConfig,
+  generalLimiter,
+  authLimiter,
+  aiLimiter,
+  sanitizeString,
+  sanitizeEmail,
+  sanitizeInt,
+  sanitizeUUID,
+  sanitizeBody,
+  sanitizeObject,
+  encrypt,
+  decrypt,
+  hash,
+  generateSecureToken,
+  validatePassword,
+  blacklistToken,
+  isTokenBlacklisted,
+  checkTokenBlacklist,
+  maskSensitiveData,
+  stripSensitiveFields,
+  validateRequired,
+  validateContentType,
+  corsOptions,
   securityLogger
 };

@@ -1,10 +1,25 @@
 // ============================================================
 // MJ's Superstars - Background Job Queue Service
 // Redis-backed job processing with Bull
+// Gracefully handles missing bull/Redis dependencies
 // ============================================================
 
-import Bull from 'bull';
 import { logger } from '../utils/logger.js';
+
+// ============================================================
+// BULL LOADER - Try to load, fallback to stubs
+// ============================================================
+
+let Bull = null;
+let bullAvailable = false;
+
+try {
+  const bullModule = await import('bull');
+  Bull = bullModule.default || bullModule;
+  bullAvailable = true;
+} catch (e) {
+  logger.warn('⚠️  bull package not installed - job queue disabled (install bull + Redis for background jobs)');
+}
 
 // ============================================================
 // CONFIGURATION
@@ -86,6 +101,12 @@ let initialized = false;
  */
 function init() {
   if (initialized) return;
+
+  if (!bullAvailable) {
+    initialized = true;
+    logger.info('⚠️  Job queues running in stub mode (no Redis/Bull)');
+    return;
+  }
 
   for (const [key, config] of Object.entries(QUEUE_CONFIGS)) {
     const queue = createQueue(config);
@@ -188,6 +209,11 @@ const JobTypes = {
  * Add a job to a queue
  */
 async function addJob(queueName, type, data, options = {}) {
+  if (!bullAvailable) {
+    logger.debug(`Job skipped (no Redis): ${queueName}/${type}`);
+    return { id: `stub-${Date.now()}`, queue: { name: queueName }, data, opts: options };
+  }
+
   const queue = getQueue(queueName);
   if (!queue) {
     throw new Error(`Queue not found: ${queueName}`);
@@ -212,6 +238,11 @@ async function addDelayedJob(queueName, type, data, delay, options = {}) {
  * Add a scheduled job (cron-like)
  */
 async function addScheduledJob(queueName, type, data, cron, options = {}) {
+  if (!bullAvailable) {
+    logger.debug(`Scheduled job skipped (no Redis): ${queueName}/${type} cron=${cron}`);
+    return { id: `stub-${Date.now()}`, queue: { name: queueName }, data, opts: options };
+  }
+
   const queue = getQueue(queueName);
   if (!queue) {
     throw new Error(`Queue not found: ${queueName}`);
@@ -488,6 +519,10 @@ const webhookJobs = {
  * Get queue status
  */
 async function getQueueStatus(queueName) {
+  if (!bullAvailable) {
+    return { name: queueName, status: 'disabled', reason: 'Redis/Bull not configured' };
+  }
+
   const queue = getQueue(queueName);
   if (!queue) return null;
 
@@ -560,6 +595,8 @@ async function cleanAllQueues() {
  * Graceful shutdown
  */
 async function shutdown() {
+  if (!bullAvailable || queues.size === 0) return;
+
   logger.info('Shutting down job queues...');
 
   const closePromises = [];
