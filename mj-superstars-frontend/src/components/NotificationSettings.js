@@ -531,7 +531,7 @@ export default function NotificationSettings({ onBack }) {
 
         {/* Info Footer */}
         <p className="text-slate-500 text-sm text-center px-4 pb-8">
-          Mike sends thoughtful notifications to support your growth journey.
+          White Mike sends thoughtful notifications to support your growth journey.
           We'll never spam you. 💙
         </p>
       </div>
