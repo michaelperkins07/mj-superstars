@@ -1,6 +1,8 @@
 // ============================================================
 // MJ's Superstars - Paywall / Subscription Screen
 // Beautiful paywall with plan selection and purchase flow
+// TODO: Wire up payment processor (RevenueCat/StoreKit2) before enabling
+// TODO: Not currently in navigation — add when IAP is fully integrated
 // ============================================================
 
 import React, { useState, useEffect } from 'react';

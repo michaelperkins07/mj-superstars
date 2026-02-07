@@ -84,11 +84,9 @@ export const LazyRoutes = {
   // Settings
   Settings: lazyWithPreload(() => import('../screens/Settings')),
   NotificationSettings: lazyWithPreload(() => import('../components/NotificationSettings')),
-  HealthInsights: lazyWithPreload(() => import('../components/HealthInsights')),
 
   // Onboarding & Auth
-  Onboarding: lazyWithPreload(() => import('../components/Onboarding')),
-  Paywall: lazyWithPreload(() => import('../components/Paywall'))
+  Onboarding: lazyWithPreload(() => import('../components/Onboarding'))
 };
 
 // ============================================================

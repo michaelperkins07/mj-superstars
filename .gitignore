@@ -41,6 +41,17 @@ ios/App/Pods/
 ios/App/App/public/
 android/app/src/main/assets/public/
 
+# Xcode Archives & Build Artifacts
+*.xcarchive/
+ExportOptions*.plist
+archive_log*.txt
+export_log*.txt
+export_v*_log*.txt
+upload_log*.txt
+
+# Root package-lock (monorepo root)
+/package-lock.json
+
 # Misc
 *.pem
 .cache/
