@@ -25,7 +25,8 @@ platform :ios do
       submit_for_review: false,
       force: true,
       primary_category: "HEALTH_AND_FITNESS",
-      secondary_category: "LIFESTYLE"
+      secondary_category: "LIFESTYLE",
+      precheck_include_in_app_purchases: false
     )
   end
 
