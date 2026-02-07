@@ -268,7 +268,10 @@ export const transaction = async (callback) => {
 };
 
 // Get client for manual transaction management
-export const getClient = () => pool.connect();
+export const getClient = () => {
+  if (!pool) throw new Error('Database pool not available (mock mode)');
+  return pool.connect();
+};
 
 // ============================================================
 // HEALTH CHECK
@@ -276,6 +279,15 @@ export const getClient = () => pool.connect();
 
 export const checkDatabaseHealth = async () => {
   try {
+    if (!pool) {
+      return {
+        status: 'healthy',
+        latency: '0ms',
+        pool: { total: 0, idle: 0, waiting: 0 },
+        mode: 'mock'
+      };
+    }
+
     const start = Date.now();
     const result = await pool.query('SELECT 1 as healthy');
     const latency = Date.now() - start;
@@ -302,6 +314,7 @@ export const checkDatabaseHealth = async () => {
 // ============================================================
 
 export const closePool = async () => {
+  if (!pool) return;
   logger.info('Closing database pool...');
   await pool.end();
   logger.info('Database pool closed');

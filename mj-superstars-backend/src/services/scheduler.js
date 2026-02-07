@@ -5,7 +5,7 @@
 
 import { query } from '../database/db.js';
 import { NotificationService } from './notifications.js';
-import logger from '../utils/logger.js';
+import { logger } from '../utils/logger.js';
 
 // Helper wrappers to match the API the scheduler functions expect
 async function sendPushNotification(pushToken, payload) {

@@ -2,13 +2,22 @@
 // Claude AI Service
 // ============================================================
 
-import Anthropic from '@anthropic-ai/sdk';
 import { logger } from '../utils/logger.js';
 import { TrendingService } from './trending.js';
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY
-});
+// Gracefully handle missing Anthropic SDK or API key
+let anthropic = null;
+try {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (apiKey && apiKey !== 'demo-mode') {
+    const { default: Anthropic } = await import('@anthropic-ai/sdk');
+    anthropic = new Anthropic({ apiKey });
+  } else {
+    logger.warn('⚠️  ANTHROPIC_API_KEY not configured — AI chat features disabled');
+  }
+} catch (e) {
+  logger.warn('⚠️  @anthropic-ai/sdk not available — AI chat features disabled');
+}
 
 const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 const MAX_TOKENS = parseInt(process.env.MAX_TOKENS) || 1024;
@@ -284,6 +293,10 @@ export const ClaudeService = {
    * Main chat function - sends message to Claude and returns response
    */
   async chat({ message, history = [], userContext, userId, conversationId }) {
+    if (!anthropic) {
+      throw new Error('Claude API not configured. Set ANTHROPIC_API_KEY environment variable.');
+    }
+
     try {
       // Build system prompt with user context (async for trending topics)
       const systemPrompt = await buildSystemPrompt(userContext);
