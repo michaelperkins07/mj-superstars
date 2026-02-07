@@ -14,6 +14,9 @@ import MJSuperstars from './MJSuperstars';
 // Error tracking with Sentry
 import { SentryErrorBoundary, errors as sentryErrors } from './services/errorTracking';
 
+// Notification handlers
+import { initNotificationHandlers, cleanupNotificationHandlers } from './services/notificationHandler';
+
 // Environment configuration
 const config = {
   apiUrl: process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api',
@@ -76,13 +79,24 @@ class ErrorBoundary extends React.Component {
   }
 }
 
-// Network Status Indicator
+// Network Status Indicator with reconnection banner
 function NetworkIndicator() {
   const [isOnline, setIsOnline] = React.useState(navigator.onLine);
+  const [wasOffline, setWasOffline] = React.useState(false);
+  const [showReconnected, setShowReconnected] = React.useState(false);
 
   React.useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
+    const handleOnline = () => {
+      setIsOnline(true);
+      if (wasOffline) {
+        setShowReconnected(true);
+        setTimeout(() => setShowReconnected(false), 3000);
+      }
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      setWasOffline(true);
+    };
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
@@ -91,15 +105,33 @@ function NetworkIndicator() {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
     };
-  }, []);
+  }, [wasOffline]);
+
+  if (showReconnected) {
+    return (
+      <div className="fixed top-0 left-0 right-0 bg-emerald-600 text-white text-center py-2 text-sm z-50 transition-all">
+        Back online — syncing your changes
+      </div>
+    );
+  }
 
   if (isOnline) return null;
 
   return (
     <div className="fixed top-0 left-0 right-0 bg-amber-600 text-white text-center py-2 text-sm z-50">
-      📡 You're offline. Changes will sync when you reconnect.
+      You're offline. Changes will sync when you reconnect.
     </div>
   );
+}
+
+// Initialize push notification handlers on mount
+function NotificationInitializer() {
+  React.useEffect(() => {
+    initNotificationHandlers();
+    return () => cleanupNotificationHandlers();
+  }, []);
+
+  return null;
 }
 
 // Main App Component with all providers
@@ -109,6 +141,7 @@ function App() {
       <AuthProvider>
         <DataProvider>
           <NetworkIndicator />
+          <NotificationInitializer />
           <MJSuperstars />
         </DataProvider>
       </AuthProvider>

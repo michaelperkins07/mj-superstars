@@ -3,7 +3,8 @@
 // Handles notification actions and deep linking
 // ============================================================
 
-import { isNative, PushService, LocalNotificationService, AppService } from './native';
+import { isNative, isIOS, PushService, LocalNotificationService, AppService } from './native';
+import { NotificationAPI } from './api';
 
 // Navigation actions mapped to screens/routes
 const NOTIFICATION_ACTIONS = {
@@ -104,6 +105,23 @@ export async function initNotificationHandlers() {
     console.log('Notification handlers: Web mode - limited functionality');
     return;
   }
+
+  // Register device token with backend for APNs push delivery
+  const registrationListener = PushService.onRegistration(async (token) => {
+    console.log('Push token received, registering with backend...');
+    try {
+      await NotificationAPI.subscribe({
+        device_token: token.value,
+        device_type: isIOS ? 'ios' : 'android'
+      });
+      console.log('Device token registered with backend successfully');
+    } catch (err) {
+      console.error('Failed to register device token:', err);
+      // Store for retry on next app launch
+      localStorage.setItem('mj_pending_device_token', token.value);
+    }
+  });
+  listeners.push(registrationListener);
 
   // Handle push notification taps
   const pushTapListener = PushService.onPushTapped((notification) => {

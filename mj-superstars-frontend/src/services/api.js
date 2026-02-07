@@ -92,6 +92,14 @@ async function request(endpoint, options = {}) {
 
     return handleResponse(response);
   } catch (error) {
+    // Detect offline vs server errors
+    if (!navigator.onLine || error.message === 'Failed to fetch' || error.name === 'TypeError') {
+      const offlineError = new Error('You\'re offline. This will sync when you reconnect.');
+      offlineError.code = 'OFFLINE';
+      offlineError.status = 0;
+      offlineError.isOffline = true;
+      throw offlineError;
+    }
     console.error('API request failed:', error);
     throw error;
   }

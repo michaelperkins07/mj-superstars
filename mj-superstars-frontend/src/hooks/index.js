@@ -12,3 +12,8 @@ export {
   useAffirmation,
   useSyncStatus
 } from './useData';
+export {
+  usePushNotifications,
+  useLocalNotifications,
+  useHaptics
+} from './useNotifications';
