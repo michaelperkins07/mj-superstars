@@ -207,8 +207,10 @@ router.post('/:id/messages',
       [id]
     );
 
-    // Extract and store personalization insights (async, don't wait)
-    extractPersonalizationAsync(req.user.id, userMsgResult.rows[0].id, content);
+    // Extract and store personalization insights (async, don't wait but log errors)
+    extractPersonalizationAsync(req.user.id, userMsgResult.rows[0].id, content).catch(err => {
+      logger.error('Background personalization extraction failed:', { userId: req.user.id, error: err.message });
+    });
 
     // Emit via Socket.IO if available
     const io = req.app.get('io');

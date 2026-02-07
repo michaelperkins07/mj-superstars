@@ -15,9 +15,16 @@ router.use(authenticate);
 // ============================================================
 // GET /api/coping/tools - Get all coping tools
 // ============================================================
+const VALID_CATEGORIES = ['breathing', 'grounding', 'distraction', 'social', 'physical'];
+
 router.get('/tools',
   asyncHandler(async (req, res) => {
     const { category } = req.query;
+
+    // Validate category if provided
+    if (category && !VALID_CATEGORIES.includes(category)) {
+      return res.status(400).json({ error: 'Invalid category', code: 'INVALID_CATEGORY', valid: VALID_CATEGORIES });
+    }
 
     // Get user's custom tools
     let userToolsQuery = `SELECT * FROM coping_tools WHERE user_id = $1`;

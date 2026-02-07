@@ -150,11 +150,21 @@ const claudeLimiter = rateLimit({
   message: { error: 'Message rate limit reached. Take a breath and try again in a moment.' }
 });
 
+// Heavy computation limiter for expensive analytics endpoints
+const heavyComputationLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 10, // 10 requests per minute
+  message: { error: 'Too many requests to this endpoint. Please wait a moment.' },
+  keyGenerator: (req) => req.user?.id || req.ip
+});
+
 app.use('/api/', limiter);
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/social-auth', authLimiter);
 app.use('/api/conversations/send', claudeLimiter);
+app.use('/api/insights', heavyComputationLimiter);
+app.use('/api/progress/weekly-story', heavyComputationLimiter);
 
 // ============================================================
 // HEALTH CHECKS (Render monitors these)

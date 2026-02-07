@@ -3,11 +3,13 @@
 // ============================================================
 
 import { Router } from 'express';
+import { param } from 'express-validator';
 import { query, transaction } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { ClaudeService } from '../services/claude.js';
 import { logger } from '../utils/logger.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -274,6 +276,8 @@ router.get('/insights',
 // PUT /api/progress/insights/:id/viewed - Mark insight as viewed
 // ============================================================
 router.put('/insights/:id/viewed',
+  [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     await query(
       `UPDATE user_insights SET is_new = false, viewed_at = NOW() WHERE id = $1 AND user_id = $2`,

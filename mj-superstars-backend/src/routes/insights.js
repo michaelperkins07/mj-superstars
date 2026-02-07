@@ -3,9 +3,11 @@
 // ============================================================
 
 import { Router } from 'express';
+import { param } from 'express-validator';
 import { query } from '../database/db.js';
 import { authenticate } from '../middleware/auth.js';
 import { asyncHandler } from '../middleware/errorHandler.js';
+import validate from '../middleware/validate.js';
 
 const router = Router();
 router.use(authenticate);
@@ -38,6 +40,8 @@ router.get('/',
 // PUT /api/insights/:id/read - Mark insight as read
 // ============================================================
 router.put('/:id/read',
+  [param('id').isUUID()],
+  validate,
   asyncHandler(async (req, res) => {
     await query(
       `UPDATE user_insights SET is_new = false, viewed_at = NOW()
@@ -54,7 +58,7 @@ router.put('/:id/read',
 // ============================================================
 router.get('/mood-patterns',
   asyncHandler(async (req, res) => {
-    const { days = 30 } = req.query;
+    const days = Math.min(Math.max(parseInt(req.query.days) || 30, 1), 365);
 
     // Get mood by time of day
     const timePatterns = await query(
@@ -190,7 +194,7 @@ router.get('/progress-summary',
 // ============================================================
 router.get('/conversation-themes',
   asyncHandler(async (req, res) => {
-    const { days = 30 } = req.query;
+    const days = Math.min(Math.max(parseInt(req.query.days) || 30, 1), 365);
 
     // Get topic frequencies from messages
     const topics = await query(
