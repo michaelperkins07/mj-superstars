@@ -11,6 +11,7 @@ import compression from 'compression';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
+import { sanitizeBody } from './middleware/security.js';
 
 // Load environment variables FIRST
 dotenv.config();
@@ -118,6 +119,9 @@ app.use(compression());
 // Body parsing
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// XSS sanitization on all request bodies
+app.use(sanitizeBody);
 
 // Logging - structured for Render's log aggregation
 if (process.env.NODE_ENV !== 'test') {

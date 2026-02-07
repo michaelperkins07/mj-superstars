@@ -6,6 +6,10 @@ import { query } from '../database/db.js';
 import { ClaudeService } from './claude.js';
 import { logger } from '../utils/logger.js';
 
+// UUID regex for validation
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const MAX_CONTENT_LENGTH = 10000;
+
 // Store active connections
 const activeConnections = new Map();
 
@@ -36,10 +40,21 @@ export const setupSocketHandlers = (io) => {
     // Handle real-time message sending
     socket.on('send_message', async (data) => {
       try {
-        const { conversation_id, content, is_voice = false } = data;
+        const { conversation_id, content, is_voice = false } = data || {};
 
-        if (!conversation_id || !content) {
-          socket.emit('error', { message: 'Missing conversation_id or content' });
+        // Validate conversation_id is a UUID
+        if (!conversation_id || !UUID_REGEX.test(conversation_id)) {
+          socket.emit('error', { message: 'Invalid or missing conversation_id' });
+          return;
+        }
+
+        // Validate content is a non-empty string within limits
+        if (!content || typeof content !== 'string' || content.trim().length === 0) {
+          socket.emit('error', { message: 'Content cannot be empty' });
+          return;
+        }
+        if (content.length > MAX_CONTENT_LENGTH) {
+          socket.emit('error', { message: `Content exceeds ${MAX_CONTENT_LENGTH} character limit` });
           return;
         }
 
@@ -124,8 +139,10 @@ export const setupSocketHandlers = (io) => {
           suggestions: claudeResponse.suggestions || []
         });
 
-        // Extract personalization asynchronously
-        extractPersonalizationAsync(user.id, userMsgResult.rows[0].id, content);
+        // Extract personalization asynchronously (don't block, but log errors)
+        extractPersonalizationAsync(user.id, userMsgResult.rows[0].id, content).catch(err => {
+          logger.error('Socket personalization extraction failed:', { userId: user.id, error: err.message });
+        });
 
       } catch (error) {
         logger.error('Socket send_message error:', error);
@@ -158,7 +175,8 @@ export const setupSocketHandlers = (io) => {
 
     // Join conversation room for real-time updates
     socket.on('join_conversation', async (data) => {
-      const { conversation_id } = data;
+      const { conversation_id } = data || {};
+      if (!conversation_id || !UUID_REGEX.test(conversation_id)) return;
 
       // Verify ownership
       const result = await query(
@@ -182,7 +200,11 @@ export const setupSocketHandlers = (io) => {
 
     socket.on('quick_mood', async (data) => {
       try {
-        const { mood_score, note } = data;
+        const { mood_score, note } = data || {};
+        if (typeof mood_score !== 'number' || mood_score < 1 || mood_score > 10) {
+          socket.emit('error', { message: 'Mood score must be 1-10' });
+          return;
+        }
 
         const hour = new Date().getHours();
         let time_of_day;
@@ -215,7 +237,11 @@ export const setupSocketHandlers = (io) => {
 
     socket.on('complete_task', async (data) => {
       try {
-        const { task_id } = data;
+        const { task_id } = data || {};
+        if (!task_id || !UUID_REGEX.test(task_id)) {
+          socket.emit('error', { message: 'Invalid task_id' });
+          return;
+        }
 
         const result = await query(
           `UPDATE tasks SET status = 'completed', completed_at = NOW()

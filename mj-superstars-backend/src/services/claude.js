@@ -145,32 +145,38 @@ COMMUNICATION STYLE:`;
     }
   }
 
+  // Sanitize user-supplied data to prevent prompt injection
+  const sanitize = (text) => {
+    if (typeof text !== 'string') return '';
+    return text.replace(/[\n\r]/g, ' ').substring(0, 200).trim();
+  };
+
   // User context
   systemPrompt += `\n\nUSER CONTEXT:
-- Name: ${userName}`;
+- Name: ${sanitize(userName)}`;
 
   // Personalization
   if (personalization && Object.keys(personalization).length > 0) {
     if (personalization.people?.length > 0) {
-      systemPrompt += `\n- Important people: ${personalization.people.map(p => `${p.name} (${p.relationship})`).join(', ')}`;
+      systemPrompt += `\n- Important people: ${personalization.people.slice(0, 10).map(p => `${sanitize(p.name)} (${sanitize(p.relationship)})`).join(', ')}`;
     }
     if (personalization.work_context?.job) {
-      systemPrompt += `\n- Work: ${personalization.work_context.job}`;
+      systemPrompt += `\n- Work: ${sanitize(personalization.work_context.job)}`;
     }
     if (personalization.triggers?.length > 0) {
-      systemPrompt += `\n- Known triggers: ${personalization.triggers.map(t => typeof t === 'string' ? t : t.trigger).join(', ')}`;
+      systemPrompt += `\n- Known triggers: ${personalization.triggers.slice(0, 10).map(t => sanitize(typeof t === 'string' ? t : t.trigger)).join(', ')}`;
     }
     if (personalization.comforts?.length > 0) {
-      systemPrompt += `\n- Things that help: ${personalization.comforts.join(', ')}`;
+      systemPrompt += `\n- Things that help: ${personalization.comforts.slice(0, 10).map(c => sanitize(c)).join(', ')}`;
     }
     if (personalization.interests?.length > 0) {
-      systemPrompt += `\n- Interests: ${personalization.interests.join(', ')}`;
+      systemPrompt += `\n- Interests: ${personalization.interests.slice(0, 10).map(i => sanitize(i)).join(', ')}`;
     }
     if (personalization.struggles?.length > 0) {
-      systemPrompt += `\n- Areas they're working on: ${personalization.struggles.join(', ')}`;
+      systemPrompt += `\n- Areas they're working on: ${personalization.struggles.slice(0, 10).map(s => sanitize(s)).join(', ')}`;
     }
     if (personalization.communicationPref) {
-      systemPrompt += `\n- Communication preference: ${personalization.communicationPref}`;
+      systemPrompt += `\n- Communication preference: ${sanitize(personalization.communicationPref)}`;
     }
   }
 

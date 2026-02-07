@@ -49,6 +49,9 @@ export const TokenManager = {
 // HTTP CLIENT
 // ============================================================
 
+// Prevent concurrent token refresh race condition
+let refreshPromise = null;
+
 async function request(endpoint, options = {}) {
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -69,9 +72,12 @@ async function request(endpoint, options = {}) {
       headers
     });
 
-    // Handle token refresh on 401
+    // Handle token refresh on 401 (with race condition protection)
     if (response.status === 401 && TokenManager.getRefreshToken()) {
-      const refreshed = await refreshAccessToken();
+      if (!refreshPromise) {
+        refreshPromise = refreshAccessToken().finally(() => { refreshPromise = null; });
+      }
+      const refreshed = await refreshPromise;
       if (refreshed) {
         // Retry request with new token
         headers['Authorization'] = `Bearer ${TokenManager.getAccessToken()}`;
