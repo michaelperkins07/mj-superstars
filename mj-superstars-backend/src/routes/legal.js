@@ -3,8 +3,8 @@
 // Privacy Policy and Terms of Service (Public - No Auth Required)
 // ============================================================
 
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
 // Privacy Policy Content
 const PRIVACY_POLICY = `
@@ -259,4 +259,4 @@ router.get('/terms-of-service-json', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
