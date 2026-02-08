@@ -4,7 +4,8 @@
 
 import { isQueueable, enqueue, initOfflineSync } from './offlineQueue';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api';
+const rawApiUrl = process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api';
+const API_BASE_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : rawApiUrl + '/api';
 
 // ============================================================
 // TOKEN MANAGEMENT
