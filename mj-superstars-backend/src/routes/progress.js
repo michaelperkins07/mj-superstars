@@ -247,10 +247,14 @@ router.get('/weekly-story',
 router.get('/weekly-story/history',
   asyncHandler(async (req, res) => {
     const { limit = 10 } = req.query;
+    const parsedLimit = parseInt(limit);
+    if (isNaN(parsedLimit) || parsedLimit < 1 || parsedLimit > 100) {
+      return res.status(400).json({ error: 'Invalid limit parameter - must be between 1 and 100' });
+    }
 
     const result = await query(
       `SELECT * FROM weekly_stories WHERE user_id = $1 ORDER BY week_end DESC LIMIT $2`,
-      [req.user.id, parseInt(limit)]
+      [req.user.id, parsedLimit]
     );
 
     res.json({ stories: result.rows });

@@ -138,11 +138,17 @@ export const optionalAuth = async (req, res, next) => {
 export const authenticateToken = authenticate;
 
 // Admin check (email-based until admin roles are in DB)
-const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'michaelperkins07@gmail.com').split(',').map(e => e.trim().toLowerCase());
+const ADMIN_EMAILS = process.env.ADMIN_EMAILS
+  ? process.env.ADMIN_EMAILS.split(',').map(e => e.trim().toLowerCase())
+  : [];
 
 export const requireAdmin = (req, res, next) => {
-  if (!process.env.ADMIN_EMAILS && process.env.NODE_ENV === 'production') {
-    console.warn('⚠️  ADMIN_EMAILS not set — using hardcoded default.');
+  if (ADMIN_EMAILS.length === 0 && !process.env.ADMIN_SECRET) {
+    logger.error('ADMIN_EMAILS not configured and no ADMIN_SECRET set — admin access unavailable');
+    return res.status(503).json({
+      error: 'Admin access not configured',
+      code: 'ADMIN_NOT_CONFIGURED'
+    });
   }
 
   const adminSecret = req.headers['x-admin-secret'];

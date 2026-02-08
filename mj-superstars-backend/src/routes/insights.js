@@ -19,17 +19,14 @@ router.get('/',
   asyncHandler(async (req, res) => {
     const { unread_only = 'false', limit = 20 } = req.query;
 
-    let whereClause = 'user_id = $1';
-    if (unread_only === 'true') {
-      whereClause += ' AND is_new = true';
-    }
+    const unreadFilter = unread_only === 'true';
 
     const result = await query(
       `SELECT * FROM user_insights
-       WHERE ${whereClause}
+       WHERE user_id = $1 AND (NOT $2 OR is_new = true)
        ORDER BY generated_at DESC
-       LIMIT $2`,
-      [req.user.id, parseInt(limit)]
+       LIMIT $3`,
+      [req.user.id, !unreadFilter, parseInt(limit)]
     );
 
     res.json({ insights: result.rows });
@@ -58,7 +55,11 @@ router.put('/:id/read',
 // ============================================================
 router.get('/mood-patterns',
   asyncHandler(async (req, res) => {
-    const days = Math.min(Math.max(parseInt(req.query.days) || 30, 1), 365);
+    const daysParam = req.query.days ? parseInt(req.query.days) : 30;
+    if (isNaN(daysParam)) {
+      return res.status(400).json({ error: 'Invalid days parameter - must be a number' });
+    }
+    const days = Math.min(Math.max(daysParam, 1), 365);
 
     // Get mood by time of day
     const timePatterns = await query(
@@ -67,9 +68,9 @@ router.get('/mood-patterns',
          AVG(mood_score)::NUMERIC(3,2) as avg_mood,
          COUNT(*) as count
        FROM mood_entries
-       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${days} days'
+       WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval
        GROUP BY time_of_day`,
-      [req.user.id]
+      [req.user.id, days + ' days']
     );
 
     // Get mood by day of week
@@ -79,10 +80,10 @@ router.get('/mood-patterns',
          AVG(mood_score)::NUMERIC(3,2) as avg_mood,
          COUNT(*) as count
        FROM mood_entries
-       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${days} days'
+       WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval
        GROUP BY day_of_week
        ORDER BY day_of_week`,
-      [req.user.id]
+      [req.user.id, days + ' days']
     );
 
     // Get activities that correlate with better mood
@@ -93,12 +94,12 @@ router.get('/mood-patterns',
          COUNT(*) as frequency
        FROM mood_entries,
          LATERAL jsonb_array_elements_text(activities) as activity
-       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${days} days'
+       WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval
        GROUP BY activity
        HAVING COUNT(*) >= 3
        ORDER BY avg_mood DESC
        LIMIT 5`,
-      [req.user.id]
+      [req.user.id, days + ' days']
     );
 
     // Get triggers that correlate with lower mood
@@ -109,12 +110,12 @@ router.get('/mood-patterns',
          COUNT(*) as frequency
        FROM mood_entries,
          LATERAL jsonb_array_elements_text(triggers) as trigger
-       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${days} days'
+       WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval
        GROUP BY trigger
        HAVING COUNT(*) >= 2
        ORDER BY avg_mood ASC
        LIMIT 5`,
-      [req.user.id]
+      [req.user.id, days + ' days']
     );
 
     res.json({
@@ -145,14 +146,14 @@ router.get('/progress-summary',
     // Get various stats
     const stats = await query(
       `SELECT
-         (SELECT COUNT(*) FROM conversations WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}') as conversations,
-         (SELECT COUNT(*) FROM messages WHERE user_id = $1 AND role = 'user' AND created_at >= NOW() - INTERVAL '${interval}') as messages_sent,
-         (SELECT COUNT(*) FROM mood_entries WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}') as mood_logs,
-         (SELECT COUNT(*) FROM tasks WHERE user_id = $1 AND status = 'completed' AND completed_at >= NOW() - INTERVAL '${interval}') as tasks_completed,
-         (SELECT COUNT(*) FROM journal_entries WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}') as journal_entries,
-         (SELECT COUNT(*) FROM morning_intentions WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}') as morning_rituals,
-         (SELECT COUNT(*) FROM evening_reflections WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}') as evening_rituals`,
-      [req.user.id]
+         (SELECT COUNT(*) FROM conversations WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval) as conversations,
+         (SELECT COUNT(*) FROM messages WHERE user_id = $1 AND role = 'user' AND created_at >= NOW() - ($2::text)::interval) as messages_sent,
+         (SELECT COUNT(*) FROM mood_entries WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval) as mood_logs,
+         (SELECT COUNT(*) FROM tasks WHERE user_id = $1 AND status = 'completed' AND completed_at >= NOW() - ($2::text)::interval) as tasks_completed,
+         (SELECT COUNT(*) FROM journal_entries WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval) as journal_entries,
+         (SELECT COUNT(*) FROM morning_intentions WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval) as morning_rituals,
+         (SELECT COUNT(*) FROM evening_reflections WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval) as evening_rituals`,
+      [req.user.id, interval]
     );
 
     // Get mood trend
@@ -162,15 +163,15 @@ router.get('/progress-summary',
          MIN(mood_score) as min_mood,
          MAX(mood_score) as max_mood
        FROM mood_entries
-       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}'`,
-      [req.user.id]
+       WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval`,
+      [req.user.id, interval]
     );
 
     // Get achievements earned in period
     const achievements = await query(
       `SELECT * FROM achievements
-       WHERE user_id = $1 AND earned_at >= NOW() - INTERVAL '${interval}'`,
-      [req.user.id]
+       WHERE user_id = $1 AND earned_at >= NOW() - ($2::text)::interval`,
+      [req.user.id, interval]
     );
 
     // Get current streaks
@@ -194,7 +195,11 @@ router.get('/progress-summary',
 // ============================================================
 router.get('/conversation-themes',
   asyncHandler(async (req, res) => {
-    const days = Math.min(Math.max(parseInt(req.query.days) || 30, 1), 365);
+    const daysParam = req.query.days ? parseInt(req.query.days) : 30;
+    if (isNaN(daysParam)) {
+      return res.status(400).json({ error: 'Invalid days parameter - must be a number' });
+    }
+    const days = Math.min(Math.max(daysParam, 1), 365);
 
     // Get topic frequencies from messages
     const topics = await query(
@@ -203,11 +208,11 @@ router.get('/conversation-themes',
          COUNT(*) as frequency
        FROM messages,
          LATERAL jsonb_array_elements_text(topics) as topic
-       WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${days} days'
+       WHERE user_id = $1 AND created_at >= NOW() - ($2::text)::interval
        GROUP BY topic
        ORDER BY frequency DESC
        LIMIT 10`,
-      [req.user.id]
+      [req.user.id, days + ' days']
     );
 
     // Get intent distribution
@@ -216,10 +221,10 @@ router.get('/conversation-themes',
          intent,
          COUNT(*) as count
        FROM messages
-       WHERE user_id = $1 AND intent IS NOT NULL AND created_at >= NOW() - INTERVAL '${days} days'
+       WHERE user_id = $1 AND intent IS NOT NULL AND created_at >= NOW() - ($2::text)::interval
        GROUP BY intent
        ORDER BY count DESC`,
-      [req.user.id]
+      [req.user.id, days + ' days']
     );
 
     res.json({

@@ -23,6 +23,52 @@ const MODEL = process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 const MAX_TOKENS = parseInt(process.env.MAX_TOKENS) || 1024;
 
 // ============================================================
+// Circuit Breaker for Claude API
+// ============================================================
+const circuitBreaker = {
+  failures: 0,
+  threshold: 3,           // Open circuit after 3 consecutive failures
+  resetTimeoutMs: 60000,  // Try again after 1 minute
+  lastFailure: 0,
+  isOpen: false,
+
+  recordFailure() {
+    this.failures++;
+    this.lastFailure = Date.now();
+    if (this.failures >= this.threshold) {
+      this.isOpen = true;
+      logger.warn('Circuit breaker OPENED — Claude API temporarily disabled after ' + this.failures + ' failures');
+      // Auto-reset after timeout
+      setTimeout(() => this.reset(), this.resetTimeoutMs);
+    }
+  },
+
+  recordSuccess() {
+    if (this.failures > 0) {
+      logger.info('Circuit breaker reset — Claude API recovered');
+    }
+    this.failures = 0;
+    this.isOpen = false;
+  },
+
+  reset() {
+    this.isOpen = false;
+    this.failures = 0;
+    logger.info('Circuit breaker HALF-OPEN — will try Claude API again');
+  },
+
+  canRequest() {
+    if (!this.isOpen) return true;
+    // Allow a test request after timeout
+    if (Date.now() - this.lastFailure > this.resetTimeoutMs) {
+      this.isOpen = false;
+      return true;
+    }
+    return false;
+  }
+};
+
+// ============================================================
 // System Prompt Builder
 // ============================================================
 
@@ -306,6 +352,12 @@ export const ClaudeService = {
       throw new Error('Claude API not configured. Set ANTHROPIC_API_KEY environment variable.');
     }
 
+    // Check circuit breaker
+    if (!circuitBreaker.canRequest()) {
+      logger.warn('Circuit breaker is open — returning fallback response');
+      return this.getFallbackResponse(message, userContext);
+    }
+
     try {
       // Build system prompt with user context (async for trending topics)
       const systemPrompt = await buildSystemPrompt(userContext);
@@ -346,18 +398,57 @@ export const ClaudeService = {
           output_tokens: response.usage.output_tokens
         }
       };
+      // Record success
+      circuitBreaker.recordSuccess();
+
+      return {
+        content: responseContent,
+        mood_detected: analysis.mood,
+        topics: analysis.topics,
+        intent: analysis.intent,
+        suggestions: analysis.suggestions,
+        usage: {
+          input_tokens: response.usage.input_tokens,
+          output_tokens: response.usage.output_tokens
+        }
+      };
     } catch (error) {
       logger.error('Claude API error:', error);
 
+      // Record failure for circuit breaker
+      circuitBreaker.recordFailure();
+
       // Return a fallback response
-      return {
-        content: "I'm having a little trouble right now, but I'm still here for you. Can you tell me more about what's on your mind?",
-        mood_detected: null,
-        topics: [],
-        intent: 'error_fallback',
-        usage: { input_tokens: 0, output_tokens: 0 }
-      };
+      return this.getFallbackResponse(message, userContext);
     }
+  },
+
+  /**
+   * Generate a fallback response when Claude API is unavailable
+   */
+  getFallbackResponse(message, userContext) {
+    const msg = (message || '').toLowerCase();
+    const userName = userContext?.userName || 'friend';
+    let content;
+
+    if (msg.includes('mood') || msg.includes('feeling') || msg.includes('sad') || msg.includes('happy')) {
+      content = \`Hey \${userName}, I'm experiencing a brief hiccup right now, but I'm still here. Your feelings matter — would you like to log a quick mood check while I get back up to speed?\`;
+    } else if (msg.includes('task') || msg.includes('todo') || msg.includes('done')) {
+      content = \`I'm having a moment, \${userName}, but let's not lose momentum! Check your task list and knock out the easiest one while I get back online. Every small win counts! 💪\`;
+    } else if (msg.includes('help') || msg.includes('stuck') || msg.includes('advice')) {
+      content = \`I hear you, \${userName}. I'm briefly unavailable but here's what I know works: take a deep breath, write down what's on your mind, and tackle the smallest piece first. I'll be back shortly to dig in with you.\`;
+    } else {
+      content = \`Hey \${userName}! I'm having a brief technical moment, but I'll be back shortly. In the meantime, check in with yourself — how are you REALLY doing right now? That self-awareness is a superpower. 🌟\`;
+    }
+
+    return {
+      content,
+      mood_detected: null,
+      topics: [],
+      intent: 'fallback',
+      suggestions: ['Log a mood', 'Check my tasks', 'Try again'],
+      usage: { input_tokens: 0, output_tokens: 0 }
+    };
   },
 
   /**

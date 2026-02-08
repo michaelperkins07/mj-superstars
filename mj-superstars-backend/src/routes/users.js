@@ -72,6 +72,28 @@ router.put('/me/communication-style',
   asyncHandler(async (req, res) => {
     const { formality, emoji_usage, message_length, tone } = req.body;
 
+    // Validate formality (0-1 range)
+    if (formality !== undefined && (typeof formality !== 'number' || formality < 0 || formality > 1)) {
+      throw new APIError('Invalid formality - must be a number between 0 and 1', 400, 'INVALID_FORMALITY');
+    }
+
+    // Validate emoji_usage (0-1 range)
+    if (emoji_usage !== undefined && (typeof emoji_usage !== 'number' || emoji_usage < 0 || emoji_usage > 1)) {
+      throw new APIError('Invalid emoji_usage - must be a number between 0 and 1', 400, 'INVALID_EMOJI_USAGE');
+    }
+
+    // Validate message_length (enum)
+    const validMessageLengths = ['brief', 'medium', 'detailed'];
+    if (message_length !== undefined && !validMessageLengths.includes(message_length)) {
+      throw new APIError(`Invalid message_length - must be one of: ${validMessageLengths.join(', ')}`, 400, 'INVALID_MESSAGE_LENGTH');
+    }
+
+    // Validate tone (enum)
+    const validTones = ['supportive', 'direct', 'humorous', 'formal', 'casual'];
+    if (tone !== undefined && !validTones.includes(tone)) {
+      throw new APIError(`Invalid tone - must be one of: ${validTones.join(', ')}`, 400, 'INVALID_TONE');
+    }
+
     const style = {
       formality: formality ?? 0.5,
       emoji_usage: emoji_usage ?? 0.5,
@@ -109,6 +131,22 @@ router.put('/me/personalization',
       preferred_pronouns,
       health_context
     } = req.body;
+
+    // Validate string fields have reasonable length limits
+    if (preferred_name !== undefined && preferred_name !== null && (typeof preferred_name !== 'string' || preferred_name.length > 100)) {
+      throw new APIError('Invalid preferred_name - must be a string no longer than 100 characters', 400, 'INVALID_PREFERRED_NAME');
+    }
+    if (preferred_pronouns !== undefined && preferred_pronouns !== null && (typeof preferred_pronouns !== 'string' || preferred_pronouns.length > 50)) {
+      throw new APIError('Invalid preferred_pronouns - must be a string no longer than 50 characters', 400, 'INVALID_PREFERRED_PRONOUNS');
+    }
+
+    // Validate JSON object fields are actually objects or arrays
+    const jsonFields = { people, work_context, triggers, comforts, interests, goals, values, health_context };
+    for (const [fieldName, value] of Object.entries(jsonFields)) {
+      if (value !== undefined && value !== null && typeof value !== 'object') {
+        throw new APIError(`Invalid ${fieldName} - must be an object or array`, 400, `INVALID_${fieldName.toUpperCase()}`);
+      }
+    }
 
     const result = await query(
       `UPDATE user_personalization

@@ -9,6 +9,7 @@ import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import validate from '../middleware/validate.js';
+import { successResponse, paginatedResponse } from '../utils/response.js';
 
 const router = Router();
 router.use(authenticate);
@@ -26,17 +27,38 @@ router.get('/',
       time_of_day
     } = req.query;
 
+    const parsedLimit = parseInt(limit);
+    const parsedOffset = parseInt(offset);
+    if (isNaN(parsedLimit) || parsedLimit < 1 || parsedLimit > 500) {
+      throw new APIError('Invalid limit - must be between 1 and 500', 400, 'INVALID_LIMIT');
+    }
+    if (isNaN(parsedOffset) || parsedOffset < 0) {
+      throw new APIError('Invalid offset - must be non-negative', 400, 'INVALID_OFFSET');
+    }
+
+    const validTimeOfDays = ['morning', 'afternoon', 'evening', 'night'];
+    if (time_of_day && !validTimeOfDays.includes(time_of_day)) {
+      throw new APIError(`Invalid time_of_day - must be one of: ${validTimeOfDays.join(', ')}`, 400, 'INVALID_TIME_OF_DAY');
+    }
+
     let whereClause = 'user_id = $1';
     const params = [req.user.id];
     let paramIndex = 2;
 
     if (start_date) {
+      // Basic ISO date format validation
+      if (!/^\d{4}-\d{2}-\d{2}/.test(start_date)) {
+        throw new APIError('Invalid start_date format - use ISO date (YYYY-MM-DD)', 400, 'INVALID_DATE_FORMAT');
+      }
       whereClause += ` AND created_at >= $${paramIndex}`;
       params.push(start_date);
       paramIndex++;
     }
 
     if (end_date) {
+      if (!/^\d{4}-\d{2}-\d{2}/.test(end_date)) {
+        throw new APIError('Invalid end_date format - use ISO date (YYYY-MM-DD)', 400, 'INVALID_DATE_FORMAT');
+      }
       whereClause += ` AND created_at <= $${paramIndex}`;
       params.push(end_date);
       paramIndex++;
@@ -55,7 +77,7 @@ router.get('/',
        WHERE ${whereClause}
        ORDER BY created_at DESC
        LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-      [...params, parseInt(limit), parseInt(offset)]
+      [...params, parsedLimit, parsedOffset]
     );
 
     // Get aggregate stats
@@ -70,11 +92,11 @@ router.get('/',
       params
     );
 
-    res.json({
-      entries: result.rows,
-      stats: stats.rows[0],
+    return paginatedResponse(res, result.rows, {
+      total: parseInt(stats.rows[0].total_entries),
       limit: parseInt(limit),
-      offset: parseInt(offset)
+      offset: parseInt(offset),
+      stats: stats.rows[0]
     });
   })
 );
@@ -138,10 +160,7 @@ router.post('/',
       source
     });
 
-    res.status(201).json({
-      entry: result.rows[0],
-      message: 'Mood logged successfully'
-    });
+    return successResponse(res, result.rows[0], 201);
   })
 );
 
@@ -232,7 +251,7 @@ router.get('/trends',
       [req.user.id]
     );
 
-    res.json({
+    return successResponse(res, {
       period,
       daily: dailyTrends.rows,
       by_time_of_day: timePatterns.rows,
@@ -256,10 +275,7 @@ router.get('/today',
       [req.user.id]
     );
 
-    res.json({
-      entries: result.rows,
-      count: result.rows.length
-    });
+    return successResponse(res, result.rows);
   })
 );
 
@@ -279,7 +295,7 @@ router.delete('/:id',
       throw new APIError('Mood entry not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ success: true, message: 'Mood entry deleted' });
+    return successResponse(res, { id: result.rows[0].id });
   })
 );
 

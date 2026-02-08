@@ -189,8 +189,11 @@ function sanitizeObject(obj, depth = 0) {
 const ENCRYPTION_KEY = (() => {
   if (process.env.ENCRYPTION_KEY) return process.env.ENCRYPTION_KEY;
   if (process.env.NODE_ENV === 'production') {
-    console.error('❌ ENCRYPTION_KEY is required in production — encrypted data will be inconsistent without it');
+    console.error('FATAL: ENCRYPTION_KEY is required in production — refusing to use random key');
+    process.exit(1);
   }
+  // Development only: generate a random key (data will not persist across restarts)
+  console.warn('⚠️  Using random ENCRYPTION_KEY (dev only — set ENCRYPTION_KEY env var for persistence)');
   return crypto.randomBytes(32).toString('hex');
 })();
 const ALGORITHM = 'aes-256-gcm';
@@ -291,7 +294,13 @@ function validatePassword(password) {
   }
 
   // Check for common passwords
-  const commonPasswords = ['password', '12345678', 'qwerty123', 'letmein'];
+  const commonPasswords = [
+    'password', '12345678', 'qwerty123', 'letmein', 'password1',
+    'password123', '123456789', 'admin123', 'welcome1', 'iloveyou',
+    'sunshine1', 'princess1', 'football1', 'charlie1', 'monkey123',
+    'trustno1', 'dragon123', 'master123', 'hello123', 'shadow123',
+    'abc12345', 'pass1234', 'qwerty12', 'passw0rd', 'baseball1'
+  ];
   if (commonPasswords.includes(password.toLowerCase())) {
     errors.push('Password is too common');
   }

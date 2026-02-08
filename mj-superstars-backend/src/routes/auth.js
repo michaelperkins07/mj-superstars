@@ -14,6 +14,7 @@ import {
   authenticate
 } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
+import { authLimiter } from '../middleware/security.js';
 import { logger } from '../utils/logger.js';
 import { sendPasswordResetEmail, sendWelcomeEmail } from '../services/email.js';
 
@@ -332,6 +333,7 @@ router.post('/change-password',
 // POST /api/auth/forgot-password - Request password reset
 // ============================================================
 router.post('/forgot-password',
+  authLimiter,
   [
     body('email').isEmail().normalizeEmail()
   ],
@@ -383,6 +385,7 @@ router.post('/forgot-password',
 // POST /api/auth/reset-password - Reset password with token
 // ============================================================
 router.post('/reset-password',
+  authLimiter,
   [
     body('token').notEmpty().withMessage('Reset token required'),
     body('new_password').isLength({ min: 8 }).withMessage('Password must be at least 8 characters')

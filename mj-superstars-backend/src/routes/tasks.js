@@ -9,6 +9,7 @@ import { authenticate } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import validate from '../middleware/validate.js';
+import { successResponse, paginatedResponse } from '../utils/response.js';
 
 const router = Router();
 router.use(authenticate);
@@ -77,8 +78,10 @@ router.get('/',
       [req.user.id]
     );
 
-    res.json({
-      tasks: result.rows,
+    return paginatedResponse(res, result.rows, {
+      total: parseInt(countResult.rows[0].total),
+      limit: parseInt(limit),
+      offset: parseInt(offset),
       counts: countResult.rows[0]
     });
   })
@@ -105,7 +108,7 @@ router.get('/today',
       [req.user.id]
     );
 
-    res.json({
+    return successResponse(res, {
       tasks: result.rows,
       completed_today: parseInt(completedToday.rows[0].count)
     });
@@ -156,10 +159,7 @@ router.post('/',
       ]
     );
 
-    res.status(201).json({
-      task: result.rows[0],
-      message: 'Task created'
-    });
+    return successResponse(res, result.rows[0], 201);
   })
 );
 
@@ -206,7 +206,7 @@ router.put('/:id',
       throw new APIError('Task not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ task: result.rows[0] });
+    return successResponse(res, result.rows[0]);
   })
 );
 
@@ -219,6 +219,17 @@ router.post('/:id/complete',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { mood_before, mood_after, notes } = req.body;
+
+    // Validate mood parameters if provided
+    if (mood_before !== undefined && mood_before !== null && (typeof mood_before !== 'number' || mood_before < 1 || mood_before > 5)) {
+      throw new APIError('Invalid mood_before - must be a number between 1 and 5', 400, 'INVALID_MOOD_BEFORE');
+    }
+    if (mood_after !== undefined && mood_after !== null && (typeof mood_after !== 'number' || mood_after < 1 || mood_after > 5)) {
+      throw new APIError('Invalid mood_after - must be a number between 1 and 5', 400, 'INVALID_MOOD_AFTER');
+    }
+    if (notes !== undefined && notes !== null && (typeof notes !== 'string' || notes.length > 500)) {
+      throw new APIError('Invalid notes - must be a string no longer than 500 characters', 400, 'INVALID_NOTES');
+    }
 
     const taskResult = await query(
       `SELECT * FROM tasks WHERE id = $1 AND user_id = $2`,
@@ -311,11 +322,10 @@ router.post('/:id/complete',
       points
     });
 
-    res.json({
+    return successResponse(res, {
       task: result.task,
       points_earned: result.points_earned,
-      achievements: result.achievements,
-      message: 'Task completed! 🎉'
+      achievements: result.achievements
     });
   })
 );
@@ -342,10 +352,7 @@ router.post('/:id/skip',
       throw new APIError('Task not found', 404, 'NOT_FOUND');
     }
 
-    res.json({
-      task: result.rows[0],
-      message: 'Task skipped - no pressure!'
-    });
+    return successResponse(res, result.rows[0]);
   })
 );
 
@@ -365,7 +372,7 @@ router.delete('/:id',
       throw new APIError('Task not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ success: true, message: 'Task deleted' });
+    return successResponse(res, { id: result.rows[0].id });
   })
 );
 
@@ -375,6 +382,14 @@ router.delete('/:id',
 router.post('/suggest',
   asyncHandler(async (req, res) => {
     const { context, mood, energy } = req.body;
+
+    // Validate optional mood/energy parameters
+    if (mood !== undefined && (typeof mood !== 'number' || mood < 1 || mood > 5)) {
+      throw new APIError('Invalid mood - must be a number between 1 and 5', 400, 'INVALID_MOOD');
+    }
+    if (energy !== undefined && (typeof energy !== 'number' || energy < 1 || energy > 5)) {
+      throw new APIError('Invalid energy - must be a number between 1 and 5', 400, 'INVALID_ENERGY');
+    }
 
     // Get user's pending tasks
     const pending = await query(
@@ -409,7 +424,7 @@ router.post('/suggest',
       ];
     }
 
-    res.json({
+    return successResponse(res, {
       suggestions,
       pending_tasks: pending.rows
     });

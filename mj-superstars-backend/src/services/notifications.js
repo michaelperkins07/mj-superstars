@@ -20,7 +20,8 @@ export const NotificationService = {
   /**
    * Send push notification to a user
    */
-  async sendToUser(userId, notification, data = {}) {
+  async sendToUser(userId, notification, data = {}, retryCount = 0) {
+    const MAX_RETRIES = 2;
     try {
       // Get active subscriptions
       const subscriptions = await query(
@@ -46,6 +47,7 @@ export const NotificationService = {
 
       let sent = 0;
       let failed = 0;
+      const retryableSubs = [];
 
       for (const sub of subscriptions.rows) {
         try {
@@ -63,17 +65,41 @@ export const NotificationService = {
           logger.warn('Push notification failed:', {
             userId,
             endpoint: sub.endpoint,
-            error: error.message
+            error: error.message,
+            attempt: retryCount + 1
           });
 
-          // Deactivate invalid subscriptions
+          // Deactivate permanently invalid subscriptions
           if (error.statusCode === 404 || error.statusCode === 410) {
             await query(
               `UPDATE push_subscriptions SET is_active = false WHERE id = $1`,
               [sub.id]
             );
+          } else if (retryCount < MAX_RETRIES) {
+            // Transient error — queue for retry
+            retryableSubs.push(sub);
           }
         }
+      }
+
+      // Retry failed notifications with exponential backoff
+      if (retryableSubs.length > 0 && retryCount < MAX_RETRIES) {
+        const delay = Math.pow(2, retryCount) * 1000; // 1s, 2s
+        setTimeout(async () => {
+          try {
+            for (const sub of retryableSubs) {
+              try {
+                const parsedKeys = typeof sub.keys === 'string' ? JSON.parse(sub.keys) : sub.keys;
+                await webPush.sendNotification({ endpoint: sub.endpoint, keys: parsedKeys }, payload);
+                logger.info('Notification retry succeeded:', { userId, attempt: retryCount + 2 });
+              } catch (retryErr) {
+                logger.warn('Notification retry failed:', { userId, attempt: retryCount + 2, error: retryErr.message });
+              }
+            }
+          } catch (err) {
+            logger.error('Notification retry batch failed:', err.message);
+          }
+        }, delay);
       }
 
       // Also send to iOS devices via APNs

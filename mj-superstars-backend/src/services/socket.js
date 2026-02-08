@@ -10,6 +10,50 @@ import { logger } from '../utils/logger.js';
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const MAX_CONTENT_LENGTH = 10000;
 
+// ============================================================
+// SOCKET RATE LIMITING
+// ============================================================
+const RATE_LIMITS = {
+  send_message: { max: 10, windowMs: 60000 },   // 10 messages per minute
+  quick_mood: { max: 5, windowMs: 60000 },       // 5 mood logs per minute
+  complete_task: { max: 10, windowMs: 60000 },    // 10 task completions per minute
+  join_conversation: { max: 20, windowMs: 60000 } // 20 joins per minute
+};
+
+const rateLimitCounters = new Map();
+
+function checkRateLimit(socketId, event) {
+  const limit = RATE_LIMITS[event];
+  if (!limit) return true; // No limit defined
+
+  const key = `${socketId}:${event}`;
+  const now = Date.now();
+  let counter = rateLimitCounters.get(key);
+
+  if (!counter || now - counter.windowStart > limit.windowMs) {
+    counter = { count: 1, windowStart: now };
+    rateLimitCounters.set(key, counter);
+    return true;
+  }
+
+  counter.count++;
+  if (counter.count > limit.max) {
+    return false; // Rate limited
+  }
+
+  return true;
+}
+
+// Clean up rate limit counters every 5 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, counter] of rateLimitCounters.entries()) {
+    if (now - counter.windowStart > 120000) { // 2 minutes old
+      rateLimitCounters.delete(key);
+    }
+  }
+}, 300000);
+
 // Store active connections
 const activeConnections = new Map();
 
@@ -40,6 +84,12 @@ export const setupSocketHandlers = (io) => {
     // Handle real-time message sending
     socket.on('send_message', async (data) => {
       try {
+        // Rate limit check
+        if (!checkRateLimit(socket.id, 'send_message')) {
+          socket.emit('error', { message: 'Too many messages. Please wait a moment.' });
+          return;
+        }
+
         const { conversation_id, content, is_voice = false } = data || {};
 
         // Validate conversation_id is a UUID
@@ -200,10 +250,28 @@ export const setupSocketHandlers = (io) => {
 
     socket.on('quick_mood', async (data) => {
       try {
+        // Rate limit check
+        if (!checkRateLimit(socket.id, 'quick_mood')) {
+          socket.emit('error', { message: 'Too many mood logs. Please wait a moment.' });
+          return;
+        }
+
         const { mood_score, note } = data || {};
         if (typeof mood_score !== 'number' || mood_score < 1 || mood_score > 10) {
           socket.emit('error', { message: 'Mood score must be 1-10' });
           return;
+        }
+
+        // Validate note if provided - must be string and within length limits
+        if (note !== undefined && note !== null) {
+          if (typeof note !== 'string') {
+            socket.emit('error', { message: 'Note must be a string' });
+            return;
+          }
+          if (note.length > 1000) {
+            socket.emit('error', { message: 'Note cannot exceed 1000 characters' });
+            return;
+          }
         }
 
         const hour = new Date().getHours();
@@ -237,6 +305,12 @@ export const setupSocketHandlers = (io) => {
 
     socket.on('complete_task', async (data) => {
       try {
+        // Rate limit check
+        if (!checkRateLimit(socket.id, 'complete_task')) {
+          socket.emit('error', { message: 'Too many requests. Please wait a moment.' });
+          return;
+        }
+
         const { task_id } = data || {};
         if (!task_id || !UUID_REGEX.test(task_id)) {
           socket.emit('error', { message: 'Invalid task_id' });
@@ -276,6 +350,13 @@ export const setupSocketHandlers = (io) => {
 
       activeConnections.delete(socket.id);
 
+      // Clean up rate limit counters for this socket
+      for (const key of rateLimitCounters.keys()) {
+        if (key.startsWith(socket.id + ':')) {
+          rateLimitCounters.delete(key);
+        }
+      }
+
       // Update last active
       query(
         'UPDATE users SET last_active_at = NOW() WHERE id = $1',
@@ -303,42 +384,35 @@ export const setupSocketHandlers = (io) => {
 // HELPER FUNCTIONS
 // ============================================================
 
+// Cache for user context (10-second TTL to reduce DB queries per message)
+const contextCache = new Map();
+
+// Clean up cache every 60 seconds
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, entry] of contextCache.entries()) {
+    if (now > entry.expiry) contextCache.delete(key);
+  }
+}, 60000);
+
 async function getUserContext(userId) {
-  const personalization = await query(
-    `SELECT * FROM user_personalization WHERE user_id = $1`,
-    [userId]
-  );
+  // Check cache first (10-second TTL)
+  const cached = contextCache.get(userId);
+  if (cached && Date.now() < cached.expiry) {
+    return cached.data;
+  }
 
-  const recentMoods = await query(
-    `SELECT mood_score, note, created_at FROM mood_entries
-     WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5`,
-    [userId]
-  );
+  // Run all 6 queries in parallel instead of sequentially
+  const [personalization, recentMoods, tasks, intention, streaks, user] = await Promise.all([
+    query(`SELECT * FROM user_personalization WHERE user_id = $1`, [userId]),
+    query(`SELECT mood_score, note, created_at FROM mood_entries WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5`, [userId]),
+    query(`SELECT title, status, category FROM tasks WHERE user_id = $1 AND (due_date = CURRENT_DATE OR due_date IS NULL) ORDER BY created_at DESC LIMIT 10`, [userId]),
+    query(`SELECT intention_text, focus_word FROM morning_intentions WHERE user_id = $1 AND date = CURRENT_DATE`, [userId]),
+    query(`SELECT streak_type, current_streak FROM user_streaks WHERE user_id = $1`, [userId]),
+    query(`SELECT display_name, communication_style FROM users WHERE id = $1`, [userId])
+  ]);
 
-  const tasks = await query(
-    `SELECT title, status, category FROM tasks
-     WHERE user_id = $1 AND (due_date = CURRENT_DATE OR due_date IS NULL)
-     ORDER BY created_at DESC LIMIT 10`,
-    [userId]
-  );
-
-  const intention = await query(
-    `SELECT intention_text, focus_word FROM morning_intentions
-     WHERE user_id = $1 AND date = CURRENT_DATE`,
-    [userId]
-  );
-
-  const streaks = await query(
-    `SELECT streak_type, current_streak FROM user_streaks WHERE user_id = $1`,
-    [userId]
-  );
-
-  const user = await query(
-    `SELECT display_name, communication_style FROM users WHERE id = $1`,
-    [userId]
-  );
-
-  return {
+  const context = {
     personalization: personalization.rows[0] || {},
     recentMoods: recentMoods.rows,
     todayTasks: tasks.rows,
@@ -347,6 +421,11 @@ async function getUserContext(userId) {
     userName: user.rows[0]?.display_name || 'friend',
     communicationStyle: user.rows[0]?.communication_style || {}
   };
+
+  // Cache for 10 seconds
+  contextCache.set(userId, { data: context, expiry: Date.now() + 10000 });
+
+  return context;
 }
 
 async function extractPersonalizationAsync(userId, messageId, content) {

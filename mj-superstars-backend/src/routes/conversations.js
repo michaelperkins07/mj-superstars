@@ -10,6 +10,7 @@ import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { ClaudeService } from '../services/claude.js';
 import { logger } from '../utils/logger.js';
 import validate from '../middleware/validate.js';
+import { successResponse, paginatedResponse } from '../utils/response.js';
 
 const router = Router();
 
@@ -43,8 +44,7 @@ router.get('/',
       [req.user.id]
     );
 
-    res.json({
-      conversations: result.rows,
+    return paginatedResponse(res, result.rows, {
       total: parseInt(countResult.rows[0].count),
       limit: parseInt(limit),
       offset: parseInt(offset)
@@ -84,10 +84,7 @@ router.post('/',
       conversationId: result.rows[0].id
     });
 
-    res.status(201).json({
-      conversation: result.rows[0],
-      message: 'Conversation started'
-    });
+    return successResponse(res, result.rows[0], 201);
   })
 );
 
@@ -100,6 +97,10 @@ router.get('/:id',
   asyncHandler(async (req, res) => {
     const { id } = req.params;
     const { message_limit = 50 } = req.query;
+    const parsedLimit = parseInt(message_limit);
+    if (isNaN(parsedLimit) || parsedLimit < 1 || parsedLimit > 500) {
+      throw new APIError('Invalid message_limit - must be between 1 and 500', 400, 'INVALID_LIMIT');
+    }
 
     // Get conversation
     const convResult = await query(
@@ -119,10 +120,10 @@ router.get('/:id',
        WHERE conversation_id = $1
        ORDER BY created_at ASC
        LIMIT $2`,
-      [id, parseInt(message_limit)]
+      [id, parsedLimit]
     );
 
-    res.json({
+    return successResponse(res, {
       conversation: convResult.rows[0],
       messages: msgResult.rows
     });
@@ -221,7 +222,7 @@ router.post('/:id/messages',
       });
     }
 
-    res.json({
+    return successResponse(res, {
       user_message: {
         id: userMsgResult.rows[0].id,
         role: 'user',
@@ -244,6 +245,14 @@ router.post('/:id/end',
     const { id } = req.params;
     const { final_mood, summary } = req.body;
 
+    // Validate optional parameters
+    if (final_mood !== undefined && final_mood !== null && (typeof final_mood !== 'number' || final_mood < 1 || final_mood > 5)) {
+      throw new APIError('Invalid final_mood - must be a number between 1 and 5', 400, 'INVALID_FINAL_MOOD');
+    }
+    if (summary !== undefined && summary !== null && (typeof summary !== 'string' || summary.length > 2000)) {
+      throw new APIError('Invalid summary - must be a string no longer than 2000 characters', 400, 'INVALID_SUMMARY');
+    }
+
     const result = await query(
       `UPDATE conversations
        SET is_active = false, ended_at = NOW(), final_mood = $3, summary = $4
@@ -259,10 +268,7 @@ router.post('/:id/end',
     // Update check-in streak
     await updateStreak(req.user.id, 'check_in');
 
-    res.json({
-      conversation: result.rows[0],
-      message: 'Conversation ended'
-    });
+    return successResponse(res, result.rows[0]);
   })
 );
 
@@ -284,7 +290,7 @@ router.delete('/:id',
       throw new APIError('Conversation not found', 404, 'NOT_FOUND');
     }
 
-    res.json({ success: true, message: 'Conversation deleted' });
+    return successResponse(res, { id: result.rows[0].id });
   })
 );
 
