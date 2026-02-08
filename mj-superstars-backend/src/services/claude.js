@@ -483,13 +483,13 @@ export const ClaudeService = {
     let content;
 
     if (msg.includes('mood') || msg.includes('feeling') || msg.includes('sad') || msg.includes('happy')) {
-      content = \`Hey \${userName}, I'm experiencing a brief hiccup right now, but I'm still here. Your feelings matter — would you like to log a quick mood check while I get back up to speed?\`;
+      content = `Hey ${userName}, I'm experiencing a brief hiccup right now, but I'm still here. Your feelings matter — would you like to log a quick mood check while I get back up to speed?`;
     } else if (msg.includes('task') || msg.includes('todo') || msg.includes('done')) {
-      content = \`I'm having a moment, \${userName}, but let's not lose momentum! Check your task list and knock out the easiest one while I get back online. Every small win counts! 💪\`;
+      content = `I'm having a moment, ${userName}, but let's not lose momentum! Check your task list and knock out the easiest one while I get back online. Every small win counts! 💪`;
     } else if (msg.includes('help') || msg.includes('stuck') || msg.includes('advice')) {
-      content = \`I hear you, \${userName}. I'm briefly unavailable but here's what I know works: take a deep breath, write down what's on your mind, and tackle the smallest piece first. I'll be back shortly to dig in with you.\`;
+      content = `I hear you, ${userName}. I'm briefly unavailable but here's what I know works: take a deep breath, write down what's on your mind, and tackle the smallest piece first. I'll be back shortly to dig in with you.`;
     } else {
-      content = \`Hey \${userName}! I'm having a brief technical moment, but I'll be back shortly. In the meantime, check in with yourself — how are you REALLY doing right now? That self-awareness is a superpower. 🌟\`;
+      content = `Hey ${userName}! I'm having a brief technical moment, but I'll be back shortly. In the meantime, check in with yourself — how are you REALLY doing right now? That self-awareness is a superpower. 🌟`;
     }
 
     return {
