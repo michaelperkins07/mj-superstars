@@ -472,6 +472,14 @@ export const RitualAPI = {
   // Prompts
   async getPrompts(type = 'morning') {
     return request(`/rituals/prompts?type=${type}`);
+  },
+  
+  // General Rituals - list and completion
+  async list() {
+    return request('/rituals');
+  },
+  async complete(ritualId) {
+    return request(`/rituals/${ritualId}/complete`, { method: 'POST' });
   }
 };
 
@@ -768,6 +776,132 @@ export const GuestAPI = {
 };
 
 // ============================================================
+// PHOTOS API
+// ============================================================
+
+export const PhotoAPI = {
+  async upload(photoData) {
+    return request('/photos/upload', { method: 'POST', body: JSON.stringify(photoData) });
+  },
+
+  async list(type, page = 1) {
+    return request(`/photos?type=${type}&page=${page}`);
+  },
+
+  async getTimeline() {
+    return request('/photos/timeline');
+  },
+
+  async getVisionBoard() {
+    return request('/photos/vision-board');
+  },
+
+  async addVisionItem(data) {
+    return request('/photos/vision-board/items', { method: 'POST', body: JSON.stringify(data) });
+  },
+
+  async deleteVisionItem(id) {
+    return request(`/photos/vision-board/items/${id}`, { method: 'DELETE' });
+  }
+};
+
+// ============================================================
+// SOCIAL API
+// ============================================================
+
+export const SocialAPI = {
+  async getFeed(page = 1) {
+    return request(`/social/feed?page=${page}`);
+  },
+
+  async createPost(data) {
+    return request('/social/posts', { method: 'POST', body: JSON.stringify(data) });
+  },
+
+  async likePost(id, reaction = 'like') {
+    return request(`/social/posts/${id}/like`, {
+      method: 'POST',
+      body: JSON.stringify({ reaction_type: reaction })
+    });
+  },
+
+  async unlikePost(id) {
+    return request(`/social/posts/${id}/like`, { method: 'DELETE' });
+  },
+
+  async addComment(postId, content) {
+    return request(`/social/posts/${postId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ content })
+    });
+  },
+
+  async follow(userId) {
+    return request(`/social/follow/${userId}`, { method: 'POST' });
+  },
+
+  async unfollow(userId) {
+    return request(`/social/follow/${userId}`, { method: 'DELETE' });
+  },
+
+  async getDiscover() {
+    return request('/social/discover');
+  }
+};
+
+// ============================================================
+// GAMIFICATION API
+// ============================================================
+
+export const GamificationAPI = {
+  async getSummary() {
+    return request('/gamification/summary');
+  },
+
+  async claimLoginBonus() {
+    return request('/gamification/login-bonus', { method: 'POST' });
+  },
+
+  async getChallenges() {
+    return request('/gamification/challenges');
+  },
+
+  async joinChallenge(id) {
+    return request(`/gamification/challenges/${id}/join`, { method: 'POST' });
+  },
+
+  async getMilestones() {
+    return request('/gamification/milestones');
+  },
+
+  async claimMilestone(id) {
+    return request(`/gamification/milestones/${id}/claim`, { method: 'POST' });
+  },
+
+  async getMultipliers() {
+    return request('/gamification/multipliers');
+  }
+};
+
+// ============================================================
+// EMAIL PREFERENCES API
+// ============================================================
+
+export const EmailPrefsAPI = {
+  async get() {
+    return request('/email-preferences');
+  },
+
+  async update(prefs) {
+    return request('/email-preferences', { method: 'PUT', body: JSON.stringify(prefs) });
+  },
+
+  async sendTest() {
+    return request('/email-preferences/send-test', { method: 'POST' });
+  }
+};
+
+// ============================================================
 // EXPORT ALL
 // ============================================================
 
@@ -785,5 +919,9 @@ export default {
   CopingAPI,
   ContentAPI,
   NotificationAPI,
-  InsightsAPI
+  InsightsAPI,
+  PhotoAPI,
+  SocialAPI,
+  GamificationAPI,
+  EmailPrefsAPI
 };

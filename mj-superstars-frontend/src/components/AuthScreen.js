@@ -35,7 +35,7 @@ function Input({ label, type = 'text', value, onChange, placeholder, error }) {
 }
 
 // Button component
-function Button({ children, onClick, loading, disabled, variant = 'primary', className = '' }) {
+function Button({ children, onClick, loading, disabled, variant = 'primary', className = '', type = 'button' }) {
   const baseStyles = 'w-full py-3 px-4 rounded-xl font-medium transition-all flex items-center justify-center gap-2';
   const variants = {
     primary: 'bg-sky-600 hover:bg-sky-500 text-white disabled:bg-slate-700 disabled:text-slate-400',
@@ -45,6 +45,7 @@ function Button({ children, onClick, loading, disabled, variant = 'primary', cla
 
   return (
     <button
+      type={type}
       onClick={onClick}
       disabled={loading || disabled}
       className={`${baseStyles} ${variants[variant]} ${className}`}
@@ -276,9 +277,16 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
     displayName, setDisplayName,
     error, loading, handleSubmit
   } = useRegister();
+  
+  const [tosAccepted, setTosAccepted] = useState(false);
+  const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
+  const [tosModalOpen, setTosModalOpen] = useState(false);
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    if (!tosAccepted) {
+      return;
+    }
     const success = await handleSubmit(e);
     if (success && onSuccess) {
       onSuccess();
@@ -334,7 +342,46 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
           placeholder="••••••••"
         />
 
-        <Button type="submit" loading={loading}>
+        {/* Terms of Service Checkbox */}
+        <div className="flex items-start gap-3 p-4 bg-slate-800/50 rounded-xl border border-slate-700">
+          <input
+            type="checkbox"
+            id="tos-checkbox"
+            checked={tosAccepted}
+            onChange={(e) => setTosAccepted(e.target.checked)}
+            className="w-5 h-5 mt-0.5 bg-slate-700 border border-slate-600 rounded-md accent-sky-500 cursor-pointer"
+          />
+          <label htmlFor="tos-checkbox" className="flex-1 text-sm text-slate-300 cursor-pointer">
+            I agree to the{' '}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setTosModalOpen(true);
+              }}
+              className="text-sky-400 hover:text-sky-300 underline"
+            >
+              Terms of Service
+            </a>
+            {' '}and{' '}
+            <a
+              href="#"
+              onClick={(e) => {
+                e.preventDefault();
+                setPrivacyModalOpen(true);
+              }}
+              className="text-sky-400 hover:text-sky-300 underline"
+            >
+              Privacy Policy
+            </a>
+          </label>
+        </div>
+
+        <Button 
+          type="submit" 
+          loading={loading}
+          disabled={!tosAccepted}
+        >
           Create Account
         </Button>
 

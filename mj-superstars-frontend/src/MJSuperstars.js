@@ -3,7 +3,7 @@
 // Handles navigation between Auth, Onboarding, and Main App
 // ============================================================
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import AuthScreen from './components/AuthScreen';
 import Onboarding from './components/Onboarding';
@@ -11,8 +11,10 @@ import ChatScreen from './components/screens/ChatScreen';
 import MoodScreen from './components/screens/MoodScreen';
 import TasksScreen from './components/screens/TasksScreen';
 import JournalScreen from './components/screens/JournalScreen';
+import ExploreScreen from './components/screens/ExploreScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import Icons from './components/shared/Icons';
+import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
 
 // ============================================================
 // MAIN APP COMPONENT
@@ -21,6 +23,10 @@ import Icons from './components/shared/Icons';
 function MJSuperstars() {
   const { isAuthenticated, profile, loading, user, setProfile, completeOnboarding } = useAuth();
   const [activeTab, setActiveTab] = useState('chat');
+  useEffect(() => {
+    initErrorTracking();
+  }, []);
+
 
   // Handler for "Continue without account" - creates a guest profile
   const handleSkipAuth = () => {
@@ -86,6 +92,7 @@ function MJSuperstars() {
     { id: 'mood', label: 'Mood', icon: Icons.Mood },
     { id: 'tasks', label: 'Tasks', icon: Icons.Tasks },
     { id: 'journal', label: 'Journal', icon: Icons.Journal },
+    { id: 'explore', label: 'Explore', icon: Icons.Explore },
     { id: 'profile', label: 'Profile', icon: Icons.Profile },
   ];
 
@@ -95,13 +102,15 @@ function MJSuperstars() {
       case 'mood': return <MoodScreen />;
       case 'tasks': return <TasksScreen />;
       case 'journal': return <JournalScreen />;
+      case 'explore': return <ExploreScreen />;
       case 'profile': return <ProfileScreen />;
       default: return <ChatScreen />;
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex flex-col" style={{ height: '100dvh' }}>
+    <SentryErrorBoundary>
+      <div className="min-h-screen bg-slate-900 flex flex-col" style={{ height: '100dvh' }}>
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         {renderScreen()}
@@ -129,7 +138,6 @@ function MJSuperstars() {
         </div>
       </div>
     </div>
+    </SentryErrorBoundary>
   );
 }
-
-export default MJSuperstars;

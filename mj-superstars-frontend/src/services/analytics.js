@@ -471,6 +471,107 @@ export function trackTrialConverted(plan) {
   trackEvent('Trial Converted', { plan });
 }
 
+// --- Explore Tab Events ---
+export function trackExploreTabOpened() {
+  trackEvent('Explore Tab Opened');
+  incrementUserProperty('explore_tab_opens');
+}
+
+// --- Social Feature Events ---
+export function trackSocialPostCreated(data) {
+  trackEvent('Social Post Created', {
+    post_type: data.postType,
+    has_image: !!data.imageUrl,
+    content_length: data.content?.length || 0
+  });
+  incrementUserProperty('total_social_posts');
+}
+
+export function trackSocialPostLiked(data) {
+  trackEvent('Social Post Liked', {
+    post_id: data.postId,
+    post_author: data.postAuthor,
+    post_type: data.postType
+  });
+  incrementUserProperty('total_posts_liked');
+}
+
+export function trackSocialCommentAdded(data) {
+  trackEvent('Social Comment Added', {
+    post_id: data.postId,
+    comment_length: data.commentText?.length || 0,
+    post_author: data.postAuthor
+  });
+  incrementUserProperty('total_comments_added');
+}
+
+// --- Photo Features Events ---
+export function trackPhotoUploaded(data) {
+  trackEvent('Photo Uploaded', {
+    photo_type: data.photoType,
+    file_size_kb: data.fileSizeKb,
+    has_caption: !!data.caption
+  });
+  incrementUserProperty('total_photos_uploaded');
+}
+
+// --- Vision Board Events ---
+export function trackVisionBoardItemAdded(data) {
+  trackEvent('Vision Board Item Added', {
+    goal_category: data.category,
+    has_image: !!data.imageUrl,
+    target_date_set: !!data.targetDate
+  });
+  incrementUserProperty('total_vision_items');
+}
+
+export function trackVisionBoardItemAchieved(data) {
+  trackEvent('Vision Board Item Achieved', {
+    goal_category: data.category,
+    days_to_achieve: data.daysToAchieve
+  });
+  incrementUserProperty('vision_items_achieved');
+}
+
+// --- Gamification Feature Events ---
+export function trackGamificationChallengeJoined(data) {
+  trackEvent('Gamification Challenge Joined', {
+    challenge_id: data.challengeId,
+    challenge_name: data.challengeName,
+    difficulty: data.difficulty,
+    reward_xp: data.rewardXp
+  });
+  incrementUserProperty('challenges_joined');
+}
+
+export function trackGamificationMilestoneClaimed(data) {
+  trackEvent('Gamification Milestone Claimed', {
+    milestone_id: data.milestoneId,
+    milestone_name: data.milestoneName,
+    reward_xp: data.rewardXp
+  });
+  incrementUserProperty('milestones_claimed');
+}
+
+export function trackGamificationLoginBonusClaimed(data) {
+  trackEvent('Gamification Login Bonus Claimed', {
+    bonus_xp: data.bonusXp,
+    streak_days: data.streakDays
+  });
+  incrementUserProperty('login_bonuses_claimed');
+}
+
+// --- Email Preferences Events ---
+export function trackEmailPreferencesUpdated(data) {
+  trackEvent('Email Preferences Updated', {
+    changed_fields: data.changedFields || [],
+    updates_count: data.changedFields?.length || 0,
+    weekly_digest: data.weeklyDigest !== undefined ? data.weeklyDigest : undefined,
+    coaching_nudges: data.coachingNudges !== undefined ? data.coachingNudges : undefined,
+    buddy_reports: data.buddyReports !== undefined ? data.buddyReports : undefined
+  });
+}
+
 // --- Error & Performance Events ---
 
 export function trackError(data) {

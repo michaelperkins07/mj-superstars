@@ -47,6 +47,7 @@ import photoRoutes from './routes/photos.js';
 import socialFeedRoutes from './routes/social.js';
 import emailPrefRoutes from './routes/email-preferences.js';
 import gamificationRoutes from './routes/gamification.js';
+import legalRoutes from './routes/legal.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -259,6 +260,7 @@ app.use('/api/photos', photoRoutes);
 app.use('/api/social', socialFeedRoutes);
 app.use('/api/email-preferences', emailPrefRoutes);
 app.use('/api/gamification', gamificationRoutes);
+app.use('/api/legal', legalRoutes);
 
 // ============================================================
 // ERROR HANDLING

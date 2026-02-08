@@ -98,12 +98,27 @@ const ONBOARDING_STEPS = [
     ]
   },
   {
+    id: 'gamification',
+    type: 'gamification-intro',
+    title: "Level Up Your Wellness 🎮",
+    subtitle: "Here's what you'll unlock",
+    features: [
+      { icon: '🔥', title: 'Daily Login Bonuses', description: 'Earn XP for showing up' },
+      { icon: '⚡', title: 'Streak Multipliers', description: 'Build momentum and unlock rewards' },
+      { icon: '⚙️', title: 'Flash Challenges', description: 'Quick wins throughout your day' },
+      { icon: '🎨', title: 'Vision Board', description: 'Create and track your goals' },
+      { icon: '💪', title: '"Everything is Reps"', description: 'Every action counts - consistency beats perfection' }
+    ],
+    cta: "Show me more"
+  },
+  {
     id: 'complete',
     type: 'complete',
-    title: "You're all set! 🎉",
-    subtitle: "I'm excited to be part of your journey",
-    description: "Remember: Small steps lead to big changes. I'll be here whenever you need me.",
-    cta: "Start My Journey"
+    title: "You're ready! 💪",
+    subtitle: "One more thing before we begin...",
+    quote: '"The only way to do great work is to love what you do. And that starts with showing up, one rep at a time." - White Mike',
+    description: "You've got this. Let's build something incredible together.",
+    cta: "Let's Get It! 💪"
   }
 ];
 
@@ -581,6 +596,75 @@ function PermissionStep({ step, onGrant, onSkip }) {
 }
 
 /**
+ * Gamification Intro Step
+ */
+function GamificationIntroStep({ step, onNext }) {
+  return (
+    <div className="px-6 py-8">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="w-24 h-24 bg-gradient-to-r from-purple-500/20 to-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
+      >
+        <span className="text-6xl">🎮</span>
+      </motion.div>
+
+      <motion.h2
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-3xl font-bold text-white mb-2 text-center"
+      >
+        {step.title}
+      </motion.h2>
+
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+        className="text-slate-400 text-center mb-8"
+      >
+        {step.subtitle}
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+        className="space-y-3 max-w-lg mx-auto mb-8"
+      >
+        {step.features.map((feature, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2 + i * 0.08 }}
+            className="bg-gradient-to-r from-slate-800/50 to-slate-800/30 rounded-xl p-4 flex items-start gap-4 border border-slate-700/50 hover:border-sky-500/30 transition-colors"
+          >
+            <span className="text-3xl flex-shrink-0">{feature.icon}</span>
+            <div className="flex-1 text-left">
+              <h3 className="font-semibold text-white">{feature.title}</h3>
+              <p className="text-sm text-slate-400">{feature.description}</p>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      <motion.button
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        whileTap={{ scale: 0.97 }}
+        onClick={onNext}
+        className="w-full bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 px-8 rounded-2xl text-lg"
+      >
+        {step.cta}
+      </motion.button>
+    </div>
+  );
+}
+
+/**
  * Complete Step
  */
 function CompleteStep({ step, userName, onComplete }) {
@@ -618,6 +702,19 @@ function CompleteStep({ step, userName, onComplete }) {
       >
         {userName ? `Nice to meet you, ${userName}!` : step.subtitle}
       </motion.p>
+
+      {step.quote && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-gradient-to-r from-purple-500/10 to-sky-500/10 border border-purple-500/30 rounded-2xl p-6 max-w-sm mx-auto mb-8"
+        >
+          <p className="text-lg italic text-sky-100 leading-relaxed">
+            {step.quote}
+          </p>
+        </motion.div>
+      )}
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -774,6 +871,8 @@ export function Onboarding({ onComplete }) {
             onSkip={nextStep}
           />
         );
+      case 'gamification-intro':
+        return <GamificationIntroStep step={step} onNext={nextStep} />;
       case 'complete':
         return (
           <CompleteStep
@@ -837,7 +936,7 @@ export function Onboarding({ onComplete }) {
       </div>
 
       {/* Continue Button */}
-      {!['intro', 'permission', 'complete'].includes(step.type) && (
+      {!['intro', 'permission', 'complete', 'gamification-intro'].includes(step.type) && (
         <div className="p-6">
           <motion.button
             whileTap={{ scale: 0.97 }}

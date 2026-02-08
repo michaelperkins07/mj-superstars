@@ -68,8 +68,15 @@ export const Logout = () => (
   </svg>
 );
 
+
+export const Explore = () => (
+  <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+    <path strokeLinecap="round" strokeLinejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+  </svg>
+);
+
 const Icons = {
-  Chat, Mood, Tasks, Journal, Profile, Send, Plus, Check, Fire, Star, Settings, Logout
+  Chat, Mood, Tasks, Journal, Profile, Explore, Send, Plus, Check, Fire, Star, Settings, Logout
 };
 
 export default Icons;

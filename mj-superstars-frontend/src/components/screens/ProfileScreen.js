@@ -4,7 +4,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { ProgressAPI, GuestAPI, TokenManager } from '../../services/api';
+import { ProgressAPI, GuestAPI, TokenManager, EmailPrefsAPI } from '../../services/api';
 import { Fire, Logout } from '../shared/Icons';
 
 function ProfileScreen() {
@@ -15,7 +15,39 @@ function ProfileScreen() {
   const [upgradeError, setUpgradeError] = useState('');
   const [upgradeLoading, setUpgradeLoading] = useState(false);
   const [upgradeSuccess, setUpgradeSuccess] = useState(false);
+  const [emailPrefs, setEmailPrefs] = useState(null);
+  const [emailPrefsLoading, setEmailPrefsLoading] = useState(false);
+  const [emailPrefsSaving, setEmailPrefsSaving] = useState(false);
+  const [emailPrefsError, setEmailPrefsError] = useState('');
   const isGuest = !TokenManager.isAuthenticated();
+
+  useEffect(() => {
+    const loadEmailPrefs = async () => {
+      if (!isGuest) {
+        try {
+          setEmailPrefsLoading(true);
+          const prefs = await EmailPrefsAPI.get();
+          setEmailPrefs(prefs || {
+            weekly_digest: false,
+            coaching_nudges: false,
+            buddy_sharing: false,
+            buddy_email: ''
+          });
+        } catch (err) {
+          console.error('Failed to load email preferences:', err);
+          setEmailPrefs({
+            weekly_digest: false,
+            coaching_nudges: false,
+            buddy_sharing: false,
+            buddy_email: ''
+          });
+        } finally {
+          setEmailPrefsLoading(false);
+        }
+      }
+    };
+    loadEmailPrefs();
+  }, [isGuest]);
 
   useEffect(() => {
     const loadProgress = async () => {
@@ -42,7 +74,34 @@ function ProfileScreen() {
 
   const displayName = profile?.display_name || profile?.name || user?.display_name || user?.email?.split('@')[0] || 'User';
 
-  const gatherGuestData = () => {
+  
+  const handleEmailPrefsUpdate = async (key, value) => {
+    const updatedPrefs = { ...emailPrefs, [key]: value };
+    setEmailPrefs(updatedPrefs);
+    
+    setEmailPrefsSaving(true);
+    setEmailPrefsError('');
+    try {
+      await EmailPrefsAPI.update(updatedPrefs);
+    } catch (err) {
+      setEmailPrefsError('Failed to save preferences');
+      console.error('Failed to update email preferences:', err);
+    } finally {
+      setEmailPrefsSaving(false);
+    }
+  };
+
+  const handleSendTestEmail = async () => {
+    try {
+      await EmailPrefsAPI.sendTest();
+      alert('Test email sent!');
+    } catch (err) {
+      setEmailPrefsError('Failed to send test email');
+      console.error('Failed to send test email:', err);
+    }
+  };
+
+const gatherGuestData = () => {
     const conversations = JSON.parse(localStorage.getItem('mj_conversations') || '[]');
     const moods = JSON.parse(localStorage.getItem('mj_guest_moods') || '[]');
     const tasks = JSON.parse(localStorage.getItem('mj_guest_tasks') || '[]');
@@ -179,6 +238,105 @@ function ProfileScreen() {
         </div>
       )}
 
+      {!isGuest && (
+        <div className="bg-slate-800 rounded-2xl p-5 mb-6">
+          <h2 className="text-white font-semibold mb-4">Email Preferences</h2>
+          {emailPrefsError && (
+            <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-3 mb-4 text-red-300 text-sm">
+              {emailPrefsError}
+            </div>
+          )}
+          
+          {emailPrefsLoading ? (
+            <p className="text-slate-400 text-sm">Loading preferences...</p>
+          ) : emailPrefs ? (
+            <div className="space-y-4">
+              {/* Weekly Digest Toggle */}
+              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
+                <div>
+                  <p className="text-white text-sm font-semibold">Weekly Digest</p>
+                  <p className="text-slate-400 text-xs">Get a summary of your progress</p>
+                </div>
+                <button
+                  onClick={() => handleEmailPrefsUpdate('weekly_digest', !emailPrefs.weekly_digest)}
+                  disabled={emailPrefsSaving}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    emailPrefs.weekly_digest ? 'bg-sky-500' : 'bg-slate-600'
+                  } ${emailPrefsSaving ? 'opacity-50' : ''}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      emailPrefs.weekly_digest ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Coaching Nudges Toggle */}
+              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg hover:bg-slate-700 transition-colors">
+                <div>
+                  <p className="text-white text-sm font-semibold">Coaching Nudges</p>
+                  <p className="text-slate-400 text-xs">Helpful reminders to stay consistent</p>
+                </div>
+                <button
+                  onClick={() => handleEmailPrefsUpdate('coaching_nudges', !emailPrefs.coaching_nudges)}
+                  disabled={emailPrefsSaving}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    emailPrefs.coaching_nudges ? 'bg-sky-500' : 'bg-slate-600'
+                  } ${emailPrefsSaving ? 'opacity-50' : ''}`}
+                >
+                  <span
+                    className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                      emailPrefs.coaching_nudges ? 'translate-x-6' : 'translate-x-1'
+                    }`}
+                  />
+                </button>
+              </div>
+
+              {/* Buddy Sharing Toggle */}
+              <div className="p-3 bg-slate-700/50 rounded-lg">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <p className="text-white text-sm font-semibold">Buddy Sharing</p>
+                    <p className="text-slate-400 text-xs">Share updates with an accountability buddy</p>
+                  </div>
+                  <button
+                    onClick={() => handleEmailPrefsUpdate('buddy_sharing', !emailPrefs.buddy_sharing)}
+                    disabled={emailPrefsSaving}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                      emailPrefs.buddy_sharing ? 'bg-sky-500' : 'bg-slate-600'
+                    } ${emailPrefsSaving ? 'opacity-50' : ''}`}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                        emailPrefs.buddy_sharing ? 'translate-x-6' : 'translate-x-1'
+                      }`}
+                    />
+                  </button>
+                </div>
+                
+                {emailPrefs.buddy_sharing && (
+                  <input
+                    type="email"
+                    placeholder="Buddy's email address"
+                    value={emailPrefs.buddy_email || ''}
+                    onChange={e => handleEmailPrefsUpdate('buddy_email', e.target.value)}
+                    className="w-full bg-slate-600 text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500"
+                  />
+                )}
+              </div>
+
+              <button
+                onClick={handleSendTestEmail}
+                className="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg py-2 text-sm font-semibold transition-colors mt-2"
+              >
+                Send Test Email
+              </button>
+            </div>
+          ) : null}
+        </div>
+      )}
+
       <div className="bg-slate-800 rounded-2xl p-5 mb-6">
         <h2 className="text-white font-semibold mb-3 flex items-center gap-2">
           <Fire /> Streaks
@@ -195,6 +353,29 @@ function ProfileScreen() {
           {(!streaks || streaks.length === 0) && (
             <p className="text-slate-500 text-sm col-span-2 text-center py-2">Start building your streaks!</p>
           )}
+        </div>
+      </div>
+
+      {/* Legal Documents Section */}
+      <div className="bg-slate-800 rounded-2xl p-5 mb-6">
+        <h2 className="text-white font-semibold mb-3">Legal</h2>
+        <div className="space-y-2">
+          <a
+            href="/privacy-policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center"
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="/terms-of-service"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center"
+          >
+            Terms of Service
+          </a>
         </div>
       </div>
 
