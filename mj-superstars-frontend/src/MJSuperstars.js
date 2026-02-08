@@ -141,3 +141,4 @@ function MJSuperstars() {
     </SentryErrorBoundary>
   );
 }
+export default MJSuperstars;
