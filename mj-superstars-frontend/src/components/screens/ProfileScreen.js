@@ -342,7 +342,7 @@ const gatherGuestData = () => {
           <Fire /> Streaks
         </h2>
         <div className="grid grid-cols-2 gap-3">
-          {streaks && Array.isArray(streaks) && streaks.map((streak, i) => (
+          {(streaks || []).map((streak, i) => (
             <div key={i} className="bg-slate-700/50 rounded-xl p-3 text-center">
               <p className="text-2xl font-bold text-sky-400">{streak.current_streak || 0}</p>
               <p className="text-xs text-slate-400 capitalize mt-1">
@@ -350,7 +350,7 @@ const gatherGuestData = () => {
               </p>
             </div>
           ))}
-          {(!streaks || streaks.length === 0) && (
+          {(!(streaks && streaks.length > 0)) && (
             <p className="text-slate-500 text-sm col-span-2 text-center py-2">Start building your streaks!</p>
           )}
         </div>

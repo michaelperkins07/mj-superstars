@@ -2,6 +2,11 @@ import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import pool from '../database/db.js';
 
+
+
+// Sanitization helper function
+const sanitize = (str) => str ? str.replace(/<[^>]*>/g, '').trim() : '';
+
 const router = Router();
 
 // Middleware to verify photo ownership
@@ -72,6 +77,14 @@ router.post('/upload', authenticateToken, async (req, res) => {
     // Validate size
     if (!validateBase64Size(base64Data, 5)) {
       return res.status(400).json({ error: 'Photo exceeds 5MB limit' });
+    }
+
+    // Validate caption if provided
+    if (caption && typeof caption === 'string') {
+      const sanitizedCaption = sanitize(caption);
+      if (sanitizedCaption.length > 500) {
+        return res.status(400).json({ error: 'Caption cannot exceed 500 characters', maxLength: 500, currentLength: sanitizedCaption.length });
+      }
     }
 
     // Create data URL (format: data:image/type;base64,...)
@@ -399,6 +412,22 @@ router.post('/vision-board/items', authenticateToken, async (req, res) => {
 
     if (!photo_id && !photo_url) {
       return res.status(400).json({ error: 'photo_id or photo_url is required' });
+    }
+
+    // Validate goal_text if provided
+    if (goal_text && typeof goal_text === 'string') {
+      const sanitizedGoalText = sanitize(goal_text);
+      if (sanitizedGoalText.length > 200) {
+        return res.status(400).json({ error: 'Goal text cannot exceed 200 characters', maxLength: 200, currentLength: sanitizedGoalText.length });
+      }
+    }
+
+    // Validate caption if provided
+    if (caption && typeof caption === 'string') {
+      const sanitizedCaption = sanitize(caption);
+      if (sanitizedCaption.length > 500) {
+        return res.status(400).json({ error: 'Caption cannot exceed 500 characters', maxLength: 500, currentLength: sanitizedCaption.length });
+      }
     }
 
     // Get user's vision board (create if doesn't exist)

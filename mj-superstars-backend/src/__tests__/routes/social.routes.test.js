@@ -21,6 +21,33 @@ jest.unstable_mockModule('../../utils/logger.js', () => ({
   default: { error: jest.fn(), warn: jest.fn(), info: jest.fn(), debug: jest.fn() }
 }));
 
+jest.unstable_mockModule('../../middleware/auth.js', () => ({
+  authenticateToken: (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Authorization required', code: 'MISSING_TOKEN' });
+    }
+    req.user = { id: 'user-123', email: 'test@example.com', display_name: 'Test User', is_premium: false, is_active: true };
+    next();
+  },
+  generateAccessToken: (user) => 'test-token-' + (user.id || 'default'),
+  generateRefreshToken: (user) => 'test-refresh-' + (user.id || 'default'),
+  verifyToken: (token) => ({ id: 'user-123', email: 'test@example.com' }),
+  default: {
+    authenticateToken: (req, res, next) => {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ error: 'Authorization required', code: 'MISSING_TOKEN' });
+      }
+      req.user = { id: 'user-123', email: 'test@example.com', display_name: 'Test User', is_premium: false, is_active: true };
+      next();
+    },
+    generateAccessToken: (user) => 'test-token-' + (user.id || 'default'),
+    generateRefreshToken: (user) => 'test-refresh-' + (user.id || 'default'),
+    verifyToken: (token) => ({ id: 'user-123', email: 'test@example.com' })
+  }
+}));
+
 // Dynamic imports after mocks
 const { default: express } = await import('express');
 const { default: request } = await import('supertest');

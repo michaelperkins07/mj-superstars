@@ -175,12 +175,32 @@ const heavyComputationLimiter = rateLimit({
 });
 
 app.use('/api/', limiter);
+
+// Social post creation limiter (stricter)
+const postLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30,
+  message: { error: 'Too many posts, please slow down', code: 'RATE_LIMITED' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
+
+// Auth limiter override (stricter than general)
+const authLimiterStrict = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10,
+  message: { error: 'Too many authentication attempts', code: 'RATE_LIMITED' },
+  standardHeaders: true,
+  legacyHeaders: false
+});
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
 app.use('/api/social-auth', authLimiter);
 app.use('/api/conversations/send', claudeLimiter);
 app.use('/api/insights', heavyComputationLimiter);
 app.use('/api/progress/weekly-story', heavyComputationLimiter);
+app.use('/api/social', postLimiter);
+app.use('/api/photos', postLimiter);
 
 // ============================================================
 // HEALTH CHECKS (Render monitors these)
@@ -272,6 +292,17 @@ app.use(sentryErrorHandler());
 // Version check endpoint
 app.get('/api/version', (req, res) => {
   res.json({ version: '2.0.0', deploy: 'photos-social-gamification', timestamp: new Date().toISOString() });
+
+// API health check endpoint
+app.get('/api/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    version: '2.0.0',
+    memory: process.memoryUsage()
+  });
+});
 });
 
 app.use(notFound);

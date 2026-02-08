@@ -2,7 +2,7 @@
 // MJ's Superstars - Security Middleware Tests
 // ============================================================
 
-const {
+import {
   sanitizeString,
   sanitizeEmail,
   sanitizeInt,
@@ -17,7 +17,9 @@ const {
   isTokenBlacklisted,
   maskSensitiveData,
   stripSensitiveFields
-} = require('../../middleware/security');
+} from '../../middleware/security.js';
+
+import { describe, test, expect, beforeEach } from '@jest/globals';
 
 describe('Security Middleware', () => {
   // ============================================================

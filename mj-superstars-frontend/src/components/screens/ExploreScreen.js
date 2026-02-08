@@ -111,19 +111,64 @@ function ExploreScreen() {
     }
   };
 
-  // Handle card expansion
-  const handleExpandCard = async (cardId) => {
-    setExpandedCard(cardId);
+  // Handle card expansion - useEffect triggers data loading
+  useEffect(() => {
+    let mounted = true;
     
-    if (cardId === 'gamification' && !gamData) {
-      await loadGamification();
-    } else if (cardId === 'social' && !socialData) {
-      await loadSocial();
-    } else if (cardId === 'photos' && !photosData) {
-      await loadPhotos();
-    } else if (cardId === 'rituals' && !ritualsData) {
-      await loadRituals();
-    }
+    const loadData = async () => {
+      if (!expandedCard) return;
+      
+      try {
+        if (expandedCard === 'gamification' && !gamData) {
+          setGamLoading(true);
+          const [summary, challenges, milestones] = await Promise.all([
+            GamificationAPI.getSummary(),
+            GamificationAPI.getChallenges(),
+            GamificationAPI.getMilestones()
+          ]);
+          if (mounted) {
+            setGamData({
+              summary: summary || { level: 1, xp: 0, streak: 0, xp_multiplier: 1, level_name: 'Sparked' },
+              challenges: challenges || [],
+              milestones: milestones || []
+            });
+          }
+        } else if (expandedCard === 'social' && !socialData) {
+          setSocialLoading(true);
+          setSocialError('');
+          const feed = await SocialAPI.getFeed(1);
+          if (mounted) setSocialData(feed || { posts: [] });
+        } else if (expandedCard === 'photos' && !photosData) {
+          setPhotosLoading(true);
+          const [timeline, visionBoard] = await Promise.all([
+            PhotoAPI.getTimeline(),
+            PhotoAPI.getVisionBoard()
+          ]);
+          if (mounted) setPhotosData({ timeline: timeline || [], visionBoard: visionBoard || [] });
+        } else if (expandedCard === 'rituals' && !ritualsData) {
+          setRitualsLoading(true);
+          const rituals = await RitualAPI.list();
+          if (mounted) setRitualsData(rituals || []);
+        }
+      } catch (err) {
+        console.error('Failed to load ' + expandedCard + ':', err);
+        if (mounted && expandedCard === 'social') setSocialError('Could not load feed');
+      } finally {
+        if (mounted) {
+          setGamLoading(false);
+          setSocialLoading(false);
+          setPhotosLoading(false);
+          setRitualsLoading(false);
+        }
+      }
+    };
+    
+    loadData();
+    return () => { mounted = false; };
+  }, [expandedCard]);
+
+  const handleExpandCard = (cardId) => {
+    setExpandedCard(cardId);
   };
 
   // Get flame level based on streak

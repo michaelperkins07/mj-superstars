@@ -2,6 +2,10 @@ import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import pool from '../database/db.js';
 
+
+// Sanitization helper function
+const sanitize = (str) => str ? str.replace(/<[^>]*>/g, '').trim() : '';
+
 const router = Router();
 
 // Middleware to attach user to request
@@ -12,6 +16,19 @@ router.post('/posts', async (req, res) => {
   try {
     const { post_type, content, share_card_data, photo_id, achievement_id, visibility } = req.body;
     const user_id = req.user.id;
+
+    
+
+    // Validate content if provided
+    if (content && typeof content === 'string') {
+      const trimmedContent = sanitize(content);
+      if (trimmedContent.length === 0) {
+        return res.status(400).json({ error: 'Post content cannot be empty or only contain HTML' });
+      }
+      if (trimmedContent.length > 2000) {
+        return res.status(400).json({ error: 'Post content cannot exceed 2000 characters', maxLength: 2000, currentLength: trimmedContent.length });
+      }
+    }
 
     // Validate post_type
     const validPostTypes = ['achievement', 'streak_milestone', 'level_up', 'vision_achieved', 'mood_win', 'custom'];
@@ -351,8 +368,16 @@ router.post('/posts/:id/comments', async (req, res) => {
     const { content } = req.body;
     const user_id = req.user.id;
 
-    if (!content || content.trim().length === 0) {
+    if (!content || typeof content !== 'string') {
       return res.status(400).json({ error: 'Comment content is required' });
+    }
+
+    const sanitizedContent = sanitize(content);
+    if (sanitizedContent.length === 0) {
+      return res.status(400).json({ error: 'Comment content cannot be empty or only contain HTML' });
+    }
+    if (sanitizedContent.length > 1000) {
+      return res.status(400).json({ error: 'Comment content cannot exceed 1000 characters', maxLength: 1000, currentLength: sanitizedContent.length });
     }
 
     // Check post exists
@@ -370,7 +395,7 @@ router.post('/posts/:id/comments', async (req, res) => {
       `INSERT INTO social_comments (post_id, user_id, content)
        VALUES ($1, $2, $3)
        RETURNING id, user_id, content, created_at`,
-      [id, user_id, content]
+      [id, user_id, sanitizedContent]
     );
 
     // Increment comments_count
