@@ -1,40 +1,278 @@
 // ============================================================
 // MJ's Superstars - Explore Hub Screen
 // ============================================================
-// Central hub for new features: Gamification, Social, Photos, and Rituals
-// Each card expands inline to show full feature
+// Discovery hub: Quick Coping Tools, Daily Content, Gamification,
+// Social, Photos, Rituals. Designed to work for both guests and
+// authenticated users with graceful degradation.
 
 import React, { useState, useEffect } from 'react';
-import { PhotoAPI, SocialAPI, GamificationAPI, RitualAPI } from '../../services/api';
-import Icons from '../shared/Icons';
-import { useAnalytics } from '../../services/analytics';
-import CameraService from '../../services/camera';
+import { ContentAPI, GamificationAPI, SocialAPI, RitualAPI, TokenManager } from '../../services/api';
+import { useToast } from '../shared/Toast';
+import * as haptics from '../../services/haptics';
 
+// ============================================================
+// QUICK COPING EXERCISES (works without auth)
+// ============================================================
+const QUICK_EXERCISES = [
+  {
+    id: 'breath_4_7_8',
+    name: '4-7-8 Breathing',
+    emoji: '🌬️',
+    duration: '1 min',
+    color: 'from-sky-500/20 to-cyan-500/20',
+    border: 'border-sky-500/30',
+    accent: 'text-sky-400',
+    steps: [
+      { text: 'Breathe in through your nose', time: 4 },
+      { text: 'Hold your breath', time: 7 },
+      { text: 'Exhale slowly through your mouth', time: 8 },
+    ],
+    rounds: 3
+  },
+  {
+    id: 'grounding_5_4_3_2_1',
+    name: '5-4-3-2-1 Grounding',
+    emoji: '🌍',
+    duration: '2 min',
+    color: 'from-emerald-500/20 to-teal-500/20',
+    border: 'border-emerald-500/30',
+    accent: 'text-emerald-400',
+    steps: [
+      { text: 'Notice 5 things you can SEE', time: 15 },
+      { text: 'Notice 4 things you can TOUCH', time: 12 },
+      { text: 'Notice 3 things you can HEAR', time: 10 },
+      { text: 'Notice 2 things you can SMELL', time: 8 },
+      { text: 'Notice 1 thing you can TASTE', time: 6 },
+    ],
+    rounds: 1
+  },
+  {
+    id: 'body_scan',
+    name: 'Quick Body Scan',
+    emoji: '🧘',
+    duration: '2 min',
+    color: 'from-violet-500/20 to-purple-500/20',
+    border: 'border-violet-500/30',
+    accent: 'text-violet-400',
+    steps: [
+      { text: 'Close your eyes. Take a deep breath', time: 8 },
+      { text: 'Notice tension in your forehead — relax it', time: 8 },
+      { text: 'Unclench your jaw', time: 6 },
+      { text: 'Drop your shoulders away from your ears', time: 8 },
+      { text: 'Unclench your hands', time: 6 },
+      { text: 'Take one more slow, deep breath', time: 8 },
+    ],
+    rounds: 1
+  },
+  {
+    id: 'cold_water',
+    name: 'Cold Water Reset',
+    emoji: '💧',
+    duration: '30 sec',
+    color: 'from-blue-500/20 to-indigo-500/20',
+    border: 'border-blue-500/30',
+    accent: 'text-blue-400',
+    steps: [
+      { text: 'Run cold water over your wrists', time: 15 },
+      { text: 'Take slow, deep breaths while you do this', time: 15 },
+    ],
+    rounds: 1
+  }
+];
+
+// ============================================================
+// GUIDED EXERCISE COMPONENT
+// ============================================================
+function GuidedExercise({ exercise, onClose }) {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [currentRound, setCurrentRound] = useState(1);
+  const [timeLeft, setTimeLeft] = useState(exercise.steps[0].time);
+  const [isRunning, setIsRunning] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
+  const { addToast } = useToast();
+
+  const totalSteps = exercise.steps.length;
+  const step = exercise.steps[currentStep];
+
+  useEffect(() => {
+    let timer;
+    if (isRunning && timeLeft > 0) {
+      timer = setInterval(() => {
+        setTimeLeft(prev => prev - 1);
+      }, 1000);
+    } else if (isRunning && timeLeft === 0) {
+      // Move to next step
+      haptics.light();
+      if (currentStep < totalSteps - 1) {
+        setCurrentStep(prev => prev + 1);
+        setTimeLeft(exercise.steps[currentStep + 1].time);
+      } else if (currentRound < exercise.rounds) {
+        setCurrentRound(prev => prev + 1);
+        setCurrentStep(0);
+        setTimeLeft(exercise.steps[0].time);
+      } else {
+        setIsRunning(false);
+        setIsComplete(true);
+        haptics.success();
+        addToast('Nice work. That took real effort.', 'achievement');
+      }
+    }
+    return () => clearInterval(timer);
+  }, [isRunning, timeLeft, currentStep, currentRound]);
+
+  const progress = isComplete ? 100 :
+    ((currentRound - 1) * totalSteps + currentStep) / (exercise.rounds * totalSteps) * 100 +
+    ((exercise.steps[currentStep]?.time - timeLeft) / (exercise.steps[currentStep]?.time || 1)) * (100 / (exercise.rounds * totalSteps));
+
+  if (isComplete) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center bg-slate-900 px-6">
+        <div className="text-6xl mb-6">✨</div>
+        <h2 className="text-2xl font-bold text-white mb-2">Done.</h2>
+        <p className="text-slate-400 text-center mb-8">
+          You just did something most people won't — you stopped and took care of yourself.
+        </p>
+        <button
+          onClick={onClose}
+          className="bg-sky-500 hover:bg-sky-400 text-white rounded-xl px-8 py-3 font-semibold transition-colors"
+        >
+          Back to Explore
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="h-full flex flex-col bg-slate-900 px-6 py-8">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
+        <button onClick={onClose} className="text-slate-400 hover:text-white transition-colors text-sm">
+          ← Back
+        </button>
+        {exercise.rounds > 1 && (
+          <span className="text-slate-500 text-sm">Round {currentRound}/{exercise.rounds}</span>
+        )}
+      </div>
+
+      {/* Exercise Title */}
+      <div className="text-center mb-4">
+        <span className="text-4xl">{exercise.emoji}</span>
+        <h2 className="text-xl font-bold text-white mt-2">{exercise.name}</h2>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="w-full bg-slate-800 rounded-full h-1.5 mb-12">
+        <div
+          className="bg-gradient-to-r from-sky-400 to-emerald-400 h-1.5 rounded-full transition-all duration-1000"
+          style={{ width: `${progress}%` }}
+        />
+      </div>
+
+      {/* Current Step */}
+      <div className="flex-1 flex flex-col items-center justify-center">
+        <p className="text-white text-xl text-center font-medium mb-8 leading-relaxed">
+          {step.text}
+        </p>
+
+        {/* Timer Circle */}
+        <div className="w-28 h-28 rounded-full border-4 border-sky-500/30 flex items-center justify-center mb-8">
+          <span className="text-4xl font-bold text-white">{timeLeft}</span>
+        </div>
+
+        {!isRunning && !isComplete && (
+          <button
+            onClick={() => { setIsRunning(true); haptics.selection(); }}
+            className="bg-sky-500 hover:bg-sky-400 text-white rounded-xl px-10 py-3 font-semibold transition-colors"
+          >
+            {currentStep === 0 && currentRound === 1 ? 'Start' : 'Resume'}
+          </button>
+        )}
+        {isRunning && (
+          <button
+            onClick={() => setIsRunning(false)}
+            className="bg-slate-700 hover:bg-slate-600 text-white rounded-xl px-10 py-3 font-semibold transition-colors"
+          >
+            Pause
+          </button>
+        )}
+      </div>
+
+      {/* Step indicator dots */}
+      <div className="flex justify-center gap-2 mt-4">
+        {exercise.steps.map((_, idx) => (
+          <div
+            key={idx}
+            className={`w-2 h-2 rounded-full transition-colors ${
+              idx < currentStep ? 'bg-sky-400' : idx === currentStep ? 'bg-white' : 'bg-slate-700'
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// MAIN EXPLORE SCREEN
+// ============================================================
 function ExploreScreen() {
-  const analytics = useAnalytics();
-  const [expandedCard, setExpandedCard] = useState(null);
-  
-  // Gamification State
+  const { addToast } = useToast();
+  const isGuest = !TokenManager.isAuthenticated();
+
+  // View state
+  const [activeExercise, setActiveExercise] = useState(null);
+  const [expandedSection, setExpandedSection] = useState(null);
+
+  // Content state
+  const [dailyQuote, setDailyQuote] = useState(null);
+  const [challenges, setChallenges] = useState([]);
+
+  // Gamification state
   const [gamData, setGamData] = useState(null);
   const [gamLoading, setGamLoading] = useState(false);
-  
-  // Social State
-  const [socialData, setSocialData] = useState(null);
-  const [socialLoading, setSocialLoading] = useState(false);
-  const [socialError, setSocialError] = useState('');
-  
-  // Photos State
-  const [photosData, setPhotosData] = useState(null);
-  const [photosLoading, setPhotosLoading] = useState(false);
-  const [photoTab, setPhotoTab] = useState('progress');
-  
-  // Rituals State
+
+  // Rituals state
   const [ritualsData, setRitualsData] = useState(null);
   const [ritualsLoading, setRitualsLoading] = useState(false);
 
-  // Load Gamification data
+  // Social state
+  const [socialData, setSocialData] = useState(null);
+  const [socialLoading, setSocialLoading] = useState(false);
+  const [postContent, setPostContent] = useState('');
+  const [showPostForm, setShowPostForm] = useState(false);
+
+  // Load lightweight content on mount (quotes work without auth)
+  useEffect(() => {
+    loadQuote();
+  }, []);
+
+  const loadQuote = async () => {
+    try {
+      const data = await ContentAPI.getQuotes('motivation', 1);
+      if (data?.quotes?.length > 0) {
+        setDailyQuote(data.quotes[0]);
+      }
+    } catch (err) {
+      // Quotes are non-critical, silent fail
+      setDailyQuote({
+        quote: "You're already doing the hardest part — showing up.",
+        author: "MJ"
+      });
+    }
+  };
+
+  const loadChallenges = async () => {
+    if (isGuest) return;
+    try {
+      const data = await ContentAPI.getChallenges(null, 3);
+      setChallenges(data?.challenges || []);
+    } catch (err) {
+      console.error('Failed to load challenges:', err);
+    }
+  };
+
   const loadGamification = async () => {
-    analytics.trackExploreTabOpened();
+    if (isGuest) return;
     setGamLoading(true);
     try {
       const [summary, challenges, milestones] = await Promise.all([
@@ -43,7 +281,7 @@ function ExploreScreen() {
         GamificationAPI.getMilestones()
       ]);
       setGamData({
-        summary: summary || { level: 1, xp: 0, streak: 0, xp_multiplier: 1 },
+        summary: summary || { level: 1, xp: 0, streak: 0, xp_multiplier: 1, level_name: 'Sparked' },
         challenges: challenges || [],
         milestones: milestones || []
       });
@@ -59,47 +297,8 @@ function ExploreScreen() {
     }
   };
 
-  // Load Social data
-  const loadSocial = async () => {
-    setSocialLoading(true);
-    setSocialError('');
-    try {
-      const feed = await SocialAPI.getFeed(1);
-      setSocialData(feed || { posts: [] });
-    } catch (err) {
-      console.error('Failed to load social feed:', err);
-      setSocialError('Could not load feed');
-      setSocialData({ posts: [] });
-    } finally {
-      setSocialLoading(false);
-    }
-  };
-
-  // Load Photos data
-  const loadPhotos = async () => {
-    setPhotosLoading(true);
-    try {
-      const [timeline, visionBoard] = await Promise.all([
-        PhotoAPI.getTimeline(),
-        PhotoAPI.getVisionBoard()
-      ]);
-      setPhotosData({
-        timeline: timeline || [],
-        visionBoard: visionBoard || []
-      });
-    } catch (err) {
-      console.error('Failed to load photos:', err);
-      setPhotosData({
-        timeline: [],
-        visionBoard: []
-      });
-    } finally {
-      setPhotosLoading(false);
-    }
-  };
-
-  // Load Rituals data
   const loadRituals = async () => {
+    if (isGuest) return;
     setRitualsLoading(true);
     try {
       const rituals = await RitualAPI.list();
@@ -112,176 +311,102 @@ function ExploreScreen() {
     }
   };
 
-  // Handle card expansion - useEffect triggers data loading
-  useEffect(() => {
-    let mounted = true;
-    
-    const loadData = async () => {
-      if (!expandedCard) return;
-      
-      try {
-        if (expandedCard === 'gamification' && !gamData) {
-          setGamLoading(true);
-          const [summary, challenges, milestones] = await Promise.all([
-            GamificationAPI.getSummary(),
-            GamificationAPI.getChallenges(),
-            GamificationAPI.getMilestones()
-          ]);
-          if (mounted) {
-            setGamData({
-              summary: summary || { level: 1, xp: 0, streak: 0, xp_multiplier: 1, level_name: 'Sparked' },
-              challenges: challenges || [],
-              milestones: milestones || []
-            });
-          }
-        } else if (expandedCard === 'social' && !socialData) {
-          setSocialLoading(true);
-          setSocialError('');
-          const feed = await SocialAPI.getFeed(1);
-          if (mounted) setSocialData(feed || { posts: [] });
-        } else if (expandedCard === 'photos' && !photosData) {
-          setPhotosLoading(true);
-          const [timeline, visionBoard] = await Promise.all([
-            PhotoAPI.getTimeline(),
-            PhotoAPI.getVisionBoard()
-          ]);
-          if (mounted) setPhotosData({ timeline: timeline || [], visionBoard: visionBoard || [] });
-        } else if (expandedCard === 'rituals' && !ritualsData) {
-          setRitualsLoading(true);
-          const rituals = await RitualAPI.list();
-          if (mounted) setRitualsData(rituals || []);
-        }
-      } catch (err) {
-        console.error('Failed to load ' + expandedCard + ':', err);
-        if (mounted && expandedCard === 'social') setSocialError('Could not load feed');
-      } finally {
-        if (mounted) {
-          setGamLoading(false);
-          setSocialLoading(false);
-          setPhotosLoading(false);
-          setRitualsLoading(false);
-        }
-      }
-    };
-    
-    loadData();
-    return () => { mounted = false; };
-  }, [expandedCard]);
-
-  const handleExpandCard = (cardId) => {
-    setExpandedCard(cardId);
+  const loadSocial = async () => {
+    if (isGuest) return;
+    setSocialLoading(true);
+    try {
+      const feed = await SocialAPI.getFeed(1);
+      setSocialData(feed || { posts: [] });
+    } catch (err) {
+      console.error('Failed to load social:', err);
+      setSocialData({ posts: [] });
+    } finally {
+      setSocialLoading(false);
+    }
   };
 
-  // Get flame level based on streak
+  const handleExpandSection = (section) => {
+    haptics.selection();
+    setExpandedSection(section);
+    // Lazy load data
+    if (section === 'gamification' && !gamData) loadGamification();
+    if (section === 'rituals' && !ritualsData) loadRituals();
+    if (section === 'social' && !socialData) loadSocial();
+    if (section === 'challenges') loadChallenges();
+  };
+
+  const handleStartExercise = (exercise) => {
+    haptics.medium();
+    setActiveExercise(exercise);
+  };
+
+  // Get flame level
   const getFlameLevel = (streak) => {
-    if (streak === 0) return { name: 'Cold', emoji: '❄️', color: 'from-blue-400 to-cyan-500' };
-    if (streak < 5) return { name: 'Sparked', emoji: '✨', color: 'from-amber-300 to-yellow-400' };
-    if (streak < 15) return { name: 'Warm', emoji: '🔥', color: 'from-orange-400 to-amber-500' };
-    if (streak < 30) return { name: 'Hot', emoji: '🌶️', color: 'from-red-500 to-orange-600' };
-    return { name: 'Legendary', emoji: '⚡', color: 'from-purple-500 to-pink-600' };
+    if (streak === 0) return { name: 'Cold', emoji: '❄️', gradient: 'from-blue-400 to-cyan-500' };
+    if (streak < 5) return { name: 'Sparked', emoji: '✨', gradient: 'from-amber-300 to-yellow-400' };
+    if (streak < 15) return { name: 'Warm', emoji: '🔥', gradient: 'from-orange-400 to-amber-500' };
+    if (streak < 30) return { name: 'Hot', emoji: '🌶️', gradient: 'from-red-500 to-orange-600' };
+    return { name: 'Legendary', emoji: '⚡', gradient: 'from-purple-500 to-pink-600' };
   };
 
-  // Hub View - Shows all 4 feature cards
-  if (expandedCard === null) {
+  // ========== GUIDED EXERCISE VIEW ==========
+  if (activeExercise) {
     return (
-      <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Explore</h1>
-        <p className="text-slate-400 text-sm mb-6">Discover new ways to level up your wellness journey</p>
-
-        <div className="grid grid-cols-2 gap-4 mb-6">
-          {/* Gamification Card */}
-          <button
-            onClick={() => handleExpandCard('gamification')}
-            className="bg-gradient-to-br from-violet-500/20 to-purple-600/20 border border-violet-500/30 rounded-2xl p-5 text-left hover:border-violet-400/50 transition-all"
-          >
-            <div className="text-4xl mb-3">🎮</div>
-            <h3 className="text-white font-bold text-base">Gamification</h3>
-            <p className="text-slate-300 text-xs mt-1 mb-3">Level up your progress</p>
-            {gamData?.summary && (
-              <div className="flex items-center gap-2">
-                <span className="text-2xl">{gamData.summary.level_name === 'Cold' ? '❄️' : gamData.summary.level_name === 'Sparked' ? '✨' : gamData.summary.level_name === 'Warm' ? '🔥' : gamData.summary.level_name === 'Hot' ? '🌶️' : '⚡'}</span>
-                <span className="text-sky-400 text-sm font-semibold">Lvl {gamData.summary.level || 1}</span>
-              </div>
-            )}
-          </button>
-
-          {/* Social Card */}
-          <button
-            onClick={() => handleExpandCard('social')}
-            className="bg-gradient-to-br from-sky-400/20 to-blue-500/20 border border-sky-400/30 rounded-2xl p-5 text-left hover:border-sky-300/50 transition-all"
-          >
-            <div className="text-4xl mb-3">👥</div>
-            <h3 className="text-white font-bold text-base">Social</h3>
-            <p className="text-slate-300 text-xs mt-1 mb-3">Share your journey</p>
-            {socialData && (
-              <div className="text-sky-400 text-sm font-semibold">{socialData.posts?.length || 0} posts</div>
-            )}
-          </button>
-
-          {/* Photos Card */}
-          <button
-            onClick={() => handleExpandCard('photos')}
-            className="bg-gradient-to-br from-emerald-400/20 to-teal-500/20 border border-emerald-400/30 rounded-2xl p-5 text-left hover:border-emerald-300/50 transition-all"
-          >
-            <div className="text-4xl mb-3">📸</div>
-            <h3 className="text-white font-bold text-base">Photos</h3>
-            <p className="text-slate-300 text-xs mt-1 mb-3">Vision Board & Progress</p>
-            {photosData && (
-              <div className="text-emerald-400 text-sm font-semibold">{(photosData.timeline?.length || 0) + (photosData.visionBoard?.length || 0)} items</div>
-            )}
-          </button>
-
-          {/* Rituals Card */}
-          <button
-            onClick={() => handleExpandCard('rituals')}
-            className="bg-gradient-to-br from-amber-400/20 to-orange-500/20 border border-amber-400/30 rounded-2xl p-5 text-left hover:border-amber-300/50 transition-all"
-          >
-            <div className="text-4xl mb-3">🌅</div>
-            <h3 className="text-white font-bold text-base">Rituals</h3>
-            <p className="text-slate-300 text-xs mt-1 mb-3">Daily practices</p>
-            {ritualsData && (
-              <div className="text-amber-400 text-sm font-semibold">{ritualsData.length || 0} rituals</div>
-            )}
-          </button>
-        </div>
-
-        {/* Quick Tips */}
-        <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-          <p className="text-white text-sm font-semibold mb-2">💡 Pro Tip</p>
-          <p className="text-slate-300 text-xs">Consistency is key! Keep your streaks alive and unlock exclusive achievements.</p>
-        </div>
-      </div>
+      <GuidedExercise
+        exercise={activeExercise}
+        onClose={() => setActiveExercise(null)}
+      />
     );
   }
 
-  // Gamification Expanded View
-  if (expandedCard === 'gamification') {
+  // ========== EXPANDED SECTION VIEWS ==========
+
+  // --- Gamification Expanded ---
+  if (expandedSection === 'gamification') {
+    if (isGuest) {
+      return (
+        <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+          <BackButton onClick={() => setExpandedSection(null)} title="Gamification" />
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="text-5xl mb-4">🎮</div>
+            <h2 className="text-xl font-bold text-white mb-2">Level Up Your Journey</h2>
+            <p className="text-slate-400 text-center text-sm mb-6 px-4">
+              Create an account to earn XP, unlock achievements, and track your streaks.
+            </p>
+            <div className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50 w-full max-w-xs">
+              <div className="flex justify-between text-sm mb-3">
+                <span className="text-slate-400">Daily streaks</span>
+                <span className="text-amber-400">🔥 Earn rewards</span>
+              </div>
+              <div className="flex justify-between text-sm mb-3">
+                <span className="text-slate-400">XP & levels</span>
+                <span className="text-violet-400">⚡ Track growth</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-slate-400">Challenges</span>
+                <span className="text-sky-400">🏆 Compete</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     const flame = getFlameLevel(gamData?.summary?.streak || 0);
-    
     return (
       <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setExpandedCard(null)}
-            className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-slate-300">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-2xl font-bold text-white">Gamification Hub</h1>
-        </div>
+        <BackButton onClick={() => setExpandedSection(null)} title="Gamification Hub" />
 
         {gamLoading ? (
-          <div className="text-center py-8 text-slate-400">Loading...</div>
+          <LoadingState />
         ) : (
           <>
-            {/* Flame Level Display */}
-            <div className={`bg-gradient-to-br ${flame.color} rounded-2xl p-6 mb-6 text-white`}>
+            {/* Flame Level */}
+            <div className={`bg-gradient-to-br ${flame.gradient} rounded-2xl p-6 mb-6 text-white`}>
               <div className="text-center">
-                <div className="text-6xl mb-3">{flame.emoji}</div>
-                <h2 className="text-2xl font-bold mb-1">{flame.name}</h2>
-                <p className="text-sm opacity-90 mb-4">Current Streak Level</p>
+                <div className="text-5xl mb-2">{flame.emoji}</div>
+                <h2 className="text-2xl font-bold">{flame.name}</h2>
+                <p className="text-sm opacity-80 mb-4">Current Streak Level</p>
                 <div className="flex justify-center gap-8">
                   <div>
                     <p className="text-3xl font-bold">{gamData?.summary?.streak || 0}</p>
@@ -292,167 +417,223 @@ function ExploreScreen() {
                     <p className="text-xs opacity-75">Level</p>
                   </div>
                   <div>
-                    <p className="text-3xl font-bold">{gamData?.summary?.xp_multiplier || 1}x</p>
-                    <p className="text-xs opacity-75">XP Boost</p>
+                    <p className="text-3xl font-bold">{gamData?.summary?.xp || 0}</p>
+                    <p className="text-xs opacity-75">XP</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* XP Progress */}
-            <div className="bg-slate-800/50 rounded-2xl p-4 mb-6">
+            <div className="bg-slate-800/50 rounded-xl p-4 mb-6">
               <div className="flex justify-between items-center mb-2">
-                <h3 className="text-white font-semibold">Experience Points</h3>
-                <span className="text-sky-400 text-sm font-bold">{gamData?.summary?.xp || 0} XP</span>
+                <span className="text-white font-semibold text-sm">Experience</span>
+                <span className="text-sky-400 text-sm font-bold">{gamData?.summary?.xp_multiplier || 1}x boost</span>
               </div>
               <div className="w-full bg-slate-700 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-sky-400 to-violet-500 h-2 rounded-full"
-                  style={{ width: `${Math.min((gamData?.summary?.xp || 0) / 10, 100)}%` }}
-                ></div>
+                <div
+                  className="bg-gradient-to-r from-sky-400 to-violet-500 h-2 rounded-full transition-all"
+                  style={{ width: `${Math.min((gamData?.summary?.xp || 0) % 100, 100)}%` }}
+                />
               </div>
             </div>
 
-            {/* Active Challenges */}
-            <div className="mb-6">
-              <h3 className="text-white font-bold text-lg mb-3">Active Challenges</h3>
-              {gamData?.challenges && gamData.challenges.length > 0 ? (
-                <div className="space-y-3">
-                  {gamData.challenges.slice(0, 3).map((challenge, idx) => (
-                    <div key={idx} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
-                      <div className="flex justify-between items-start mb-2">
-                        <h4 className="text-white font-semibold text-sm">{challenge.name || `Challenge ${idx + 1}`}</h4>
-                        <span className="text-violet-400 text-xs font-bold">{challenge.reward_xp || 100} XP</span>
-                      </div>
-                      <p className="text-slate-400 text-xs mb-3">{challenge.description || 'Complete this challenge to earn rewards'}</p>
-                      <div className="w-full bg-slate-700 rounded-full h-2">
-                        <div 
-                          className="bg-violet-500 h-2 rounded-full"
-                          style={{ width: `${Math.min((challenge.progress || 0) / (challenge.target || 1) * 100, 100)}%` }}
-                        ></div>
-                      </div>
-                      <p className="text-slate-500 text-xs mt-2">{challenge.progress || 0}/{challenge.target || 10} Complete</p>
+            {/* Challenges */}
+            <h3 className="text-white font-bold text-lg mb-3">Active Challenges</h3>
+            {gamData?.challenges?.length > 0 ? (
+              <div className="space-y-3 mb-6">
+                {gamData.challenges.slice(0, 5).map((c, idx) => (
+                  <div key={idx} className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50">
+                    <div className="flex justify-between items-start mb-2">
+                      <h4 className="text-white font-semibold text-sm">{c.name || `Challenge ${idx + 1}`}</h4>
+                      <span className="text-violet-400 text-xs font-bold">{c.reward_xp || 100} XP</span>
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-slate-800/50 rounded-xl p-4 text-slate-400 text-sm border border-slate-700/50">
-                  No active challenges. Check back soon!
-                </div>
-              )}
-            </div>
-
-            {/* Milestones */}
-            <div className="mb-6">
-              <h3 className="text-white font-bold text-lg mb-3">Milestones</h3>
-              {gamData?.milestones && gamData.milestones.length > 0 ? (
-                <div className="space-y-3">
-                  {gamData.milestones.slice(0, 3).map((milestone, idx) => (
-                    <div key={idx} className="bg-slate-800/50 rounded-xl p-4 border border-amber-500/30 flex items-center justify-between">
-                      <div>
-                        <h4 className="text-white font-semibold text-sm">{milestone.name || `Milestone ${idx + 1}`}</h4>
-                        <p className="text-slate-400 text-xs">{milestone.description || 'Achieve a milestone'}</p>
-                      </div>
-                      <button className="bg-amber-500 hover:bg-amber-400 text-white rounded-lg px-4 py-2 text-sm font-semibold transition-colors">
-                        Claim
-                      </button>
+                    <p className="text-slate-400 text-xs mb-2">{c.description || 'Complete to earn rewards'}</p>
+                    <div className="w-full bg-slate-700 rounded-full h-1.5">
+                      <div className="bg-violet-500 h-1.5 rounded-full" style={{ width: `${Math.min((c.progress || 0) / (c.target || 1) * 100, 100)}%` }} />
                     </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-slate-800/50 rounded-xl p-4 text-slate-400 text-sm border border-slate-700/50">
-                  No milestones available yet.
-                </div>
-              )}
-            </div>
-
-            {/* Daily Login Bonus */}
-            <div className="bg-gradient-to-r from-amber-500/20 to-orange-500/20 rounded-2xl p-5 border border-amber-500/30 mb-6">
-              <h3 className="text-white font-bold mb-4">Daily Login Bonus</h3>
-              <div className="grid grid-cols-7 gap-2">
-                {[1, 2, 3, 4, 5, 6, 7].map((day) => (
-                  <div key={day} className="bg-slate-800 rounded-lg p-3 text-center">
-                    <p className="text-amber-400 text-lg font-bold">+{day * 25}</p>
-                    <p className="text-slate-500 text-xs">Day {day}</p>
+                    <p className="text-slate-500 text-xs mt-1">{c.progress || 0}/{c.target || 10}</p>
                   </div>
                 ))}
               </div>
-              <button className="w-full mt-4 bg-amber-500 hover:bg-amber-400 text-white rounded-xl py-3 font-semibold transition-colors">
-                Claim Daily Bonus
-              </button>
-            </div>
+            ) : (
+              <EmptyState message="No active challenges yet" sub="Check back soon!" className="mb-6" />
+            )}
+
+            {/* Milestones */}
+            <h3 className="text-white font-bold text-lg mb-3">Milestones</h3>
+            {gamData?.milestones?.length > 0 ? (
+              <div className="space-y-3 pb-20">
+                {gamData.milestones.slice(0, 5).map((m, idx) => (
+                  <div key={idx} className="bg-slate-800/50 rounded-xl p-4 border border-amber-500/20 flex items-center justify-between">
+                    <div>
+                      <h4 className="text-white font-semibold text-sm">{m.name}</h4>
+                      <p className="text-slate-400 text-xs">{m.description}</p>
+                    </div>
+                    {m.claimable && (
+                      <button
+                        onClick={async () => {
+                          try {
+                            await GamificationAPI.claimMilestone(m.id);
+                            haptics.success();
+                            addToast('Milestone claimed!', 'achievement');
+                            loadGamification();
+                          } catch (err) {
+                            console.error('Claim failed:', err);
+                          }
+                        }}
+                        className="bg-amber-500 hover:bg-amber-400 text-white rounded-lg px-4 py-2 text-xs font-semibold"
+                      >
+                        Claim
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <EmptyState message="No milestones yet" sub="Keep going — they'll unlock!" />
+            )}
           </>
         )}
       </div>
     );
   }
 
-  // Social Expanded View
-  if (expandedCard === 'social') {
-    const [postContent, setPostContent] = useState('');
-    const [showPostForm, setShowPostForm] = useState(false);
-    
+  // --- Rituals Expanded ---
+  if (expandedSection === 'rituals') {
+    if (isGuest) {
+      return (
+        <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+          <BackButton onClick={() => setExpandedSection(null)} title="Daily Rituals" />
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="text-5xl mb-4">🌅</div>
+            <h2 className="text-xl font-bold text-white mb-2">Build Better Habits</h2>
+            <p className="text-slate-400 text-center text-sm mb-4 px-4">
+              Create an account to set up daily rituals and track your consistency.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setExpandedCard(null)}
-            className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-slate-300">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-2xl font-bold text-white">Social Feed</h1>
-        </div>
-
-        {socialLoading ? (
-          <div className="text-center py-8 text-slate-400">Loading feed...</div>
+        <BackButton onClick={() => setExpandedSection(null)} title="Daily Rituals" />
+        {ritualsLoading ? (
+          <LoadingState />
         ) : (
           <>
-            {/* Floating Action Button for new post */}
+            <p className="text-slate-400 text-sm mb-4">Check off your daily practices</p>
+            {ritualsData?.length > 0 ? (
+              <div className="space-y-3 pb-20">
+                {ritualsData.map((ritual, idx) => {
+                  const completed = ritual.completed_today || false;
+                  return (
+                    <div key={idx} className={`rounded-xl p-4 border transition-all ${
+                      completed ? 'bg-emerald-900/20 border-emerald-500/40' : 'bg-slate-800 border-slate-700/50'
+                    }`}>
+                      <div className="flex items-center gap-3">
+                        <button
+                          onClick={async () => {
+                            try {
+                              haptics.light();
+                              await RitualAPI.complete(ritual.id);
+                              haptics.success();
+                              addToast('Ritual complete!', 'success');
+                              loadRituals();
+                            } catch (err) {
+                              console.error('Failed:', err);
+                            }
+                          }}
+                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
+                            completed ? 'bg-emerald-500 border-emerald-500' : 'border-slate-600'
+                          }`}
+                        >
+                          {completed && <span className="text-white text-xs">✓</span>}
+                        </button>
+                        <div>
+                          <h4 className={`font-semibold text-sm ${completed ? 'text-emerald-300 line-through' : 'text-white'}`}>
+                            {ritual.name}
+                          </h4>
+                          <p className="text-slate-400 text-xs">{ritual.description || 'Daily practice'}</p>
+                        </div>
+                      </div>
+                      {ritual.current_streak > 0 && (
+                        <div className="flex items-center gap-1 mt-2 ml-9">
+                          <span className="text-amber-400">🔥</span>
+                          <span className="text-amber-400 font-bold text-xs">{ritual.current_streak} day streak</span>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <EmptyState message="No rituals set up yet" sub="Rituals help build lasting habits" />
+            )}
+          </>
+        )}
+      </div>
+    );
+  }
+
+  // --- Social Expanded ---
+  if (expandedSection === 'social') {
+    if (isGuest) {
+      return (
+        <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+          <BackButton onClick={() => setExpandedSection(null)} title="Community" />
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="text-5xl mb-4">👥</div>
+            <h2 className="text-xl font-bold text-white mb-2">You're Not Alone</h2>
+            <p className="text-slate-400 text-center text-sm px-4">
+              Create an account to share your journey and connect with others.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+        <BackButton onClick={() => setExpandedSection(null)} title="Community" />
+        {socialLoading ? (
+          <LoadingState />
+        ) : (
+          <>
             <button
               onClick={() => setShowPostForm(!showPostForm)}
-              className="w-full bg-gradient-to-r from-sky-400 to-blue-500 text-white rounded-xl py-3 font-semibold mb-6 hover:from-sky-300 hover:to-blue-400 transition-all"
+              className="w-full bg-gradient-to-r from-sky-500 to-blue-600 text-white rounded-xl py-3 font-semibold mb-4 hover:from-sky-400 hover:to-blue-500 transition-all"
             >
               Share Your Journey
             </button>
 
-            {/* Post Creation Form */}
             {showPostForm && (
-              <div className="bg-slate-800 rounded-2xl p-5 mb-6 border border-slate-700">
-                <h3 className="text-white font-bold mb-3">Create a Post</h3>
+              <div className="bg-slate-800 rounded-xl p-4 mb-4 border border-slate-700">
                 <textarea
                   value={postContent}
                   onChange={(e) => setPostContent(e.target.value)}
-                  placeholder="What's on your mind? Share your progress, thoughts, or inspiration..."
-                  className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-sky-500 mb-3 resize-none"
-                  rows="4"
+                  placeholder="What's on your mind?"
+                  className="w-full bg-slate-700 text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500 mb-3 resize-none"
+                  rows="3"
                 />
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setShowPostForm(false)}
-                    className="flex-1 bg-slate-700 hover:bg-slate-600 text-white rounded-lg py-2 font-semibold transition-colors"
-                  >
-                    Cancel
-                  </button>
+                  <button onClick={() => setShowPostForm(false)} className="flex-1 bg-slate-700 text-white rounded-lg py-2 text-sm font-semibold">Cancel</button>
                   <button
                     onClick={async () => {
                       if (!postContent.trim()) return;
                       try {
                         await SocialAPI.createPost({ content: postContent, post_type: 'update' });
+                        haptics.success();
+                        addToast('Posted!', 'success');
                         setPostContent('');
                         setShowPostForm(false);
-                        // Refresh social feed if expanded
-                        if (expandedCard === 'social') {
-                          const feedData = await SocialAPI.getFeed();
-                          setSocialData(feedData || { posts: [] });
-                        }
+                        loadSocial();
                       } catch (err) {
-                        console.error('Failed to create post:', err);
+                        addToast('Could not post right now', 'error');
                       }
                     }}
-                    className="flex-1 bg-sky-500 hover:bg-sky-400 text-white rounded-lg py-2 font-semibold transition-colors"
+                    className="flex-1 bg-sky-500 text-white rounded-lg py-2 text-sm font-semibold"
                   >
                     Post
                   </button>
@@ -460,57 +641,51 @@ function ExploreScreen() {
               </div>
             )}
 
-            {/* Social Feed */}
-            {socialError && (
-              <div className="bg-red-900/30 border border-red-500/30 rounded-xl p-4 mb-6 text-red-300 text-sm">
-                {socialError}
-              </div>
-            )}
-
-            {socialData?.posts && socialData.posts.length > 0 ? (
+            {socialData?.posts?.length > 0 ? (
               <div className="space-y-4 pb-20">
                 {socialData.posts.map((post, idx) => (
-                  <div key={idx} className="bg-slate-800 rounded-2xl p-5 border border-slate-700/50">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold">
-                        {post.user_name?.[0]?.toUpperCase() || '👤'}
+                  <div key={idx} className="bg-slate-800 rounded-xl p-4 border border-slate-700/50">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold">
+                        {post.user_name?.[0]?.toUpperCase() || '?'}
                       </div>
                       <div>
                         <p className="text-white font-semibold text-sm">{post.user_name || 'User'}</p>
-                        <p className="text-slate-400 text-xs">{post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Just now'}</p>
+                        <p className="text-slate-500 text-xs">{post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Just now'}</p>
                       </div>
                     </div>
-                    
-                    <p className="text-slate-200 text-sm mb-4">{post.content || 'Shared an update'}</p>
-                    
-                    {post.image_url && (
-                      <div className="bg-slate-700 rounded-lg h-32 mb-4 flex items-center justify-center">
-                        <span className="text-slate-400">📷 Photo</span>
-                      </div>
-                    )}
-                    
-                    <div className="flex gap-4 pt-3 border-t border-slate-700/50">
-                      <button className="flex items-center gap-2 text-slate-400 hover:text-sky-400 transition-colors text-sm">
-                        <span>👍</span> {post.likes_count || 0}
+                    <p className="text-slate-200 text-sm mb-3">{post.content}</p>
+                    <div className="flex gap-4 pt-2 border-t border-slate-700/30">
+                      <button
+                        onClick={async () => {
+                          try { await SocialAPI.likePost(post.id, 'like'); haptics.light(); loadSocial(); } catch(e) {}
+                        }}
+                        className="text-slate-400 hover:text-sky-400 text-sm transition-colors"
+                      >
+                        👍 {post.likes_count || 0}
                       </button>
-                      <button className="flex items-center gap-2 text-slate-400 hover:text-red-400 transition-colors text-sm">
-                        <span>🔥</span> {post.fire_count || 0}
+                      <button
+                        onClick={async () => {
+                          try { await SocialAPI.likePost(post.id, 'fire'); haptics.light(); loadSocial(); } catch(e) {}
+                        }}
+                        className="text-slate-400 hover:text-orange-400 text-sm transition-colors"
+                      >
+                        🔥 {post.fire_count || 0}
                       </button>
-                      <button className="flex items-center gap-2 text-slate-400 hover:text-yellow-400 transition-colors text-sm">
-                        <span>👏</span> {post.clap_count || 0}
-                      </button>
-                      <button className="flex items-center gap-2 text-slate-400 hover:text-pink-400 transition-colors text-sm">
-                        <span>❤️</span> {post.heart_count || 0}
+                      <button
+                        onClick={async () => {
+                          try { await SocialAPI.likePost(post.id, 'heart'); haptics.light(); loadSocial(); } catch(e) {}
+                        }}
+                        className="text-slate-400 hover:text-pink-400 text-sm transition-colors"
+                      >
+                        ❤️ {post.heart_count || 0}
                       </button>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div className="bg-slate-800/50 rounded-xl p-8 text-center border border-slate-700/50">
-                <p className="text-slate-400 text-sm mb-2">No posts yet</p>
-                <p className="text-slate-500 text-xs">Be the first to share your journey!</p>
-              </div>
+              <EmptyState message="No posts yet" sub="Be the first to share!" />
             )}
           </>
         )}
@@ -518,205 +693,137 @@ function ExploreScreen() {
     );
   }
 
-  // Photos Expanded View
-  if (expandedCard === 'photos') {
-    return (
-      <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setExpandedCard(null)}
-            className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-slate-300">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-2xl font-bold text-white">Photos & Vision</h1>
-        </div>
+  // ========== MAIN HUB VIEW ==========
+  return (
+    <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6 pb-24">
+      <h1 className="text-2xl font-bold text-white mb-1">Explore</h1>
+      <p className="text-slate-400 text-sm mb-6">Tools and practices to help you feel better right now</p>
 
-        {/* Tab Switcher */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setPhotoTab('progress')}
-            className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-              photoTab === 'progress'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'
-            }`}
-          >
-            Progress Photos
-          </button>
-          <button
-            onClick={() => setPhotoTab('vision')}
-            className={`flex-1 py-3 rounded-lg font-semibold transition-all ${
-              photoTab === 'vision'
-                ? 'bg-emerald-500 text-white'
-                : 'bg-slate-800 text-slate-400 hover:text-white'
-            }`}
-          >
-            Vision Board
-          </button>
-        </div>
-
-        {photosLoading ? (
-          <div className="text-center py-8 text-slate-400">Loading photos...</div>
-        ) : (
-          <>
-            <button 
-              onClick={() => {
-                alert('Photo upload coming soon! This feature requires camera/gallery access.');
-              }}
-              className="w-full bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl py-3 font-semibold mb-6 transition-colors"
+      {/* ---- SECTION 1: Quick Coping Tools (works for everyone) ---- */}
+      <div className="mb-6">
+        <h2 className="text-white font-bold text-base mb-3">Quick Reset</h2>
+        <p className="text-slate-400 text-xs mb-3">Guided exercises when you need them most</p>
+        <div className="grid grid-cols-2 gap-3">
+          {QUICK_EXERCISES.map((exercise) => (
+            <button
+              key={exercise.id}
+              onClick={() => handleStartExercise(exercise)}
+              className={`bg-gradient-to-br ${exercise.color} border ${exercise.border} rounded-xl p-4 text-left hover:scale-[1.02] active:scale-[0.98] transition-transform`}
             >
-              Upload Photo
+              <div className="text-2xl mb-2">{exercise.emoji}</div>
+              <h3 className="text-white font-semibold text-sm">{exercise.name}</h3>
+              <p className="text-slate-400 text-xs mt-1">{exercise.duration}</p>
             </button>
-
-            {photoTab === 'progress' ? (
-              // Progress Photos Grid
-              <div className="grid grid-cols-2 gap-3 pb-20">
-                {photosData?.timeline && photosData.timeline.length > 0 ? (
-                  photosData.timeline.map((photo, idx) => (
-                    <div key={idx} className="bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
-                      <div className="bg-slate-700 h-32 flex items-center justify-center">
-                        <span className="text-3xl">📸</span>
-                      </div>
-                      <div className="p-3">
-                        <p className="text-white text-xs font-semibold truncate">{photo.title || `Photo ${idx + 1}`}</p>
-                        <p className="text-slate-400 text-xs">{photo.date || new Date().toLocaleDateString()}</p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-2 bg-slate-800/50 rounded-xl p-8 text-center border border-slate-700/50">
-                    <p className="text-slate-400 text-sm">No progress photos yet</p>
-                    <p className="text-slate-500 text-xs mt-1">Start tracking your journey</p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              // Vision Board Grid
-              <div className="grid grid-cols-2 gap-3 pb-20">
-                {photosData?.visionBoard && photosData.visionBoard.length > 0 ? (
-                  photosData.visionBoard.map((item, idx) => (
-                    <div key={idx} className={`rounded-lg overflow-hidden border-2 ${item.is_achieved ? 'border-emerald-500/50' : 'border-amber-500/50'} bg-slate-800`}>
-                      <div className="bg-slate-700 h-32 flex items-center justify-center relative">
-                        <span className="text-3xl">🎯</span>
-                        {item.is_achieved && (
-                          <div className="absolute top-2 right-2 bg-emerald-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm">
-                            ✓
-                          </div>
-                        )}
-                      </div>
-                      <div className="p-3">
-                        <p className="text-white text-xs font-semibold truncate">{item.goal_text || `Goal ${idx + 1}`}</p>
-                        <p className={`text-xs mt-1 ${item.is_achieved ? 'text-emerald-400' : 'text-amber-400'}`}>
-                          {item.is_achieved ? '✓ Achieved' : 'In Progress'}
-                        </p>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-2 bg-slate-800/50 rounded-xl p-8 text-center border border-slate-700/50">
-                    <p className="text-slate-400 text-sm">No vision board items yet</p>
-                    <p className="text-slate-500 text-xs mt-1">Create your first goal</p>
-                  </div>
-                )}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    );
-  }
-
-  // Rituals Expanded View
-  if (expandedCard === 'rituals') {
-    return (
-      <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
-        <div className="flex items-center gap-3 mb-6">
-          <button
-            onClick={() => setExpandedCard(null)}
-            className="p-2 hover:bg-slate-800 rounded-lg transition-colors"
-          >
-            <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-slate-300">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-          </button>
-          <h1 className="text-2xl font-bold text-white">Daily Rituals</h1>
+          ))}
         </div>
-
-        {ritualsLoading ? (
-          <div className="text-center py-8 text-slate-400">Loading rituals...</div>
-        ) : (
-          <>
-            <p className="text-slate-400 text-sm mb-4">Check off your daily practices to build lasting habits</p>
-            
-            <div className="space-y-3 pb-20">
-              {ritualsData && ritualsData.length > 0 ? (
-                ritualsData.map((ritual, idx) => {
-                  const completed = ritual.completed_today || false;
-                  const streak = ritual.current_streak || 0;
-                  
-                  return (
-                    <div key={idx} className={`rounded-xl p-4 border transition-all ${
-                      completed
-                        ? 'bg-emerald-900/30 border-emerald-500/50'
-                        : 'bg-slate-800 border-slate-700/50 hover:border-slate-600/50'
-                    }`}>
-                      <div className="flex items-start justify-between">
-                        <div className="flex-1">
-                          <div className="flex items-center gap-3 mb-2">
-                            <button
-                              onClick={async () => {
-                              try {
-                                await RitualAPI.complete(ritual.id || idx);
-                                // Refresh rituals
-                                const ritualData = await RitualAPI.list();
-                                setRitualsData(ritualData || []);
-                              } catch (err) {
-                                console.error('Failed to complete ritual:', err);
-                              }
-                            }}
-                              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${
-                                completed
-                                  ? 'bg-emerald-500 border-emerald-500'
-                                  : 'border-slate-600 hover:border-slate-500'
-                              }`}
-                            >
-                              {completed && <span className="text-white text-sm">✓</span>}
-                            </button>
-                            <h4 className={`font-semibold ${completed ? 'text-emerald-300 line-through' : 'text-white'}`}>
-                              {ritual.name || `Ritual ${idx + 1}`}
-                            </h4>
-                          </div>
-                          <p className="text-slate-400 text-sm ml-9">{ritual.description || 'Daily practice'}</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 mt-3 ml-9">
-                        <div className="flex items-center gap-1">
-                          <span className="text-amber-400 text-lg">🔥</span>
-                          <span className="text-amber-400 font-bold text-sm">{streak} day streak</span>
-                        </div>
-                        {ritual.time && (
-                          <p className="text-slate-500 text-xs">{ritual.time}</p>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="bg-slate-800/50 rounded-xl p-8 text-center border border-slate-700/50">
-                  <p className="text-slate-400 text-sm">No rituals set up yet</p>
-                  <p className="text-slate-500 text-xs mt-1">Create rituals in the Rituals tab</p>
-                </div>
-              )}
-            </div>
-          </>
-        )}
       </div>
-    );
-  }
+
+      {/* ---- SECTION 2: Daily Quote ---- */}
+      {dailyQuote && (
+        <div className="mb-6 bg-slate-800/50 rounded-xl p-5 border border-slate-700/30">
+          <p className="text-white text-sm italic leading-relaxed">"{dailyQuote.quote}"</p>
+          {dailyQuote.author && (
+            <p className="text-slate-500 text-xs mt-2">— {dailyQuote.author}</p>
+          )}
+          <button
+            onClick={() => { loadQuote(); haptics.selection(); }}
+            className="text-sky-400 text-xs mt-3 hover:text-sky-300 transition-colors"
+          >
+            ↻ New quote
+          </button>
+        </div>
+      )}
+
+      {/* ---- SECTION 3: Feature Cards Grid ---- */}
+      <h2 className="text-white font-bold text-base mb-3">Your Journey</h2>
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {/* Gamification */}
+        <button
+          onClick={() => handleExpandSection('gamification')}
+          className="bg-gradient-to-br from-violet-500/20 to-purple-600/20 border border-violet-500/30 rounded-xl p-4 text-left hover:border-violet-400/50 transition-all"
+        >
+          <div className="text-2xl mb-2">🎮</div>
+          <h3 className="text-white font-bold text-sm">Level Up</h3>
+          <p className="text-slate-400 text-xs mt-1">XP, streaks, achievements</p>
+          {!isGuest && gamData?.summary && (
+            <div className="flex items-center gap-1 mt-2">
+              <span className="text-amber-400 text-sm">🔥</span>
+              <span className="text-amber-400 text-xs font-bold">{gamData.summary.streak || 0}</span>
+            </div>
+          )}
+        </button>
+
+        {/* Rituals */}
+        <button
+          onClick={() => handleExpandSection('rituals')}
+          className="bg-gradient-to-br from-amber-400/20 to-orange-500/20 border border-amber-400/30 rounded-xl p-4 text-left hover:border-amber-300/50 transition-all"
+        >
+          <div className="text-2xl mb-2">🌅</div>
+          <h3 className="text-white font-bold text-sm">Rituals</h3>
+          <p className="text-slate-400 text-xs mt-1">Daily practices</p>
+          {!isGuest && ritualsData && (
+            <p className="text-amber-400 text-xs font-bold mt-2">{ritualsData.length} active</p>
+          )}
+        </button>
+
+        {/* Social */}
+        <button
+          onClick={() => handleExpandSection('social')}
+          className="bg-gradient-to-br from-sky-400/20 to-blue-500/20 border border-sky-400/30 rounded-xl p-4 text-left hover:border-sky-300/50 transition-all"
+        >
+          <div className="text-2xl mb-2">👥</div>
+          <h3 className="text-white font-bold text-sm">Community</h3>
+          <p className="text-slate-400 text-xs mt-1">Share your journey</p>
+        </button>
+
+        {/* Challenges */}
+        <button
+          onClick={() => handleExpandSection('challenges')}
+          className="bg-gradient-to-br from-emerald-400/20 to-teal-500/20 border border-emerald-400/30 rounded-xl p-4 text-left hover:border-emerald-300/50 transition-all"
+        >
+          <div className="text-2xl mb-2">🏆</div>
+          <h3 className="text-white font-bold text-sm">Challenges</h3>
+          <p className="text-slate-400 text-xs mt-1">Push yourself</p>
+        </button>
+      </div>
+
+      {/* ---- SECTION 4: Pro Tip ---- */}
+      <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700/30">
+        <p className="text-slate-300 text-sm">
+          <span className="text-amber-400 font-bold">Tip:</span> The breathing exercises above work even when everything feels overwhelming. Start there.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// ============================================================
+// SHARED COMPONENTS
+// ============================================================
+function BackButton({ onClick, title }) {
+  return (
+    <div className="flex items-center gap-3 mb-6">
+      <button onClick={onClick} className="p-2 hover:bg-slate-800 rounded-lg transition-colors">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" className="text-slate-300">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+        </svg>
+      </button>
+      <h1 className="text-xl font-bold text-white">{title}</h1>
+    </div>
+  );
+}
+
+function LoadingState() {
+  return <div className="text-center py-12 text-slate-400 text-sm">Loading...</div>;
+}
+
+function EmptyState({ message, sub, className = '' }) {
+  return (
+    <div className={`bg-slate-800/30 rounded-xl p-6 text-center border border-slate-700/30 ${className}`}>
+      <p className="text-slate-400 text-sm">{message}</p>
+      {sub && <p className="text-slate-500 text-xs mt-1">{sub}</p>}
+    </div>
+  );
 }
 
 export default ExploreScreen;
