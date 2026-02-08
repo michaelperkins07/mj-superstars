@@ -334,4 +334,147 @@ router.get('/prompts',
   })
 );
 
+
+// ============================================================
+// DAILY RITUALS (General Purpose)
+// ============================================================
+// GET /api/rituals - List user's daily rituals with completion status
+router.get('/',
+  asyncHandler(async (req, res) => {
+    // Return combined morning and evening rituals for today
+    const [morningResult, eveningResult, morningStreak, eveningStreak] = await Promise.all([
+      query(
+        `SELECT id, user_id, intention_text as name, COALESCE(reflection IS NOT NULL, false) as completed_today
+         FROM morning_intentions
+         WHERE user_id = $1 AND date = CURRENT_DATE`,
+        [req.user.id]
+      ),
+      query(
+        `SELECT id, user_id, went_well as name, true as completed_today
+         FROM evening_reflections
+         WHERE user_id = $1 AND date = CURRENT_DATE`,
+        [req.user.id]
+      ),
+      query(
+        `SELECT current_streak FROM user_streaks
+         WHERE user_id = $1 AND streak_type = 'morning_ritual'`,
+        [req.user.id]
+      ),
+      query(
+        `SELECT current_streak FROM user_streaks
+         WHERE user_id = $1 AND streak_type = 'evening_reflection'`,
+        [req.user.id]
+      )
+    ]);
+
+    const rituals = [
+      {
+        id: 'morning',
+        name: 'Morning Intention',
+        description: 'Set your daily intention',
+        completed_today: morningResult.rows.length > 0,
+        current_streak: morningStreak.rows[0]?.current_streak || 0,
+        type: 'morning'
+      },
+      {
+        id: 'evening',
+        name: 'Evening Reflection',
+        description: 'Reflect on your day',
+        completed_today: eveningResult.rows.length > 0,
+        current_streak: eveningStreak.rows[0]?.current_streak || 0,
+        type: 'evening'
+      }
+    ];
+
+    res.json(rituals);
+  })
+);
+
+// POST /api/rituals/:id/complete - Mark a ritual as completed for today
+router.post('/:id/complete',
+  [param('id').isIn(['morning', 'evening'])],
+  validate,
+  asyncHandler(async (req, res) => {
+    const { id } = req.params;
+
+    if (id === 'morning') {
+      // Complete morning ritual by setting a default intention if not already set
+      const existing = await query(
+        `SELECT id FROM morning_intentions WHERE user_id = $1 AND date = CURRENT_DATE`,
+        [req.user.id]
+      );
+
+      if (existing.rows.length === 0) {
+        // Create a default morning ritual completion
+        await query(
+          `INSERT INTO morning_intentions (user_id, intention_text, date)
+           VALUES ($1, 'Completed', CURRENT_DATE)`,
+          [req.user.id]
+        );
+      }
+
+      // Update streak
+      await query(
+        `INSERT INTO user_streaks (user_id, streak_type, current_streak, longest_streak, total_completions, last_completed_date, streak_started_date)
+         VALUES ($1, 'morning_ritual', 1, 1, 1, CURRENT_DATE, CURRENT_DATE)
+         ON CONFLICT (user_id, streak_type)
+         DO UPDATE SET
+           current_streak = CASE
+             WHEN user_streaks.last_completed_date = CURRENT_DATE THEN user_streaks.current_streak
+             WHEN user_streaks.last_completed_date = CURRENT_DATE - 1 THEN user_streaks.current_streak + 1
+             ELSE 1
+           END,
+           longest_streak = GREATEST(user_streaks.longest_streak,
+             CASE WHEN user_streaks.last_completed_date = CURRENT_DATE - 1 THEN user_streaks.current_streak + 1 ELSE 1 END),
+           total_completions = user_streaks.total_completions + CASE WHEN user_streaks.last_completed_date = CURRENT_DATE THEN 0 ELSE 1 END,
+           last_completed_date = CURRENT_DATE,
+           streak_started_date = CASE WHEN user_streaks.last_completed_date < CURRENT_DATE - 1 THEN CURRENT_DATE ELSE user_streaks.streak_started_date END,
+           updated_at = NOW()`,
+        [req.user.id]
+      );
+
+      res.json({ message: 'Morning ritual completed!', ritual_id: 'morning' });
+    } else if (id === 'evening') {
+      // Complete evening ritual by setting a default reflection if not already set
+      const existing = await query(
+        `SELECT id FROM evening_reflections WHERE user_id = $1 AND date = CURRENT_DATE`,
+        [req.user.id]
+      );
+
+      if (existing.rows.length === 0) {
+        // Create a default evening ritual completion
+        await query(
+          `INSERT INTO evening_reflections (user_id, went_well, date)
+           VALUES ($1, 'Completed', CURRENT_DATE)`,
+          [req.user.id]
+        );
+      }
+
+      // Update streak
+      await query(
+        `INSERT INTO user_streaks (user_id, streak_type, current_streak, longest_streak, total_completions, last_completed_date, streak_started_date)
+         VALUES ($1, 'evening_reflection', 1, 1, 1, CURRENT_DATE, CURRENT_DATE)
+         ON CONFLICT (user_id, streak_type)
+         DO UPDATE SET
+           current_streak = CASE
+             WHEN user_streaks.last_completed_date = CURRENT_DATE THEN user_streaks.current_streak
+             WHEN user_streaks.last_completed_date = CURRENT_DATE - 1 THEN user_streaks.current_streak + 1
+             ELSE 1
+           END,
+           longest_streak = GREATEST(user_streaks.longest_streak,
+             CASE WHEN user_streaks.last_completed_date = CURRENT_DATE - 1 THEN user_streaks.current_streak + 1 ELSE 1 END),
+           total_completions = user_streaks.total_completions + CASE WHEN user_streaks.last_completed_date = CURRENT_DATE THEN 0 ELSE 1 END,
+           last_completed_date = CURRENT_DATE,
+           streak_started_date = CASE WHEN user_streaks.last_completed_date < CURRENT_DATE - 1 THEN CURRENT_DATE ELSE user_streaks.streak_started_date END,
+           updated_at = NOW()`,
+        [req.user.id]
+      );
+
+      res.json({ message: 'Evening ritual completed!', ritual_id: 'evening' });
+    } else {
+      throw new APIError('Invalid ritual ID', 400, 'INVALID_RITUAL');
+    }
+  })
+);
+
 export default router;

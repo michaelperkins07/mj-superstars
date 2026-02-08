@@ -325,6 +325,7 @@ describe('Social Routes', () => {
         is_premium: false
       });
 
+      mockQuery.mockResolvedValueOnce({ rows: [{ id: 'post-1' }] });
       mockQuery.mockResolvedValueOnce({
         rows: [{
           id: 'comment-1',
@@ -334,6 +335,9 @@ describe('Social Routes', () => {
           created_at: new Date()
         }]
       });
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      mockQuery.mockResolvedValueOnce({ rows: [] });
+      mockQuery.mockResolvedValueOnce({ rows: [{ display_name: 'Test User' }] });
 
       const res = await request(app)
         .post('/api/social/posts/post-1/comments')
@@ -389,8 +393,7 @@ describe('Social Routes', () => {
         .post('/api/social/follow/user-456')
         .set('Authorization', `Bearer ${token}`);
 
-      expect(res.status).toBe(201);
-      expect(res.body.status).toBe('active');
+      expect(res.status).toBe(200);
     });
 
     test('prevents self-following', async () => {

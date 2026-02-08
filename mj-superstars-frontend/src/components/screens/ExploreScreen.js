@@ -8,6 +8,7 @@ import React, { useState, useEffect } from 'react';
 import { PhotoAPI, SocialAPI, GamificationAPI, RitualAPI } from '../../services/api';
 import Icons from '../shared/Icons';
 import { useAnalytics } from '../../services/analytics';
+import CameraService from '../../services/camera';
 
 function ExploreScreen() {
   const analytics = useAnalytics();

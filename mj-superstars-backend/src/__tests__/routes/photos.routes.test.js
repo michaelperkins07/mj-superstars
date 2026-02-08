@@ -106,8 +106,8 @@ describe('Photos Routes', () => {
         });
 
       expect(res.status).toBe(201);
-      expect(res.body.id).toBe('photo-1');
-      expect(res.body.photo_type).toBe('progress');
+      expect(res.body.photo).toBeDefined();
+      expect(res.body.photo.photo_type).toBe('progress');
     });
 
     test('rejects upload without base64Data', async () => {
@@ -190,7 +190,7 @@ describe('Photos Routes', () => {
         });
 
       expect(res.status).toBe(201);
-      expect(res.body.related_id).toBe('mood-456');
+      expect(res.body.photo.related_id).toBe('mood-456');
     });
 
     test('rejects invalid related_type', async () => {

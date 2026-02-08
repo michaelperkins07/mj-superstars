@@ -84,7 +84,7 @@ describe('Subscription Routes', () => {
 
   describe('GET /api/subscriptions/status', () => {
     test('returns active subscription', async () => {
-      mockAuthSuccess();
+      // SELECT from subscriptions
       mockQuery.mockResolvedValueOnce({
         rows: [{ id: 's1', user_id: 'user-1', product_id: 'premium.monthly', purchase_date: new Date(), expiration_date: new Date(Date.now() + 86400000), is_active: true, is_trial: false, trial_end_date: null, auto_renews: true }]
       });
@@ -100,7 +100,7 @@ describe('Subscription Routes', () => {
     });
 
     test('returns free tier when no subscription', async () => {
-      mockAuthSuccess();
+      // SELECT from subscriptions
       mockQuery.mockResolvedValueOnce({ rows: [] });
 
       const res = await request(app)

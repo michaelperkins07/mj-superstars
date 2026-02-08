@@ -14,715 +14,173 @@ import {
 } from '../services/analytics';
 
 // ============================================================
-// ONBOARDING DATA
+// ONBOARDING SCREENS DATA - SIMPLIFIED 4-SCREEN FLOW
 // ============================================================
 
-const ONBOARDING_STEPS = [
+const ONBOARDING_SCREENS = [
   {
     id: 'welcome',
-    type: 'intro',
-    title: "Hey there! 👋",
-    subtitle: "I'm MJ, your personal mental wellness companion",
-    description: "I'm here to support you every day with understanding, encouragement, and practical tools for your wellbeing.",
-    image: '🌟',
-    cta: "Let's Get Started"
+    title: 'Meet White Mike',
+    subtitle: 'Your personal mental health companion powered by AI',
+    description: 'MJ\'s Superstars brings personalized support, habit tracking, and gamified wellness to your daily routine.',
+    emoji: '🤖',
+    animationClass: 'float-animation'
   },
   {
-    id: 'name',
-    type: 'input',
-    title: "What should I call you?",
-    subtitle: "I'd love to know your name so we can get personal",
-    placeholder: "Your name or nickname",
-    field: 'name',
-    required: true
+    id: 'tracking',
+    title: 'Track Your Journey',
+    subtitle: 'Mood tracking, journaling, and progress insights',
+    description: 'Log your daily emotions, reflect through journaling, and watch your wellness metrics improve over time.',
+    emoji: '📊',
+    animationClass: 'pulse-animation'
   },
   {
-    id: 'goals',
-    type: 'multi-select',
-    title: "What brings you here?",
-    subtitle: "Select all that resonate with you",
-    field: 'goals',
-    options: [
-      { id: 'stress', label: 'Manage stress', icon: '😤' },
-      { id: 'anxiety', label: 'Reduce anxiety', icon: '😰' },
-      { id: 'mood', label: 'Track my mood', icon: '📊' },
-      { id: 'habits', label: 'Build healthy habits', icon: '✨' },
-      { id: 'sleep', label: 'Sleep better', icon: '😴' },
-      { id: 'focus', label: 'Improve focus', icon: '🎯' },
-      { id: 'confidence', label: 'Build confidence', icon: '💪' },
-      { id: 'relationships', label: 'Better relationships', icon: '❤️' }
-    ],
-    minSelections: 1
+    id: 'habits',
+    title: 'Build Better Habits',
+    subtitle: 'Daily rituals, streak rewards, and gamification',
+    description: 'Build momentum with daily challenges, earn rewards for consistency, and unlock achievements as you level up.',
+    emoji: '🔥',
+    animationClass: 'bounce-animation'
   },
   {
-    id: 'mood_baseline',
-    type: 'mood-picker',
-    title: "How are you feeling right now?",
-    subtitle: "Let's start with a quick check-in",
-    field: 'baseline_mood'
-  },
-  {
-    id: 'communication',
-    type: 'single-select',
-    title: "How would you like me to talk?",
-    subtitle: "I'll match your preferred communication style",
-    field: 'communication_style',
-    options: [
-      { id: 'supportive', label: 'Warm & Supportive', description: 'Gentle encouragement and empathy', icon: '🤗' },
-      { id: 'direct', label: 'Direct & Clear', description: 'Straightforward and practical', icon: '📌' },
-      { id: 'playful', label: 'Light & Playful', description: 'Fun, upbeat energy', icon: '😄' },
-      { id: 'coach', label: 'Coach Mode', description: 'Motivating and action-oriented', icon: '🏆' }
-    ]
-  },
-  {
-    id: 'check_ins',
-    type: 'time-picker',
-    title: "When should I check in?",
-    subtitle: "I'll send gentle reminders at these times",
-    fields: [
-      { id: 'morning_time', label: 'Morning check-in', default: '08:00' },
-      { id: 'evening_time', label: 'Evening reflection', default: '21:00' }
-    ]
-  },
-  {
-    id: 'notifications',
-    type: 'permission',
-    title: "Stay connected",
-    subtitle: "Get gentle reminders and encouragement",
-    permission: 'notifications',
-    benefits: [
-      "Daily mood check-in reminders",
-      "Streak celebrations",
-      "Personalized insights",
-      "Crisis support when you need it"
-    ]
-  },
-  {
-    id: 'gamification',
-    type: 'gamification-intro',
-    title: "Level Up Your Wellness 🎮",
-    subtitle: "Here's what you'll unlock",
-    features: [
-      { icon: '🔥', title: 'Daily Login Bonuses', description: 'Earn XP for showing up' },
-      { icon: '⚡', title: 'Streak Multipliers', description: 'Build momentum and unlock rewards' },
-      { icon: '⚙️', title: 'Flash Challenges', description: 'Quick wins throughout your day' },
-      { icon: '🎨', title: 'Vision Board', description: 'Create and track your goals' },
-      { icon: '💪', title: '"Everything is Reps"', description: 'Every action counts - consistency beats perfection' }
-    ],
-    cta: "Show me more"
-  },
-  {
-    id: 'complete',
-    type: 'complete',
-    title: "You're ready! 💪",
-    subtitle: "One more thing before we begin...",
-    quote: '"The only way to do great work is to love what you do. And that starts with showing up, one rep at a time." - White Mike',
-    description: "You've got this. Let's build something incredible together.",
-    cta: "Let's Get It! 💪"
+    id: 'community',
+    title: 'You\'re Not Alone',
+    subtitle: 'Connect with a supportive community',
+    description: 'Share your journey, find inspiration, and grow together with others on their wellness path.',
+    emoji: '💪',
+    animationClass: 'swing-animation'
   }
 ];
 
 // ============================================================
-// STEP COMPONENTS
+// ANIMATED EMOJI COMPONENT
 // ============================================================
 
-/**
- * Intro/Welcome Step
- */
-function IntroStep({ step, onNext }) {
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="text-8xl mb-8"
-      >
-        {step.image}
-      </motion.div>
-
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-3xl font-bold text-white mb-3"
-      >
-        {step.title}
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-xl text-sky-300 mb-4"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
-        className="text-slate-400 max-w-sm mb-8"
-      >
-        {step.description}
-      </motion.p>
-
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={onNext}
-        className="bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 px-8 rounded-2xl text-lg"
-      >
-        {step.cta}
-      </motion.button>
-    </div>
-  );
-}
-
-/**
- * Text Input Step
- */
-function InputStep({ step, value, onChange, onNext, canContinue }) {
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (canContinue) onNext();
+function AnimatedEmoji({ emoji, animation }) {
+  const getKeyframes = () => {
+    switch(animation) {
+      case 'float-animation':
+        return {
+          y: [0, -15, 0],
+          transition: {
+            duration: 3,
+            repeat: Infinity,
+            ease: 'easeInOut'
+          }
+        };
+      case 'pulse-animation':
+        return {
+          scale: [1, 1.15, 1],
+          transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut'
+          }
+        };
+      case 'bounce-animation':
+        return {
+          y: [0, -25, 0],
+          transition: {
+            duration: 1.5,
+            repeat: Infinity,
+            ease: 'easeOut'
+          }
+        };
+      case 'swing-animation':
+        return {
+          rotate: [0, 8, -8, 0],
+          transition: {
+            duration: 2,
+            repeat: Infinity,
+            ease: 'easeInOut'
+          }
+        };
+      default:
+        return {};
+    }
   };
 
   return (
-    <div className="px-6 py-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-8"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.form
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        onSubmit={handleSubmit}
-        className="max-w-sm mx-auto"
-      >
-        <input
-          type="text"
-          value={value || ''}
-          onChange={(e) => onChange(step.field, e.target.value)}
-          placeholder={step.placeholder}
-          autoFocus
-          className="w-full bg-slate-800 border-2 border-slate-700 focus:border-sky-500 rounded-2xl px-6 py-4 text-white text-lg text-center placeholder-slate-500 outline-none transition-colors"
-        />
-      </motion.form>
-    </div>
+    <motion.div
+      className="text-8xl"
+      animate={getKeyframes()}
+    >
+      {emoji}
+    </motion.div>
   );
 }
 
-/**
- * Multi-Select Step
- */
-function MultiSelectStep({ step, value = [], onChange, onNext }) {
-  const haptics = useHapticsHook();
+// ============================================================
+// DOT INDICATORS COMPONENT
+// ============================================================
 
-  const toggleOption = (optionId) => {
-    haptics.selection();
-    const current = value || [];
-    const newValue = current.includes(optionId)
-      ? current.filter(id => id !== optionId)
-      : [...current, optionId];
-    onChange(step.field, newValue);
-  };
-
+function DotIndicators({ currentScreen, totalScreens }) {
   return (
-    <div className="px-6 py-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-6"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="grid grid-cols-2 gap-3 max-w-lg mx-auto"
-      >
-        {step.options.map((option, i) => {
-          const isSelected = value?.includes(option.id);
-          return (
-            <motion.button
-              key={option.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.05 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => toggleOption(option.id)}
-              className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all ${
-                isSelected
-                  ? 'bg-sky-500/20 border-sky-500 text-white'
-                  : 'bg-slate-800/50 border-slate-700 text-slate-300 hover:border-slate-600'
-              }`}
-            >
-              <span className="text-2xl">{option.icon}</span>
-              <span className="text-sm font-medium text-left">{option.label}</span>
-              {isSelected && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="ml-auto w-5 h-5 bg-sky-500 rounded-full flex items-center justify-center"
-                >
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </motion.div>
-              )}
-            </motion.button>
-          );
-        })}
-      </motion.div>
-    </div>
-  );
-}
-
-/**
- * Single-Select Step
- */
-function SingleSelectStep({ step, value, onChange }) {
-  const haptics = useHapticsHook();
-
-  const selectOption = (optionId) => {
-    haptics.selection();
-    onChange(step.field, optionId);
-  };
-
-  return (
-    <div className="px-6 py-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-6"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-3 max-w-md mx-auto"
-      >
-        {step.options.map((option, i) => {
-          const isSelected = value === option.id;
-          return (
-            <motion.button
-              key={option.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 0.2 + i * 0.1 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => selectOption(option.id)}
-              className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all text-left ${
-                isSelected
-                  ? 'bg-sky-500/20 border-sky-500'
-                  : 'bg-slate-800/50 border-slate-700 hover:border-slate-600'
-              }`}
-            >
-              <span className="text-3xl">{option.icon}</span>
-              <div className="flex-1">
-                <div className={`font-semibold ${isSelected ? 'text-white' : 'text-slate-200'}`}>
-                  {option.label}
-                </div>
-                <div className="text-sm text-slate-400">{option.description}</div>
-              </div>
-              {isSelected && (
-                <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  className="w-6 h-6 bg-sky-500 rounded-full flex items-center justify-center"
-                >
-                  <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                  </svg>
-                </motion.div>
-              )}
-            </motion.button>
-          );
-        })}
-      </motion.div>
-    </div>
-  );
-}
-
-/**
- * Mood Picker Step
- */
-function MoodPickerStep({ step, value, onChange }) {
-  const haptics = useHapticsHook();
-
-  const moods = [
-    { score: 1, emoji: '😢', label: 'Really struggling' },
-    { score: 2, emoji: '😔', label: 'Not great' },
-    { score: 3, emoji: '😐', label: 'Okay' },
-    { score: 4, emoji: '🙂', label: 'Pretty good' },
-    { score: 5, emoji: '😊', label: 'Great!' }
-  ];
-
-  const selectMood = (score) => {
-    haptics.moodLogged();
-    onChange(step.field, score);
-  };
-
-  return (
-    <div className="px-6 py-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-8"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="flex justify-center gap-4"
-      >
-        {moods.map((mood, i) => {
-          const isSelected = value === mood.score;
-          return (
-            <motion.button
-              key={mood.score}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + i * 0.1 }}
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => selectMood(mood.score)}
-              className={`flex flex-col items-center gap-2 p-3 rounded-2xl transition-all ${
-                isSelected
-                  ? 'bg-sky-500/20 ring-2 ring-sky-500'
-                  : 'hover:bg-slate-800'
-              }`}
-            >
-              <span className={`text-4xl transition-transform ${isSelected ? 'scale-125' : ''}`}>
-                {mood.emoji}
-              </span>
-              <span className={`text-xs ${isSelected ? 'text-sky-300' : 'text-slate-500'}`}>
-                {mood.label}
-              </span>
-            </motion.button>
-          );
-        })}
-      </motion.div>
-    </div>
-  );
-}
-
-/**
- * Time Picker Step
- */
-function TimePickerStep({ step, values, onChange }) {
-  return (
-    <div className="px-6 py-8">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-8"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-4 max-w-sm mx-auto"
-      >
-        {step.fields.map((field, i) => (
-          <motion.div
-            key={field.id}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 + i * 0.1 }}
-            className="bg-slate-800/50 rounded-xl p-4 flex items-center justify-between"
-          >
-            <span className="text-white font-medium">{field.label}</span>
-            <input
-              type="time"
-              value={values?.[field.id] || field.default}
-              onChange={(e) => onChange(field.id, e.target.value)}
-              className="bg-slate-700 border border-slate-600 rounded-lg px-3 py-2 text-white focus:border-sky-500 outline-none"
-            />
-          </motion.div>
-        ))}
-      </motion.div>
-    </div>
-  );
-}
-
-/**
- * Permission Request Step
- */
-function PermissionStep({ step, onGrant, onSkip }) {
-  const [status, setStatus] = useState('pending'); // pending, granted, denied
-
-  const handleGrant = async () => {
-    // This would trigger the actual permission request
-    // For now, simulate success
-    setStatus('granted');
-    onGrant();
-  };
-
-  return (
-    <div className="px-6 py-8">
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-20 h-20 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-6"
-      >
-        <span className="text-4xl">🔔</span>
-      </motion.div>
-
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-2xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-6"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="bg-slate-800/50 rounded-xl p-5 mb-6 max-w-sm mx-auto"
-      >
-        <ul className="space-y-3">
-          {step.benefits.map((benefit, i) => (
-            <li key={i} className="flex items-center gap-3 text-slate-300">
-              <div className="w-5 h-5 bg-sky-500/20 rounded-full flex items-center justify-center flex-shrink-0">
-                <svg className="w-3 h-3 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-              </div>
-              <span className="text-sm">{benefit}</span>
-            </li>
-          ))}
-        </ul>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="flex flex-col gap-3 max-w-sm mx-auto"
-      >
-        <button
-          onClick={handleGrant}
-          className="w-full bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 rounded-xl transition-colors"
-        >
-          Enable Notifications
-        </button>
-        <button
-          onClick={onSkip}
-          className="text-slate-400 hover:text-slate-300 text-sm py-2"
-        >
-          Maybe later
-        </button>
-      </motion.div>
-    </div>
-  );
-}
-
-/**
- * Gamification Intro Step
- */
-function GamificationIntroStep({ step, onNext }) {
-  return (
-    <div className="px-6 py-8">
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="w-24 h-24 bg-gradient-to-r from-purple-500/20 to-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-8"
-      >
-        <span className="text-6xl">🎮</span>
-      </motion.div>
-
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="text-3xl font-bold text-white mb-2 text-center"
-      >
-        {step.title}
-      </motion.h2>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-        className="text-slate-400 text-center mb-8"
-      >
-        {step.subtitle}
-      </motion.p>
-
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="space-y-3 max-w-lg mx-auto mb-8"
-      >
-        {step.features.map((feature, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.2 + i * 0.08 }}
-            className="bg-gradient-to-r from-slate-800/50 to-slate-800/30 rounded-xl p-4 flex items-start gap-4 border border-slate-700/50 hover:border-sky-500/30 transition-colors"
-          >
-            <span className="text-3xl flex-shrink-0">{feature.icon}</span>
-            <div className="flex-1 text-left">
-              <h3 className="font-semibold text-white">{feature.title}</h3>
-              <p className="text-sm text-slate-400">{feature.description}</p>
-            </div>
-          </motion.div>
-        ))}
-      </motion.div>
-
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={onNext}
-        className="w-full bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 px-8 rounded-2xl text-lg"
-      >
-        {step.cta}
-      </motion.button>
-    </div>
-  );
-}
-
-/**
- * Complete Step
- */
-function CompleteStep({ step, userName, onComplete }) {
-  const haptics = useHapticsHook();
-
-  useEffect(() => {
-    haptics.achievementUnlocked();
-  }, []);
-
-  return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6">
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="text-8xl mb-6"
-      >
-        🎉
-      </motion.div>
-
-      <motion.h1
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-        className="text-3xl font-bold text-white mb-3"
-      >
-        {step.title}
-      </motion.h1>
-
-      <motion.p
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3 }}
-        className="text-xl text-sky-300 mb-4"
-      >
-        {userName ? `Nice to meet you, ${userName}!` : step.subtitle}
-      </motion.p>
-
-      {step.quote && (
+    <div className="flex justify-center gap-2 mb-8">
+      {Array.from({ length: totalScreens }).map((_, index) => (
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="bg-gradient-to-r from-purple-500/10 to-sky-500/10 border border-purple-500/30 rounded-2xl p-6 max-w-sm mx-auto mb-8"
-        >
-          <p className="text-lg italic text-sky-100 leading-relaxed">
-            {step.quote}
-          </p>
-        </motion.div>
-      )}
+          key={index}
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ delay: index * 0.1 }}
+          className={`h-2 rounded-full transition-all ${
+            index === currentScreen
+              ? 'bg-sky-500 w-8'
+              : 'bg-slate-600 w-2'
+          }`}
+        />
+      ))}
+    </div>
+  );
+}
+
+// ============================================================
+// SCREEN COMPONENT
+// ============================================================
+
+function OnboardingScreen({ screen, onNext, onSkip }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.4 }}
+      className="flex flex-col items-center justify-center min-h-[70vh] text-center px-6"
+    >
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="mb-10"
+      >
+        <AnimatedEmoji emoji={screen.emoji} animation={screen.animationClass} />
+      </motion.div>
+
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-3xl font-bold text-white mb-3"
+      >
+        {screen.title}
+      </motion.h1>
+
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-lg text-sky-300 mb-4 font-semibold"
+      >
+        {screen.subtitle}
+      </motion.p>
 
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-slate-400 max-w-sm mb-8"
+        className="text-slate-400 max-w-md mb-8 leading-relaxed"
       >
-        {step.description}
+        {screen.description}
       </motion.p>
 
       <motion.button
@@ -730,12 +188,12 @@ function CompleteStep({ step, userName, onComplete }) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
         whileTap={{ scale: 0.97 }}
-        onClick={onComplete}
-        className="bg-gradient-to-r from-sky-500 to-purple-500 hover:from-sky-400 hover:to-purple-400 text-white font-semibold py-4 px-8 rounded-2xl text-lg shadow-lg shadow-sky-500/30"
+        onClick={onNext}
+        className="bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 px-10 rounded-2xl text-lg transition-colors shadow-lg shadow-sky-500/30"
       >
-        {step.cta}
+        Next
       </motion.button>
-    </div>
+    </motion.div>
   );
 }
 
@@ -744,214 +202,109 @@ function CompleteStep({ step, userName, onComplete }) {
 // ============================================================
 
 export function Onboarding({ onComplete }) {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [data, setData] = useState({});
-  const [startTime] = useState(Date.now());
+  const [currentScreen, setCurrentScreen] = useState(0);
+  const [hasSkipped, setHasSkipped] = useState(false);
   const haptics = useHapticsHook();
+  const totalScreens = ONBOARDING_SCREENS.length;
+  const screen = ONBOARDING_SCREENS[currentScreen];
+  const isLastScreen = currentScreen === totalScreens - 1;
 
-  const step = ONBOARDING_STEPS[currentStep];
-  const isLastStep = currentStep === ONBOARDING_STEPS.length - 1;
-  const isFirstStep = currentStep === 0;
-
-  // Track onboarding started
   useEffect(() => {
     trackOnboardingStarted();
   }, []);
 
-  // Update data
-  const updateData = useCallback((field, value) => {
-    setData(prev => ({ ...prev, [field]: value }));
-  }, []);
-
-  // Check if can continue
-  const canContinue = useCallback(() => {
-    if (step.required) {
-      const value = data[step.field];
-      return value && (typeof value === 'string' ? value.trim() : true);
-    }
-    if (step.minSelections) {
-      const value = data[step.field] || [];
-      return value.length >= step.minSelections;
-    }
-    if (step.type === 'single-select') {
-      return !!data[step.field];
-    }
-    if (step.type === 'mood-picker') {
-      return !!data[step.field];
-    }
-    return true;
-  }, [step, data]);
-
-  // Go to next step
-  const nextStep = useCallback(() => {
-    if (!canContinue()) return;
-
+  const handleNext = useCallback(() => {
     haptics.buttonPress();
-    trackOnboardingStepCompleted(currentStep, {
-      stepName: step.id,
-      ...data
-    });
+    trackOnboardingStepCompleted(currentScreen, { screenId: screen.id });
 
-    if (isLastStep) {
-      const durationSeconds = Math.round((Date.now() - startTime) / 1000);
-      trackOnboardingCompleted({ durationSeconds, ...data });
-      onComplete(data);
+    if (isLastScreen) {
+      trackOnboardingCompleted({ skipped: false });
+      onComplete({ onboardingCompleted: true });
     } else {
-      setCurrentStep(prev => prev + 1);
+      setCurrentScreen(prev => prev + 1);
     }
-  }, [currentStep, step, data, isLastStep, canContinue, haptics, startTime, onComplete]);
+  }, [currentScreen, screen, isLastScreen, haptics, onComplete]);
 
-  // Go to previous step
-  const prevStep = useCallback(() => {
+  const handleSkip = useCallback(() => {
     haptics.buttonPress();
-    if (currentStep > 0) {
-      setCurrentStep(prev => prev - 1);
-    }
-  }, [currentStep, haptics]);
-
-  // Skip onboarding
-  const skipOnboarding = useCallback(() => {
-    trackOnboardingSkipped(currentStep);
-    onComplete(data);
-  }, [currentStep, data, onComplete]);
-
-  // Render step content
-  const renderStep = () => {
-    switch (step.type) {
-      case 'intro':
-        return <IntroStep step={step} onNext={nextStep} />;
-      case 'input':
-        return (
-          <InputStep
-            step={step}
-            value={data[step.field]}
-            onChange={updateData}
-            onNext={nextStep}
-            canContinue={canContinue()}
-          />
-        );
-      case 'multi-select':
-        return (
-          <MultiSelectStep
-            step={step}
-            value={data[step.field]}
-            onChange={updateData}
-            onNext={nextStep}
-          />
-        );
-      case 'single-select':
-        return (
-          <SingleSelectStep
-            step={step}
-            value={data[step.field]}
-            onChange={updateData}
-          />
-        );
-      case 'mood-picker':
-        return (
-          <MoodPickerStep
-            step={step}
-            value={data[step.field]}
-            onChange={updateData}
-          />
-        );
-      case 'time-picker':
-        return (
-          <TimePickerStep
-            step={step}
-            values={data}
-            onChange={updateData}
-          />
-        );
-      case 'permission':
-        return (
-          <PermissionStep
-            step={step}
-            onGrant={nextStep}
-            onSkip={nextStep}
-          />
-        );
-      case 'gamification-intro':
-        return <GamificationIntroStep step={step} onNext={nextStep} />;
-      case 'complete':
-        return (
-          <CompleteStep
-            step={step}
-            userName={data.name}
-            onComplete={nextStep}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+    setHasSkipped(true);
+    trackOnboardingSkipped(currentScreen);
+    onComplete({ onboardingCompleted: false, skipped: true });
+  }, [currentScreen, haptics, onComplete]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 flex flex-col">
-      {/* Progress Bar */}
-      {!isFirstStep && !isLastStep && (
-        <div className="px-6 pt-4">
-          <div className="flex items-center gap-4">
-            <button
-              onClick={prevStep}
-              className="w-10 h-10 flex items-center justify-center text-slate-400 hover:text-white rounded-full hover:bg-slate-800 transition-colors"
-            >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
+      {/* Skip Button */}
+      <motion.button
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.3 }}
+        onClick={handleSkip}
+        className="absolute top-6 right-6 text-slate-500 hover:text-slate-300 text-sm font-medium transition-colors"
+      >
+        Skip
+      </motion.button>
 
-            <div className="flex-1 h-2 bg-slate-800 rounded-full overflow-hidden">
-              <motion.div
-                initial={{ width: 0 }}
-                animate={{ width: `${((currentStep + 1) / ONBOARDING_STEPS.length) * 100}%` }}
-                transition={{ duration: 0.3 }}
-                className="h-full bg-gradient-to-r from-sky-500 to-purple-500 rounded-full"
-              />
-            </div>
+      {/* Main Content */}
+      <div className="flex flex-col items-center justify-center min-h-screen px-4">
+        {/* Dot Indicators */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="pt-12"
+        >
+          <DotIndicators currentScreen={currentScreen} totalScreens={totalScreens} />
+        </motion.div>
 
-            <button
-              onClick={skipOnboarding}
-              className="text-slate-500 hover:text-slate-300 text-sm"
-            >
-              Skip
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Step Content */}
-      <div className="flex-1">
+        {/* Screen Content */}
         <AnimatePresence mode="wait">
-          <motion.div
-            key={step.id}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderStep()}
-          </motion.div>
+          <OnboardingScreen
+            key={screen.id}
+            screen={screen}
+            onNext={handleNext}
+            onSkip={handleSkip}
+          />
         </AnimatePresence>
+
+        {/* Last Screen Hint */}
+        {isLastScreen && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="mt-6"
+          >
+            <p className="text-slate-500 text-sm">
+              Swipe up or tap the button above to begin
+            </p>
+          </motion.div>
+        )}
       </div>
 
-      {/* Continue Button */}
-      {!['intro', 'permission', 'complete', 'gamification-intro'].includes(step.type) && (
-        <div className="p-6">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={nextStep}
-            disabled={!canContinue()}
-            className={`w-full py-4 rounded-2xl font-semibold text-lg transition-all ${
-              canContinue()
-                ? 'bg-sky-500 hover:bg-sky-400 text-white'
-                : 'bg-slate-800 text-slate-500 cursor-not-allowed'
-            }`}
-          >
-            Continue
-          </motion.button>
-        </div>
-      )}
+      {/* CSS Animations */}
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-15px); }
+        }
+
+        @keyframes pulse-scale {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.15); }
+        }
+
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-25px); }
+        }
+
+        @keyframes swing {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(8deg); }
+          75% { transform: rotate(-8deg); }
+        }
+      `}</style>
     </div>
   );
 }

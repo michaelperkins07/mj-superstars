@@ -45,5 +45,11 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>MJ Superstars needs camera access to capture progress photos and memories</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>MJ Superstars needs photo library access to upload images from your gallery</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>MJ Superstars needs permission to save photos to your library</string>
 </dict>
 </plist>
