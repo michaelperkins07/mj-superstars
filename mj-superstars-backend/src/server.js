@@ -293,6 +293,7 @@ app.use(sentryErrorHandler());
 app.get('/api/version', (req, res) => {
   res.json({ version: '2.0.0', deploy: 'photos-social-gamification', timestamp: new Date().toISOString() });
 
+});
 // API health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({
@@ -303,8 +304,6 @@ app.get('/api/health', (req, res) => {
     memory: process.memoryUsage()
   });
 });
-});
-
 app.use(notFound);
 app.use(errorHandler);
 
