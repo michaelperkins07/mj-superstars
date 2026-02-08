@@ -43,6 +43,10 @@ import featureFlagRoutes from './routes/featureFlags.js';
 import gdprRoutes from './routes/gdpr.js';
 import webhookRoutes from './routes/webhooks.js';
 import subscriptionRoutes from './routes/subscriptions.js';
+import photoRoutes from './routes/photos.js';
+import socialFeedRoutes from './routes/social.js';
+import emailPrefRoutes from './routes/email-preferences.js';
+import gamificationRoutes from './routes/gamification.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -251,6 +255,10 @@ app.use('/api/flags', featureFlagRoutes);
 app.use('/api/gdpr', gdprRoutes);
 app.use('/api/webhooks', webhookRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
+app.use('/api/photos', photoRoutes);
+app.use('/api/social', socialFeedRoutes);
+app.use('/api/email-preferences', emailPrefRoutes);
+app.use('/api/gamification', gamificationRoutes);
 
 // ============================================================
 // ERROR HANDLING
