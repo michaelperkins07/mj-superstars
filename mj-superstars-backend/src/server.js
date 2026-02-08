@@ -267,6 +267,11 @@ app.use('/api/gamification', gamificationRoutes);
 // Sentry error handler - MUST be before other error handlers
 app.use(sentryErrorHandler());
 
+// Version check endpoint
+app.get('/api/version', (req, res) => {
+  res.json({ version: '2.0.0', deploy: 'photos-social-gamification', timestamp: new Date().toISOString() });
+});
+
 app.use(notFound);
 app.use(errorHandler);
 
