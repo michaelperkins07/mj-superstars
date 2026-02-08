@@ -1,8 +1,7 @@
-// ============================================================
+// ==========================================================
 // MJ's Superstars - Main App Component
 // Handles navigation between Auth, Onboarding, and Main App
-// ============================================================
-
+// ==========================================================
 import React, { useState, useEffect } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import AuthScreen from './components/AuthScreen';
@@ -15,18 +14,18 @@ import ExploreScreen from './components/screens/ExploreScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
+import { ToastProvider } from './components/shared/Toast';
 
-// ============================================================
+// ==========================================================
 // MAIN APP COMPONENT
-// ============================================================
-
+// ==========================================================
 function MJSuperstars() {
   const { isAuthenticated, profile, loading, user, setProfile, completeOnboarding } = useAuth();
   const [activeTab, setActiveTab] = useState('chat');
+
   useEffect(() => {
     initErrorTracking();
   }, []);
-
 
   // Handler for "Continue without account" - creates a guest profile
   const handleSkipAuth = () => {
@@ -71,6 +70,7 @@ function MJSuperstars() {
   // Show password reset screen if URL contains reset token
   const isResetPasswordUrl = window.location.pathname.includes('reset-password') &&
     new URLSearchParams(window.location.search).get('token');
+
   if (isResetPasswordUrl) {
     return <AuthScreen onSkip={handleSkipAuth} onSuccess={handleAuthSuccess} showSkip={false} />;
   }
@@ -82,6 +82,7 @@ function MJSuperstars() {
 
   // Show onboarding if not completed
   const onboardingComplete = profile?.onboarding_completed || profile?.onboardingComplete || user?.onboarding_completed;
+
   if (!onboardingComplete) {
     return <Onboarding onComplete={handleOnboardingComplete} />;
   }
@@ -110,6 +111,7 @@ function MJSuperstars() {
 
   return (
     <SentryErrorBoundary>
+      <ToastProvider>
       <div className="min-h-screen bg-slate-900 flex flex-col" style={{ height: '100dvh' }}>
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
@@ -138,7 +140,9 @@ function MJSuperstars() {
         </div>
       </div>
     </div>
+    </ToastProvider>
     </SentryErrorBoundary>
   );
 }
+
 export default MJSuperstars;
