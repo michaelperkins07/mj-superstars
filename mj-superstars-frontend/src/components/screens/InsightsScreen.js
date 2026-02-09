@@ -8,28 +8,28 @@ import { InsightsAPI, ProgressAPI } from '../../services/api';
 // Helpers for guest data retrieval
 const getMoodEntries = () => {
   try {
-    const raw = localStorage.getItem('mj_mood_entries');
+    const raw = localStorage.getItem('mj_guest_moods');
     return raw ? JSON.parse(raw) : [];
   } catch { return []; }
 };
 
 const getTasks = () => {
   try {
-    const raw = localStorage.getItem('mj_tasks');
+    const raw = localStorage.getItem('mj_guest_tasks');
     return raw ? JSON.parse(raw) : [];
   } catch { return []; }
 };
 
 const getJournalEntries = () => {
   try {
-    const raw = localStorage.getItem('mj_journal_entries');
+    const raw = localStorage.getItem('mj_guest_journal');
     return raw ? JSON.parse(raw) : [];
   } catch { return []; }
 };
 
 const getChatMessages = () => {
   try {
-    const raw = localStorage.getItem('mj_chat_messages');
+    const raw = localStorage.getItem('mj_chat_history');
     return raw ? JSON.parse(raw) : [];
   } catch { return []; }
 };
@@ -52,14 +52,14 @@ const getPeriodRange = (days) => {
 const filterDataByPeriod = (entries, days) => {
   const { start } = getPeriodRange(days);
   return entries.filter((entry) => {
-    const entryDate = new Date(entry.timestamp || entry.createdAt);
+    const entryDate = new Date(entry.created_at || entry.timestamp || entry.createdAt);
     return entryDate >= start;
   });
 };
 
 const calculateMoodStats = (entries) => {
   if (entries.length === 0) return { average: 0, highest: 0, lowest: 5 };
-  const moods = entries.map((e) => e.mood || 3);
+  const moods = entries.map((e) => e.mood_score || e.mood || 3);
   const average = moods.reduce((a, b) => a + b, 0) / moods.length;
   return { average: parseFloat(average.toFixed(1)), highest: Math.max(...moods), lowest: Math.min(...moods), total: moods.length };
 };
@@ -67,10 +67,10 @@ const calculateMoodStats = (entries) => {
 const groupByDay = (entries) => {
   const grouped = {};
   entries.forEach((entry) => {
-    const date = new Date(entry.timestamp || entry.createdAt);
+    const date = new Date(entry.created_at || entry.timestamp || entry.createdAt);
     const dayKey = date.toLocaleDateString('en-US', { weekday: 'short' });
     if (!grouped[dayKey]) grouped[dayKey] = [];
-    grouped[dayKey].push(entry.mood || 3);
+    grouped[dayKey].push(entry.mood_score || entry.mood || 3);
   });
   return Object.entries(grouped).map(([day, moods]) => ({
     day, average: moods.reduce((a, b) => a + b, 0) / moods.length, count: moods.length,
@@ -83,10 +83,10 @@ const MoodTrendChart = ({ entries, days }) => {
     if (entries.length === 0) return [];
     const grouped = {};
     entries.forEach((entry) => {
-      const date = new Date(entry.timestamp || entry.createdAt);
+      const date = new Date(entry.created_at || entry.timestamp || entry.createdAt);
       const dayKey = date.toLocaleDateString('en-US');
       if (!grouped[dayKey]) grouped[dayKey] = [];
-      grouped[dayKey].push(entry.mood || 3);
+      grouped[dayKey].push(entry.mood_score || entry.mood || 3);
     });
     return Object.entries(grouped)
       .sort((a, b) => new Date(a[0]) - new Date(b[0]))
@@ -274,17 +274,21 @@ export default function InsightsScreen({ onNavigateTo }) {
     }
   }, [isAuthenticated, user, period, fetchAuthenticatedData]);
 
-  const allMoodEntries = useMemo(() => getMoodEntries(), []);
+  // Use a refresh counter to force re-reads from localStorage on mount/tab switch
+  const [refreshKey, setRefreshKey] = useState(0);
+  useEffect(() => { setRefreshKey((k) => k + 1); }, []);
+
+  const allMoodEntries = useMemo(() => getMoodEntries(), [refreshKey]);
   const periodMoodEntries = useMemo(() => filterDataByPeriod(allMoodEntries, period), [allMoodEntries, period]);
-  const allTasks = useMemo(() => getTasks(), []);
+  const allTasks = useMemo(() => getTasks(), [refreshKey]);
   const periodTasks = useMemo(() => filterDataByPeriod(allTasks, period), [allTasks, period]);
-  const completedTasks = useMemo(() => periodTasks.filter((t) => t.completed).length, [periodTasks]);
-  const allJournalEntries = useMemo(() => getJournalEntries(), []);
+  const completedTasks = useMemo(() => periodTasks.filter((t) => t.completed || t.done).length, [periodTasks]);
+  const allJournalEntries = useMemo(() => getJournalEntries(), [refreshKey]);
   const periodJournalEntries = useMemo(() => filterDataByPeriod(allJournalEntries, period), [allJournalEntries, period]);
-  const chatMessages = useMemo(() => getChatMessages(), []);
+  const chatMessages = useMemo(() => getChatMessages(), [refreshKey]);
   const periodChatMessages = useMemo(() => filterDataByPeriod(chatMessages, period), [chatMessages, period]);
   const daysByMood = useMemo(() => groupByDay(periodMoodEntries), [periodMoodEntries]);
-  const hasData = periodMoodEntries.length > 0 || completedTasks > 0 || periodJournalEntries.length > 0;
+  const hasData = allMoodEntries.length > 0 || completedTasks > 0 || allJournalEntries.length > 0;
 
   const handlePeriodChange = useCallback((days) => {
     haptics.selection();
