@@ -109,11 +109,11 @@ function MorningRitual({ onComplete, existingData }) {
   const [mood, setMood] = useState(existingData?.mood_score || 0);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
 
   const handleSave = async () => {
     if (!intention.trim()) {
-      showToast('Please enter an intention', 'error');
+      addToast('Please enter an intention', 'warning');
       return;
     }
 
@@ -146,11 +146,11 @@ function MorningRitual({ onComplete, existingData }) {
         localStorage.setItem('mj_morning_intentions', JSON.stringify(updated));
       }
 
-      showToast('Morning intention saved! 🌅', 'success');
+      addToast('Morning intention saved! 🌅', 'success');
       onComplete();
     } catch (error) {
       console.error('Error saving morning ritual:', error);
-      showToast('Failed to save intention', 'error');
+      addToast('Failed to save intention', 'warning');
     } finally {
       setIsLoading(false);
     }
@@ -210,11 +210,11 @@ function EveningRitual({ onComplete, existingData }) {
   const [sleep, setSleep] = useState(existingData?.sleep_readiness || 0);
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
-  const { showToast } = useToast();
+  const { addToast } = useToast();
 
   const handleSave = async () => {
     if (!wentWell.trim() || !grateful.trim()) {
-      showToast('Please fill in what went well and what you are grateful for', 'error');
+      addToast('Please fill in what went well and what you are grateful for', 'warning');
       return;
     }
 
@@ -255,11 +255,11 @@ function EveningRitual({ onComplete, existingData }) {
         localStorage.setItem('mj_evening_reflections', JSON.stringify(updated));
       }
 
-      showToast('Evening reflection completed! 🌙', 'success');
+      addToast('Evening reflection completed! 🌙', 'success');
       onComplete();
     } catch (error) {
       console.error('Error saving evening ritual:', error);
-      showToast('Failed to save reflection', 'error');
+      addToast('Failed to save reflection', 'warning');
     } finally {
       setIsLoading(false);
     }
