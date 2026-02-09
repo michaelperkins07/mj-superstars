@@ -1,8 +1,7 @@
 // ============================================================
 // MJ's Superstars - Onboarding Flow
-// Beautiful, personalized onboarding experience
+// Conversational personalization that feeds MJ's coaching
 // ============================================================
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useHapticsHook } from '../services/haptics';
@@ -14,297 +13,525 @@ import {
 } from '../services/analytics';
 
 // ============================================================
-// ONBOARDING SCREENS DATA - SIMPLIFIED 4-SCREEN FLOW
+// STEP DATA
 // ============================================================
+const STRUGGLES = [
+  { id: 'anxiety', label: 'Anxiety & Worry', emoji: '😰' },
+  { id: 'motivation', label: 'Staying Motivated', emoji: '😩' },
+  { id: 'confidence', label: 'Self-Confidence', emoji: '🪞' },
+  { id: 'stress', label: 'Stress & Burnout', emoji: '🔥' },
+  { id: 'relationships', label: 'Relationships', emoji: '💔' },
+  { id: 'focus', label: 'Focus & Discipline', emoji: '🎯' },
+  { id: 'sleep', label: 'Sleep & Rest', emoji: '😴' },
+  { id: 'emotions', label: 'Managing Emotions', emoji: '🌊' },
+];
 
-const ONBOARDING_SCREENS = [
-  {
-    id: 'welcome',
-    title: 'Meet White Mike',
-    subtitle: 'Your personal mental health companion powered by AI',
-    description: 'MJ\'s Superstars brings personalized support, habit tracking, and gamified wellness to your daily routine.',
-    emoji: '🤖',
-    animationClass: 'float-animation'
-  },
-  {
-    id: 'tracking',
-    title: 'Track Your Journey',
-    subtitle: 'Mood tracking, journaling, and progress insights',
-    description: 'Log your daily emotions, reflect through journaling, and watch your wellness metrics improve over time.',
-    emoji: '📊',
-    animationClass: 'pulse-animation'
-  },
-  {
-    id: 'habits',
-    title: 'Build Better Habits',
-    subtitle: 'Daily rituals, streak rewards, and gamification',
-    description: 'Build momentum with daily challenges, earn rewards for consistency, and unlock achievements as you level up.',
-    emoji: '🔥',
-    animationClass: 'bounce-animation'
-  },
-  {
-    id: 'community',
-    title: 'You\'re Not Alone',
-    subtitle: 'Connect with a supportive community',
-    description: 'Share your journey, find inspiration, and grow together with others on their wellness path.',
-    emoji: '💪',
-    animationClass: 'swing-animation'
-  }
+const GOALS = [
+  { id: 'calm', label: 'Feel Calmer Daily', emoji: '🧘' },
+  { id: 'habits', label: 'Build Better Habits', emoji: '📈' },
+  { id: 'confidence', label: 'Boost Confidence', emoji: '💪' },
+  { id: 'mindset', label: 'Stronger Mindset', emoji: '🧠' },
+  { id: 'health', label: 'Improve Health', emoji: '❤️' },
+  { id: 'journal', label: 'Reflect & Journal', emoji: '📓' },
+  { id: 'relationships', label: 'Better Relationships', emoji: '🤝' },
+  { id: 'growth', label: 'Personal Growth', emoji: '🌱' },
+];
+
+const COMM_STYLES = [
+  { id: 'real_talk', label: 'Real Talk', desc: 'Keep it 100 — direct, no sugarcoating', emoji: '🎤' },
+  { id: 'gentle', label: 'Gentle & Supportive', desc: 'Patient, encouraging, soft approach', emoji: '🤗' },
+  { id: 'coach', label: 'Coach Mode', desc: 'Push me, hold me accountable', emoji: '🏆' },
+  { id: 'mix', label: 'Mix It Up', desc: 'Read the room — adapt to what I need', emoji: '🎭' },
 ];
 
 // ============================================================
-// ANIMATED EMOJI COMPONENT
+// ANIMATED COMPONENTS
 // ============================================================
-
-function AnimatedEmoji({ emoji, animation }) {
-  const getKeyframes = () => {
-    switch(animation) {
-      case 'float-animation':
-        return {
-          y: [0, -15, 0],
-          transition: {
-            duration: 3,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }
-        };
-      case 'pulse-animation':
-        return {
-          scale: [1, 1.15, 1],
-          transition: {
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }
-        };
-      case 'bounce-animation':
-        return {
-          y: [0, -25, 0],
-          transition: {
-            duration: 1.5,
-            repeat: Infinity,
-            ease: 'easeOut'
-          }
-        };
-      case 'swing-animation':
-        return {
-          rotate: [0, 8, -8, 0],
-          transition: {
-            duration: 2,
-            repeat: Infinity,
-            ease: 'easeInOut'
-          }
-        };
-      default:
-        return {};
-    }
-  };
-
+function ProgressBar({ step, total }) {
+  const pct = ((step + 1) / total) * 100;
   return (
-    <motion.div
-      className="text-8xl"
-      animate={getKeyframes()}
-    >
-      {emoji}
-    </motion.div>
-  );
-}
-
-// ============================================================
-// DOT INDICATORS COMPONENT
-// ============================================================
-
-function DotIndicators({ currentScreen, totalScreens }) {
-  return (
-    <div className="flex justify-center gap-2 mb-8">
-      {Array.from({ length: totalScreens }).map((_, index) => (
-        <motion.div
-          key={index}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: index * 0.1 }}
-          className={`h-2 rounded-full transition-all ${
-            index === currentScreen
-              ? 'bg-sky-500 w-8'
-              : 'bg-slate-600 w-2'
-          }`}
-        />
-      ))}
+    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+      <motion.div
+        className="h-full bg-gradient-to-r from-sky-500 to-violet-500 rounded-full"
+        initial={{ width: 0 }}
+        animate={{ width: `${pct}%` }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+      />
     </div>
   );
 }
 
+function ChipSelector({ options, selected, onToggle, multi = true }) {
+  return (
+    <div className="flex flex-wrap gap-3 justify-center">
+      {options.map((opt) => {
+        const isSelected = multi
+          ? selected.includes(opt.id)
+          : selected === opt.id;
+        return (
+          <motion.button
+            key={opt.id}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => onToggle(opt.id)}
+            className={`px-4 py-3 rounded-2xl text-sm font-medium transition-all border ${
+              isSelected
+                ? 'bg-sky-500/20 border-sky-500 text-sky-300 shadow-lg shadow-sky-500/10'
+                : 'bg-slate-800/60 border-slate-700 text-slate-300 hover:border-slate-500'
+            }`}
+          >
+            <span className="mr-2">{opt.emoji}</span>
+            {opt.label}
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+function StyleCard({ option, isSelected, onSelect }) {
+  return (
+    <motion.button
+      whileTap={{ scale: 0.97 }}
+      onClick={onSelect}
+      className={`w-full text-left p-4 rounded-2xl border transition-all ${
+        isSelected
+          ? 'bg-sky-500/15 border-sky-500 shadow-lg shadow-sky-500/10'
+          : 'bg-slate-800/60 border-slate-700 hover:border-slate-500'
+      }`}
+    >
+      <div className="flex items-center gap-3">
+        <span className="text-2xl">{option.emoji}</span>
+        <div>
+          <div className={`font-semibold ${isSelected ? 'text-sky-300' : 'text-white'}`}>
+            {option.label}
+          </div>
+          <div className="text-sm text-slate-400">{option.desc}</div>
+        </div>
+      </div>
+    </motion.button>
+  );
+}
+
 // ============================================================
-// SCREEN COMPONENT
+// INDIVIDUAL STEP COMPONENTS
 // ============================================================
 
-function OnboardingScreen({ screen, onNext, onSkip }) {
+// Step 0: Welcome
+function WelcomeStep() {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.4 }}
-      className="flex flex-col items-center justify-center min-h-[70vh] text-center px-6"
-    >
+    <div className="flex flex-col items-center text-center">
       <motion.div
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
-        className="mb-10"
+        className="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-xl shadow-sky-500/20"
       >
-        <AnimatedEmoji emoji={screen.emoji} animation={screen.animationClass} />
+        MJ
       </motion.div>
-
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
         className="text-3xl font-bold text-white mb-3"
       >
-        {screen.title}
+        Yo, I'm White Mike
       </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        className="text-lg text-sky-300 mb-4 font-medium"
+      >
+        Your AI mental health coach
+      </motion.p>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.5 }}
+        className="text-slate-400 max-w-sm leading-relaxed"
+      >
+        I'm here to help you build a stronger mindset, track your growth, and show up for yourself every day. Let me get to know you real quick so I can coach you the right way.
+      </motion.p>
+    </div>
+  );
+}
 
+// Step 1: Name
+function NameStep({ name, setName }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="text-6xl mb-6"
+      >
+        👋
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-2xl font-bold text-white mb-2"
+      >
+        What should I call you?
+      </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="text-lg text-sky-300 mb-4 font-semibold"
+        className="text-slate-400 mb-8 max-w-sm"
       >
-        {screen.subtitle}
+        Your name, a nickname — whatever feels right.
       </motion.p>
-
-      <motion.p
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
-        className="text-slate-400 max-w-md mb-8 leading-relaxed"
+        className="w-full max-w-xs"
       >
-        {screen.description}
-      </motion.p>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Your name"
+          autoFocus
+          className="w-full bg-slate-800 border border-slate-600 rounded-2xl px-5 py-4 text-white text-center text-lg placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all"
+        />
+      </motion.div>
+    </div>
+  );
+}
 
-      <motion.button
+// Step 2: Struggles
+function StrugglesStep({ selected, onToggle }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="text-6xl mb-6"
+      >
+        💭
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-2xl font-bold text-white mb-2"
+      >
+        What are you working through?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-slate-400 mb-8 max-w-sm"
+      >
+        No judgment — pick as many as apply. This helps me know where to focus.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <ChipSelector options={STRUGGLES} selected={selected} onToggle={onToggle} multi={true} />
+      </motion.div>
+    </div>
+  );
+}
+
+// Step 3: Goals
+function GoalsStep({ selected, onToggle }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="text-6xl mb-6"
+      >
+        🎯
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-2xl font-bold text-white mb-2"
+      >
+        What do you want to build?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-slate-400 mb-8 max-w-sm"
+      >
+        Pick the goals that matter most to you right now.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+      >
+        <ChipSelector options={GOALS} selected={selected} onToggle={onToggle} multi={true} />
+      </motion.div>
+    </div>
+  );
+}
+
+// Step 4: Communication style
+function CommStyleStep({ selected, onSelect }) {
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="text-6xl mb-6"
+      >
+        🗣️
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-2xl font-bold text-white mb-2"
+      >
+        How should I talk to you?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-slate-400 mb-8 max-w-sm"
+      >
+        Everyone's different. Pick the vibe that'll help you most.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-sm flex flex-col gap-3"
+      >
+        {COMM_STYLES.map((style) => (
+          <StyleCard
+            key={style.id}
+            option={style}
+            isSelected={selected === style.id}
+            onSelect={() => onSelect(style.id)}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+// Step 5: Ready
+function ReadyStep({ name }) {
+  const displayName = name || 'Friend';
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="w-24 h-24 rounded-full bg-gradient-to-br from-emerald-400 to-sky-500 flex items-center justify-center text-5xl mb-6 shadow-xl shadow-emerald-500/20"
+      >
+        🔥
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-3xl font-bold text-white mb-3"
+      >
+        Let's go, {displayName}!
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.35 }}
+        className="text-lg text-sky-300 mb-4 font-medium"
+      >
+        I'm locked in on your goals
+      </motion.p>
+      <motion.p
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        whileTap={{ scale: 0.97 }}
-        onClick={onNext}
-        className="bg-sky-500 hover:bg-sky-400 text-white font-semibold py-4 px-10 rounded-2xl text-lg transition-colors shadow-lg shadow-sky-500/30"
+        className="text-slate-400 max-w-sm leading-relaxed"
       >
-        Next
-      </motion.button>
-    </motion.div>
+        I know what you're working through and how you want me to show up. Every conversation, every check-in — it's all dialed in for you. Let's get this.
+      </motion.p>
+    </div>
   );
 }
 
 // ============================================================
 // MAIN ONBOARDING COMPONENT
 // ============================================================
+const TOTAL_STEPS = 6;
 
 export function Onboarding({ onComplete }) {
-  const [currentScreen, setCurrentScreen] = useState(0);
-  const [hasSkipped, setHasSkipped] = useState(false);
+  const [step, setStep] = useState(0);
+  const [name, setName] = useState('');
+  const [struggles, setStruggles] = useState([]);
+  const [goals, setGoals] = useState([]);
+  const [commStyle, setCommStyle] = useState('');
   const haptics = useHapticsHook();
-  const totalScreens = ONBOARDING_SCREENS.length;
-  const screen = ONBOARDING_SCREENS[currentScreen];
-  const isLastScreen = currentScreen === totalScreens - 1;
 
   useEffect(() => {
     trackOnboardingStarted();
   }, []);
 
-  const handleNext = useCallback(() => {
-    haptics.buttonPress();
-    trackOnboardingStepCompleted(currentScreen, { screenId: screen.id });
+  // Toggle for multi-select
+  const toggleItem = useCallback((list, setList) => (id) => {
+    haptics.selection();
+    setList(prev =>
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  }, [haptics]);
 
-    if (isLastScreen) {
-      trackOnboardingCompleted({ skipped: false });
-      onComplete({ onboardingCompleted: true });
-    } else {
-      setCurrentScreen(prev => prev + 1);
+  const toggleStruggle = toggleItem(struggles, setStruggles);
+  const toggleGoal = toggleItem(goals, setGoals);
+
+  const selectCommStyle = useCallback((id) => {
+    haptics.selection();
+    setCommStyle(id);
+  }, [haptics]);
+
+  // Can user advance?
+  const canProceed = () => {
+    switch (step) {
+      case 0: return true; // welcome
+      case 1: return name.trim().length > 0;
+      case 2: return struggles.length > 0;
+      case 3: return goals.length > 0;
+      case 4: return commStyle !== '';
+      case 5: return true; // ready screen
+      default: return true;
     }
-  }, [currentScreen, screen, isLastScreen, haptics, onComplete]);
+  };
+
+  const handleNext = useCallback(() => {
+    if (!canProceed()) return;
+    haptics.buttonPress();
+    trackOnboardingStepCompleted(step, { stepId: ['welcome', 'name', 'struggles', 'goals', 'commStyle', 'ready'][step] });
+
+    if (step === TOTAL_STEPS - 1) {
+      // Final step — submit everything
+      const onboardingData = {
+        preferred_name: name.trim(),
+        challenges: struggles,
+        goals: goals,
+        interests: [],
+        communication_preference: commStyle,
+        onboardingCompleted: true,
+      };
+      trackOnboardingCompleted({ struggles: struggles.length, goals: goals.length, commStyle });
+      onComplete(onboardingData);
+    } else {
+      setStep(prev => prev + 1);
+    }
+  }, [step, name, struggles, goals, commStyle, haptics, onComplete]);
+
+  const handleBack = useCallback(() => {
+    if (step > 0) {
+      haptics.selection();
+      setStep(prev => prev - 1);
+    }
+  }, [step, haptics]);
 
   const handleSkip = useCallback(() => {
     haptics.buttonPress();
-    setHasSkipped(true);
-    trackOnboardingSkipped(currentScreen);
-    onComplete({ onboardingCompleted: false, skipped: true });
-  }, [currentScreen, haptics, onComplete]);
+    trackOnboardingSkipped(step);
+    onComplete({ onboardingCompleted: true, skipped: true });
+  }, [step, haptics, onComplete]);
+
+  // Button label
+  const getButtonLabel = () => {
+    if (step === 0) return "Let's Go";
+    if (step === TOTAL_STEPS - 1) return "Start My Journey";
+    return 'Continue';
+  };
+
+  // Render current step content
+  const renderStep = () => {
+    switch (step) {
+      case 0: return <WelcomeStep />;
+      case 1: return <NameStep name={name} setName={setName} />;
+      case 2: return <StrugglesStep selected={struggles} onToggle={toggleStruggle} />;
+      case 3: return <GoalsStep selected={goals} onToggle={toggleGoal} />;
+      case 4: return <CommStyleStep selected={commStyle} onSelect={selectCommStyle} />;
+      case 5: return <ReadyStep name={name} />;
+      default: return null;
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
-      {/* Skip Button */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.3 }}
-        onClick={handleSkip}
-        className="absolute top-6 right-6 text-slate-500 hover:text-slate-300 text-sm font-medium transition-colors"
-      >
-        Skip
-      </motion.button>
-
-      {/* Main Content */}
-      <div className="flex flex-col items-center justify-center min-h-screen px-4">
-        {/* Dot Indicators */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.1 }}
-          className="pt-12"
-        >
-          <DotIndicators currentScreen={currentScreen} totalScreens={totalScreens} />
-        </motion.div>
-
-        {/* Screen Content */}
-        <AnimatePresence mode="wait">
-          <OnboardingScreen
-            key={screen.id}
-            screen={screen}
-            onNext={handleNext}
-            onSkip={handleSkip}
-          />
-        </AnimatePresence>
-
-        {/* Last Screen Hint */}
-        {isLastScreen && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            className="mt-6"
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 flex flex-col" style={{ height: '100dvh' }}>
+      {/* Top bar: progress + skip */}
+      <div className="px-6 pt-6 pb-2">
+        <div className="flex items-center justify-between mb-3">
+          {step > 0 ? (
+            <motion.button
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              onClick={handleBack}
+              className="text-slate-400 hover:text-white text-sm font-medium transition-colors"
+            >
+              ← Back
+            </motion.button>
+          ) : (
+            <div />
+          )}
+          <motion.button
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            onClick={handleSkip}
+            className="text-slate-500 hover:text-slate-300 text-sm font-medium transition-colors"
           >
-            <p className="text-slate-500 text-sm">
-              Swipe up or tap the button above to begin
-            </p>
-          </motion.div>
-        )}
+            Skip
+          </motion.button>
+        </div>
+        <ProgressBar step={step} total={TOTAL_STEPS} />
       </div>
 
-      {/* CSS Animations */}
-      <style>{`
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-15px); }
-        }
+      {/* Step content - scrollable */}
+      <div className="flex-1 overflow-y-auto px-4">
+        <div className="flex flex-col items-center justify-center min-h-full py-8">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 40 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -40 }}
+              transition={{ duration: 0.3 }}
+              className="w-full max-w-md"
+            >
+              {renderStep()}
+            </motion.div>
+          </AnimatePresence>
+        </div>
+      </div>
 
-        @keyframes pulse-scale {
-          0%, 100% { transform: scale(1); }
-          50% { transform: scale(1.15); }
-        }
-
-        @keyframes bounce {
-          0%, 100% { transform: translateY(0); }
-          50% { transform: translateY(-25px); }
-        }
-
-        @keyframes swing {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(8deg); }
-          75% { transform: rotate(-8deg); }
-        }
-      `}</style>
+      {/* Bottom button */}
+      <div className="px-6 pb-8 pt-4">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleNext}
+          disabled={!canProceed()}
+          className={`w-full py-4 rounded-2xl text-lg font-semibold transition-all shadow-lg ${
+            canProceed()
+              ? 'bg-sky-500 hover:bg-sky-400 text-white shadow-sky-500/30'
+              : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'
+          }`}
+        >
+          {getButtonLabel()}
+        </motion.button>
+      </div>
     </div>
   );
 }
