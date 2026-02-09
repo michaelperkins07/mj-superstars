@@ -12,6 +12,7 @@ import TasksScreen from './components/screens/TasksScreen';
 import JournalScreen from './components/screens/JournalScreen';
 import ExploreScreen from './components/screens/ExploreScreen';
 import InsightsScreen from './components/screens/InsightsScreen';
+import RitualsScreen from './components/screens/RitualsScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
@@ -101,7 +102,8 @@ function MJSuperstars() {
   const renderScreen = () => {
     switch (activeTab) {
       case 'chat': return <ChatScreen />;
-      case 'mood': return <MoodScreen />;
+      case 'mood': return <MoodScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
+      case 'rituals': return <RitualsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'tasks': return <TasksScreen />;
       case 'journal': return <JournalScreen />;
       case 'insights': return <InsightsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;

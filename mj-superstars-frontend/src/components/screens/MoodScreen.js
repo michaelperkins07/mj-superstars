@@ -43,7 +43,7 @@ const AFFIRMATIONS = {
   ]
 };
 
-function MoodScreen() {
+function MoodScreen({ onNavigateTo }) {
   const [selectedMood, setSelectedMood] = useState(null);
   const [note, setNote] = useState('');
   const [recentMoods, setRecentMoods] = useState([]);
@@ -232,6 +232,23 @@ function MoodScreen() {
             </button>
           </div>
         </>
+      )}
+
+      {/* Daily Rituals Banner */}
+      {onNavigateTo && (
+        <button
+          onClick={() => onNavigateTo('rituals')}
+          className="w-full bg-gradient-to-r from-sky-900/40 to-violet-900/40 border border-sky-500/20 rounded-2xl p-4 mb-6 flex items-center justify-between hover:from-sky-900/60 hover:to-violet-900/60 transition-all"
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{new Date().getHours() < 14 ? '🌅' : '🌙'}</span>
+            <div className="text-left">
+              <p className="text-white font-semibold text-sm">Daily Rituals</p>
+              <p className="text-slate-400 text-xs">Set intentions & reflect on your day</p>
+            </div>
+          </div>
+          <span className="text-slate-400 text-lg">›</span>
+        </button>
       )}
 
       <h2 className="text-lg font-semibold text-white mb-3">Recent</h2>
