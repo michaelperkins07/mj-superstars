@@ -19,7 +19,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
-	<string>9</string>
+	<string>25</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -51,5 +51,7 @@
 	<string>MJ Superstars needs photo library access to upload images from your gallery</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>MJ Superstars needs permission to save photos to your library</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
