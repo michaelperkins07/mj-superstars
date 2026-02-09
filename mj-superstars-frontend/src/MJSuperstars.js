@@ -14,6 +14,7 @@ import ExploreScreen from './components/screens/ExploreScreen';
 import InsightsScreen from './components/screens/InsightsScreen';
 import RitualsScreen from './components/screens/RitualsScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
+import GamificationScreen from './components/screens/GamificationScreen';
 import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
 import { initSubscription } from './services/subscription';
@@ -112,10 +113,11 @@ function MJSuperstars() {
       case 'chat': return <ChatScreen />;
       case 'mood': return <MoodScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'rituals': return <RitualsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
-      case 'explore': return <ExploreScreen />;
+      case 'explore': return <ExploreScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'tasks': return <TasksScreen />;
       case 'journal': return <JournalScreen />;
       case 'insights': return <InsightsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
+      case 'gamification': return <GamificationScreen onBack={() => setActiveTab('explore')} />;
       case 'profile': return <ProfileScreen />;
       default: return <ChatScreen />;
     }

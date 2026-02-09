@@ -215,7 +215,7 @@ function GuidedExercise({ exercise, onClose }) {
 // ============================================================
 // MAIN EXPLORE SCREEN
 // ============================================================
-function ExploreScreen() {
+function ExploreScreen({ onNavigateTo }) {
   const { addToast } = useToast();
   const isGuest = !TokenManager.isAuthenticated();
 
@@ -792,9 +792,9 @@ function ExploreScreen() {
       {/* ---- SECTION 3: Feature Cards Grid ---- */}
       <h2 className="text-white font-bold text-base mb-3">Your Journey</h2>
       <div className="grid grid-cols-2 gap-3 mb-6">
-        {/* Gamification */}
+        {/* Gamification — navigates to dedicated screen */}
         <button
-          onClick={() => handleExpandSection('gamification')}
+          onClick={() => { haptics.selection(); onNavigateTo ? onNavigateTo('gamification') : handleExpandSection('gamification'); }}
           className="bg-gradient-to-br from-violet-500/20 to-purple-600/20 border border-violet-500/30 rounded-xl p-4 text-left hover:border-violet-400/50 transition-all"
         >
           <div className="text-2xl mb-2">🎮</div>
