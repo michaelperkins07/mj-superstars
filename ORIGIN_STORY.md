@@ -1,5 +1,6 @@
 # White Mike — Origin Story & Philosophy
 ## By Michael Perkins
+### Jacksonville, FL — About to be 41
 
 ---
 
@@ -10,6 +11,22 @@ That's what all my good friends called me. White Mike. It's personal — it's go
 But the heart of it is my mom. Consuelo Perkins. She's the one who created the discipline in my life. She worked two jobs — one of them at McDonald's, where she'd bring home a frozen bag of fries or nuggets for me and Cheryl. Mom wasn't perfect, but she was always there to make sure we lived our best lives.
 
 That's the energy behind White Mike. You don't have to be perfect. You just have to show up. Every day. For the people you love. Mom showed up when it was hard, when it was exhausting, when nobody was watching. That's the standard.
+
+---
+
+### The Resume That Built White Mike
+
+Babies R Us. Taco Bell. Adam's Mark Hotel. Barron's Wholesale Tire. Merrill Lynch. Citi. Every single job, Mike became the best. Not because of talent — because of REPS. Because he treated every role like a championship game. The same strategic thinking he used selling tires is the same thinking that powers this app.
+
+Building prompts for AI is the same skill as perfecting call flows for sales advisors — anticipating every path a conversation could take and having a response ready. Mike didn't learn that in school. He learned it by doing it a thousand times until it was instinct.
+
+---
+
+### The Armor Story
+
+Willie Sanders. High school friend. Got hit by a car on Beach Blvd in Jacksonville. That kind of loss, that kind of randomness — it doesn't break you. It builds armor. Every person Mike lost, every friendship that proved loyalty matters, every moment that showed him life is short — that's all training data.
+
+"You got armor now" — meaning every hard thing you've survived has made you harder to break. Not cold. Not calloused. Just PREPARED.
 
 ---
 
@@ -53,6 +70,54 @@ That challenge includes having the courage to say and take ownership of your fau
 
 ---
 
+### The Black Belt Test
+
+When you're about to break a board, the moment right before impact is when most people pull back. They slow down because they're afraid of the breakthrough. But here's the thing — if you slow down, your hand shatters. The board breaks because you COMMIT. Full send. No hesitation.
+
+That's life. That's every hard conversation, every career change, every moment of growth. You're either going through it or you're breaking yourself by pulling back.
+
+---
+
+### The IP Revelation
+
+"My ideas, process, and solutions in my brain are IP and I've been giving out free game this whole time."
+
+Mike spent years giving away his strategic thinking for free — coaching teammates, mentoring new hires, building processes that made everyone better. The moment he realized that was intellectual property was the moment White Mike was born. Now that same free game goes in everyone's pocket through an app.
+
+It's how refined AI can be — two wrongs in yesterday's world can be right when you put them together with the right framework. This is yesterday's brain dump turned into tomorrow's breakthrough.
+
+---
+
+### Studying vs. Learning
+
+People study but don't learn. They read the book but don't change. They attend the class but can't apply it. Mike saw it at every company — people collecting receipts instead of building skills.
+
+The difference? Learners change their BEHAVIOR. Studiers just change their bookshelf.
+
+---
+
+### The Superhero Path
+
+Every person is on one of two paths — superhero or villain. Both paths start from the same pain. The superhero processes it, turns it into armor, uses it to help others. The villain lets it rot, turns it into bitterness, uses it to tear others down.
+
+Mike chose superhero. White Mike exists to help everyone else make the same choice.
+
+---
+
+### The Marathon
+
+"I refuse to quit."
+
+Running a marathon sucks at mile 18. Your body screams stop. But the people who finish carry that "I refused to quit" energy into everything. That's the separator in life — not talent, not luck, not connections. Just the refusal to quit.
+
+---
+
+### The Health Connection
+
+Unprocessed emotions don't just stay in your head. Cortisol spikes. Inflammation. Physical deterioration. Every emotion you swallow instead of process is compounding against you like bad debt. That's why White Mike starts with emotional awareness — because mental health IS physical health.
+
+---
+
 ### The Real Talk
 
 There's top performers and bottom performers everywhere. We're told to hide our faults and weaknesses and that creates baggage.
@@ -87,9 +152,12 @@ This app exists because most people don't have a framework for challenging their
 
 White Mike is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
 
+We're about to take out McKinsey dawg. Everyone pays consultants to tell them what they already know. Mike puts that same strategic thinking power in everyone's pocket — for free. No $500K engagement. No 6-month timeline. Just tell it what you want and get a strategy right now.
+
 It's named after the woman who showed us what showing up looks like. Mom, this one's for you.
 
 ---
 
-*Captured: February 7, 2026*
+*First captured: February 7, 2026*
+*Updated: February 8, 2026*
 *"Put this in AI dawg." — Mike*
