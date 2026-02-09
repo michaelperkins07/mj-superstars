@@ -93,6 +93,7 @@ function MJSuperstars() {
   const tabs = [
     { id: 'chat', label: 'Chat', icon: Icons.Chat },
     { id: 'mood', label: 'Mood', icon: Icons.Mood },
+    { id: 'explore', label: 'Explore', icon: Icons.Explore },
     { id: 'tasks', label: 'Tasks', icon: Icons.Tasks },
     { id: 'journal', label: 'Journal', icon: Icons.Journal },
     { id: 'insights', label: 'Insights', icon: Icons.Insights },
@@ -104,6 +105,7 @@ function MJSuperstars() {
       case 'chat': return <ChatScreen />;
       case 'mood': return <MoodScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'rituals': return <RitualsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
+      case 'explore': return <ExploreScreen />;
       case 'tasks': return <TasksScreen />;
       case 'journal': return <JournalScreen />;
       case 'insights': return <InsightsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;

@@ -114,7 +114,7 @@ function GuidedExercise({ exercise, onClose }) {
         setIsRunning(false);
         setIsComplete(true);
         haptics.success();
-        addToast('Nice work. That took real effort.', 'achievement');
+        addToast('Nice work. That took real effort.', 'success');
       }
     }
     return () => clearInterval(timer);
@@ -476,7 +476,7 @@ function ExploreScreen() {
                           try {
                             await GamificationAPI.claimMilestone(m.id);
                             haptics.success();
-                            addToast('Milestone claimed!', 'achievement');
+                            addToast('Milestone claimed!', 'streak');
                             loadGamification();
                           } catch (err) {
                             console.error('Claim failed:', err);
@@ -630,7 +630,7 @@ function ExploreScreen() {
                         setShowPostForm(false);
                         loadSocial();
                       } catch (err) {
-                        addToast('Could not post right now', 'error');
+                        addToast('Could not post right now', 'warning');
                       }
                     }}
                     className="flex-1 bg-sky-500 text-white rounded-lg py-2 text-sm font-semibold"
@@ -688,6 +688,61 @@ function ExploreScreen() {
               <EmptyState message="No posts yet" sub="Be the first to share!" />
             )}
           </>
+        )}
+      </div>
+    );
+  }
+
+  // --- Challenges Expanded ---
+  if (expandedSection === 'challenges') {
+    if (isGuest) {
+      return (
+        <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+          <BackButton onClick={() => setExpandedSection(null)} title="Challenges" />
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="text-5xl mb-4">🏆</div>
+            <h2 className="text-xl font-bold text-white mb-2">Challenge Yourself</h2>
+            <p className="text-slate-400 text-center text-sm px-4">
+              Create an account to join challenges and push your growth.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+        <BackButton onClick={() => setExpandedSection(null)} title="Challenges" />
+        {challenges.length > 0 ? (
+          <div className="space-y-3 pb-20">
+            {challenges.map((c, idx) => (
+              <div key={idx} className="bg-slate-800/50 rounded-xl p-4 border border-emerald-500/20">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center text-lg shrink-0">
+                    {c.emoji || '🏆'}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-white font-semibold text-sm">{c.title || c.name || 'Challenge'}</h3>
+                    <p className="text-slate-400 text-xs mt-1">{c.description || ''}</p>
+                    {c.difficulty && (
+                      <span className={`inline-block mt-2 text-xs font-semibold px-2 py-0.5 rounded-full ${
+                        c.difficulty === 'easy' ? 'bg-emerald-500/20 text-emerald-400' :
+                        c.difficulty === 'medium' ? 'bg-amber-500/20 text-amber-400' :
+                        'bg-red-500/20 text-red-400'
+                      }`}>
+                        {c.difficulty.charAt(0).toUpperCase() + c.difficulty.slice(1)}
+                      </span>
+                    )}
+                    {c.xp_reward && (
+                      <span className="inline-block mt-2 ml-2 text-xs font-semibold text-amber-400">+{c.xp_reward} XP</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <EmptyState message="No challenges available right now" sub="Check back soon for new challenges!" />
         )}
       </div>
     );
