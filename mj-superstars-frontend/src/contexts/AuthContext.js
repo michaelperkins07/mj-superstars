@@ -256,7 +256,7 @@ export function AuthProvider({ children }) {
       setError(err.message);
       throw err;
     }
-  }, [isOnline, profile]);
+  }, [isOnline]);
 
   // Update communication style
   const updateCommunicationStyle = useCallback(async (style) => {
@@ -275,18 +275,18 @@ export function AuthProvider({ children }) {
   // Complete onboarding
   const completeOnboarding = useCallback(async (onboardingData) => {
     try {
-      // Save profile locally regardless of online status
+      // Merge onboarding data into existing profile (preserves guest id, isGuest, etc.)
+      const existingProfile = profile || {};
       const profileData = {
-        name: onboardingData.name,
-        age: onboardingData.age,
-        pronouns: onboardingData.pronouns,
-        location: onboardingData.location,
-        struggles: onboardingData.struggles,
-        communicationPref: onboardingData.communicationPref,
-        interests: onboardingData.interests,
-        onboardingComplete: true
+        ...existingProfile,
+        name: onboardingData.preferred_name || onboardingData.name || existingProfile.name,
+        preferred_name: onboardingData.preferred_name || onboardingData.name,
+        challenges: onboardingData.challenges || onboardingData.struggles || [],
+        goals: onboardingData.goals || [],
+        interests: onboardingData.interests || [],
+        communication_preference: onboardingData.communication_preference || onboardingData.communicationPref || 'mix',
+        onboardingComplete: true,
       };
-
       setProfile(profileData);
       localStorage.setItem(STORAGE_KEYS.USER_PROFILE, JSON.stringify(profileData));
 
@@ -301,7 +301,7 @@ export function AuthProvider({ children }) {
       setError(err.message);
       throw err;
     }
-  }, [isOnline]);
+  }, [isOnline, profile]);
 
   // Set profile directly (for backward compatibility with existing code)
   const setProfileDirect = useCallback((profileData) => {
