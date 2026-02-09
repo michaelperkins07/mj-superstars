@@ -25,7 +25,15 @@ export function useLogin() {
       await login(email, password);
       return true;
     } catch (err) {
-      setError(err.message || 'Login failed');
+      if (err.code === 'TIMEOUT') {
+        setError('Connection timed out — the server may be waking up. Please try again.');
+      } else if (err.code === 'OFFLINE' || err.isOffline) {
+        setError('No internet connection. Please check your network and try again.');
+      } else if (err.status >= 500) {
+        setError('Server error. Please try again in a moment.');
+      } else {
+        setError(err.message || 'Login failed');
+      }
       return false;
     } finally {
       setLoading(false);

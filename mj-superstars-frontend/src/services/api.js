@@ -55,7 +55,13 @@ export const TokenManager = {
 // Prevent concurrent token refresh race condition
 let refreshPromise = null;
 
-async function request(endpoint, options = {}) {
+// Default timeout: 20 seconds (allows for Render cold start)
+const REQUEST_TIMEOUT_MS = 20000;
+// Retry config for cold-start recovery
+const MAX_RETRIES = 1;
+const RETRY_DELAY_MS = 2000;
+
+async function request(endpoint, options = {}, retryCount = 0) {
   const url = `${API_BASE_URL}${endpoint}`;
 
   const headers = {
@@ -69,11 +75,17 @@ async function request(endpoint, options = {}) {
     headers['Authorization'] = `Bearer ${token}`;
   }
 
+  // Set up timeout with AbortController
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
   try {
     const response = await fetch(url, {
       ...options,
-      headers
+      headers,
+      signal: controller.signal
     });
+    clearTimeout(timeoutId);
 
     // Handle token refresh on 401 (with race condition protection)
     if (response.status === 401 && TokenManager.getRefreshToken()) {
@@ -84,7 +96,10 @@ async function request(endpoint, options = {}) {
       if (refreshed) {
         // Retry request with new token
         headers['Authorization'] = `Bearer ${TokenManager.getAccessToken()}`;
-        const retryResponse = await fetch(url, { ...options, headers });
+        const retryController = new AbortController();
+        const retryTimeoutId = setTimeout(() => retryController.abort(), REQUEST_TIMEOUT_MS);
+        const retryResponse = await fetch(url, { ...options, headers, signal: retryController.signal });
+        clearTimeout(retryTimeoutId);
         return handleResponse(retryResponse);
       } else {
         TokenManager.clearTokens();
@@ -95,6 +110,21 @@ async function request(endpoint, options = {}) {
 
     return handleResponse(response);
   } catch (error) {
+    clearTimeout(timeoutId);
+
+    // Handle timeout (AbortError) — auto-retry once for cold start
+    if (error.name === 'AbortError') {
+      if (retryCount < MAX_RETRIES) {
+        console.log(`Request to ${endpoint} timed out, retrying (${retryCount + 1}/${MAX_RETRIES})...`);
+        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+        return request(endpoint, options, retryCount + 1);
+      }
+      const timeoutError = new Error('The server is taking too long to respond. Please check your connection and try again.');
+      timeoutError.code = 'TIMEOUT';
+      timeoutError.status = 0;
+      throw timeoutError;
+    }
+
     // Detect offline vs server errors
     if (!navigator.onLine || error.message === 'Failed to fetch' || error.name === 'TypeError') {
       // Queue mutation requests for replay when back online

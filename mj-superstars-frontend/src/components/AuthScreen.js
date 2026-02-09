@@ -240,7 +240,7 @@ function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }) {
         />
 
         <Button type="submit" loading={loading}>
-          Sign In
+          {loading ? 'Signing in…' : 'Sign In'}
         </Button>
 
         <div className="text-center pt-2">
