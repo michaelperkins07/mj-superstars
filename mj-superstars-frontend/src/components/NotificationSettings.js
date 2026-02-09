@@ -4,8 +4,9 @@
 // ============================================================
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { useLocalNotifications, usePushNotifications, useHaptics } from '../hooks';
+import { usePushNotifications, useLocalNotifications, useHaptics } from '../hooks';
 import { storage, STORAGE_KEYS } from '../services/storage';
+import { LocalNotificationService } from '../services/native';
 
 // Default notification settings
 const DEFAULT_SETTINGS = {
@@ -167,7 +168,7 @@ function FrequencySelector({ value, onChange, disabled }) {
 // Main Settings Component
 export default function NotificationSettings({ onBack }) {
   const { hasPermission, requestPermission } = usePushNotifications();
-  const { scheduleCheckIn, cancelAll, pendingCount } = useLocalNotifications();
+  const { scheduleCheckIn, cancelAll, schedule } = useLocalNotifications();
   const haptics = useHaptics();
 
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
@@ -202,7 +203,6 @@ export default function NotificationSettings({ onBack }) {
       if (newSettings.eveningReflection.enabled && newSettings.enabled) {
         const [hour, minute] = newSettings.eveningReflection.time.split(':').map(Number);
         // Use LocalNotificationService directly for custom message
-        const { LocalNotificationService } = await import('../native/hooks');
         await LocalNotificationService?.schedule?.({
           id: 1002,
           title: "Time to Wind Down 🌙",
@@ -218,7 +218,6 @@ export default function NotificationSettings({ onBack }) {
       // Schedule streak reminder
       if (newSettings.streakReminder.enabled && newSettings.enabled) {
         const [hour, minute] = newSettings.streakReminder.time.split(':').map(Number);
-        const { LocalNotificationService } = await import('../native/hooks');
         await LocalNotificationService?.schedule?.({
           id: 1003,
           title: "Don't Break Your Streak! 🔥",
@@ -280,7 +279,7 @@ export default function NotificationSettings({ onBack }) {
   const notificationsDisabled = !hasPermission || !settings.enabled;
 
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="h-full overflow-y-auto bg-slate-900">
       {/* Header */}
       <div className="sticky top-0 bg-slate-900/95 backdrop-blur-sm border-b border-slate-800 px-4 py-4 z-10">
         <div className="flex items-center gap-3">
@@ -297,7 +296,7 @@ export default function NotificationSettings({ onBack }) {
           <div>
             <h1 className="text-xl font-bold text-white">Notifications</h1>
             <p className="text-slate-400 text-sm">
-              {pendingCount} scheduled • {hasPermission ? 'Enabled' : 'Disabled'}
+              {hasPermission ? 'Enabled' : 'Disabled'}
             </p>
           </div>
         </div>

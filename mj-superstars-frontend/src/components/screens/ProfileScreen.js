@@ -8,6 +8,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { ProgressAPI, GuestAPI, TokenManager, EmailPrefsAPI, UserAPI } from '../../services/api';
 import { Fire, Logout } from '../shared/Icons';
 import { useHapticsHook } from '../../services/haptics';
+import NotificationSettings from '../NotificationSettings';
 
 // ============================================================
 // CONSTANTS
@@ -162,6 +163,7 @@ function ProfileScreen() {
   const [emailPrefsLoading, setEmailPrefsLoading] = useState(false);
   const [emailPrefsSaving, setEmailPrefsSaving] = useState(false);
   const [emailPrefsError, setEmailPrefsError] = useState('');
+  const [showNotificationSettings, setShowNotificationSettings] = useState(false);
 
   // Edit modal states
   const [editingName, setEditingName] = useState(false);
@@ -320,6 +322,12 @@ function ProfileScreen() {
   // ============================================================
   // RENDER
   // ============================================================
+
+  // Sub-view: Notification Settings
+  if (showNotificationSettings) {
+    return <NotificationSettings onBack={() => setShowNotificationSettings(false)} />;
+  }
+
   return (
     <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
       {/* ---- HEADER ---- */}
@@ -503,6 +511,22 @@ function ProfileScreen() {
           ) : null}
         </SectionCard>
       )}
+
+      {/* ---- NOTIFICATION SETTINGS ---- */}
+      <SectionCard title="Notifications" icon="🔔">
+        <p className="text-slate-400 text-sm mb-3">
+          Customize check-in reminders, streak alerts, and gentle nudges.
+        </p>
+        <button
+          onClick={() => { haptics.buttonPress(); setShowNotificationSettings(true); }}
+          className="w-full bg-slate-700/50 hover:bg-slate-700 text-sky-400 rounded-xl px-4 py-3 text-sm font-semibold transition-colors flex items-center justify-between"
+        >
+          <span>Manage Notifications</span>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </SectionCard>
 
       {/* ---- LEGAL ---- */}
       <SectionCard title="Legal" icon="📋">
