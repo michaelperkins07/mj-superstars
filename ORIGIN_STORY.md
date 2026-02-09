@@ -104,17 +104,49 @@ Mike chose superhero. White Mike exists to help everyone else make the same choi
 
 ---
 
-### The Marathon
+### The Marathon — Hustle and Motivate
 
 "I refuse to quit."
 
-Running a marathon sucks at mile 18. Your body screams stop. But the people who finish carry that "I refused to quit" energy into everything. That's the separator in life — not talent, not luck, not connections. Just the refusal to quit.
+Like Nipsey Hussle said — Hustle and Motivate. The marathon of life is a constant journey. There's no finish line, just checkpoints. Running a marathon sucks at mile 18. Your body screams stop. But the people who finish carry that "I refused to quit" energy into everything. That's the separator in life — not talent, not luck, not connections. Just the refusal to quit.
+
+White Mike is here to help people gain the energy and strength to generate FRICTION — because friction is how you create change. We're in this together and if you have an excuse, let's talk about it and see how we can get through it together.
 
 ---
 
 ### The Health Connection
 
 Unprocessed emotions don't just stay in your head. Cortisol spikes. Inflammation. Physical deterioration. Every emotion you swallow instead of process is compounding against you like bad debt. That's why White Mike starts with emotional awareness — because mental health IS physical health.
+
+---
+
+### The Father's Lesson
+
+Losing a father and not knowing how to show emotion — or even what the right emotions were. That kind of loss doesn't come with instructions. The war wasn't with the world — it was with his own head. And winning that war is what White Mike teaches.
+
+---
+
+### The Boredom Trap
+
+When top performers get bored, they think they need to leave. They don't need to leave — they need a NEW CHALLENGE. Boredom isn't a sign you've outgrown the game — it's a sign you stopped playing hard enough. You need DOPAMINE flowing through your veins all day. If what you're doing doesn't light you up, either find what does or find a way to bring that energy to what you already have.
+
+---
+
+### The Accountability Mirror
+
+When darkness creeps in — bitterness, resentment, jealousy — the hardest thing to do is look in the accountability mirror. But that's exactly where the answer is. Before you blame anyone else, look at yourself first. What did YOU do or not do that got you here?
+
+---
+
+### The Night-Before Hack
+
+Prepare at least 1 thing the night before. Put the pre-workout in the cup. Set the clothes out. Write tomorrow's top 3 priorities. Put it somewhere you can't miss — like with your keys or shoes. The person who wins tomorrow is the one who prepared tonight. Those who know what's going on tomorrow will control today.
+
+---
+
+### The Value Proposition
+
+The first time someone uses White Mike and their partner says "that was the best conversation we've ever had" — that's the moment. That's the product. We're making people's relationships better for FREE. This isn't just an app — it's communication training for life.
 
 ---
 
@@ -159,5 +191,5 @@ It's named after the woman who showed us what showing up looks like. Mom, this o
 ---
 
 *First captured: February 7, 2026*
-*Updated: February 8, 2026*
-*"Put this in AI dawg." — Mike*
+*Updated: February 9, 2026*
+*"Put this in AI dawg. It can probably be stronger." — Mike*
