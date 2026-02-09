@@ -7,6 +7,8 @@ import { ConversationAPI, GuestAPI, TokenManager } from '../../services/api';
 import { Send } from '../shared/Icons';
 import { useToast } from '../shared/Toast';
 import * as haptics from '../../services/haptics';
+import { useSubscription, FREE_LIMITS } from '../../services/subscription';
+import { UsageLimitBanner } from '../Paywall';
 
 const QUICK_PROMPTS = [
   { label: "I'm feeling stuck", icon: "😶" },
@@ -24,10 +26,34 @@ function ChatScreen() {
   const [isGuestMode, setIsGuestMode] = useState(false);
   const [showChatMenu, setShowChatMenu] = useState(false);
   const [showQuickPrompts, setShowQuickPrompts] = useState(true);
+  const [showUpgradePrompt, setShowUpgradePrompt] = useState(false);
   const messagesEndRef = useRef(null);
   const chatMenuRef = useRef(null);
   const textareaRef = useRef(null);
   const { addToast } = useToast();
+  const { isPremium } = useSubscription();
+
+  // Daily message tracking for free tier limits
+  const getDailyMessageCount = () => {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const data = JSON.parse(localStorage.getItem('mj_daily_messages') || '{}');
+      if (data.date !== today) return 0;
+      return data.count || 0;
+    } catch { return 0; }
+  };
+
+  const incrementDailyMessageCount = () => {
+    const today = new Date().toISOString().slice(0, 10);
+    const data = JSON.parse(localStorage.getItem('mj_daily_messages') || '{}');
+    const count = data.date === today ? (data.count || 0) + 1 : 1;
+    localStorage.setItem('mj_daily_messages', JSON.stringify({ date: today, count }));
+    return count;
+  };
+
+  const dailyMessageCount = getDailyMessageCount();
+  const messageLimit = FREE_LIMITS.MESSAGES_PER_DAY;
+  const isAtLimit = !isPremium && dailyMessageCount >= messageLimit;
 
   const CHAT_STORAGE_KEY = 'mj_chat_history';
   const CONV_STORAGE_KEY = 'mj_conversation_id';
@@ -153,6 +179,16 @@ function ChatScreen() {
   const sendMessage = async (text) => {
     const messageText = text || input.trim();
     if (!messageText || loading) return;
+
+    // Check free tier message limit
+    if (!isPremium && getDailyMessageCount() >= messageLimit) {
+      setShowUpgradePrompt(true);
+      addToast("You've reached today's message limit. Upgrade for unlimited conversations!", 'warning');
+      return;
+    }
+
+    // Track the message
+    incrementDailyMessageCount();
 
     try { haptics.messageSent(); } catch(e) {}
     setShowQuickPrompts(false);
@@ -303,6 +339,18 @@ function ChatScreen() {
         </div>
       </div>
 
+      {/* Usage Limit Banner */}
+      {!isPremium && dailyMessageCount > 0 && (
+        <div className="px-4 pt-2">
+          <UsageLimitBanner
+            feature="messages"
+            used={dailyMessageCount}
+            limit={messageLimit}
+            onUpgrade={() => setShowUpgradePrompt(true)}
+          />
+        </div>
+      )}
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4">
         {messages.map((msg) => (
@@ -359,27 +407,67 @@ function ChatScreen() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Upgrade Prompt Overlay */}
+      {showUpgradePrompt && (
+        <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/60 backdrop-blur-sm" onClick={() => setShowUpgradePrompt(false)}>
+          <div className="bg-slate-800 rounded-t-3xl sm:rounded-3xl p-6 w-full max-w-md mx-4 sm:mb-4" onClick={e => e.stopPropagation()}>
+            <div className="w-12 h-1 bg-slate-600 rounded-full mx-auto mb-6 sm:hidden" />
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-sky-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">💬</span>
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2">Daily Limit Reached</h3>
+              <p className="text-slate-400">
+                You've used all {messageLimit} free messages today. Upgrade to Premium for unlimited conversations with MJ.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                setShowUpgradePrompt(false);
+                // Navigate to profile tab where paywall lives
+                window.dispatchEvent(new CustomEvent('mj-navigate', { detail: 'profile' }));
+              }}
+              className="w-full bg-gradient-to-r from-sky-500 to-purple-500 text-white font-semibold py-4 rounded-xl mb-3"
+            >
+              Upgrade to Premium
+            </button>
+            <button onClick={() => setShowUpgradePrompt(false)} className="w-full text-slate-400 py-2 text-sm">
+              Maybe Tomorrow
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Input */}
       <div className="px-4 py-3 bg-slate-800/80 backdrop-blur border-t border-slate-700/50">
-        <div className="flex items-end gap-2">
-          <textarea
-            ref={textareaRef}
-            value={input}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyPress}
-            placeholder="Say what's on your mind..."
-            rows={1}
-            className="flex-1 bg-slate-700/50 text-white rounded-xl px-4 py-3 text-sm resize-none outline-none focus:ring-2 focus:ring-sky-500/50 placeholder-slate-400"
-            style={{ minHeight: '44px', maxHeight: '120px' }}
-          />
+        {isAtLimit ? (
           <button
-            onClick={() => sendMessage()}
-            disabled={!input.trim() || loading}
-            className="w-11 h-11 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:bg-slate-700 disabled:text-slate-500 text-white flex items-center justify-center transition-colors flex-shrink-0"
+            onClick={() => setShowUpgradePrompt(true)}
+            className="w-full bg-gradient-to-r from-sky-900/60 to-violet-900/60 border border-sky-500/30 text-sky-300 rounded-xl px-4 py-3 text-sm font-semibold text-center"
           >
-            <Send />
+            Daily limit reached — Upgrade for unlimited
           </button>
-        </div>
+        ) : (
+          <div className="flex items-end gap-2">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyPress}
+              placeholder="Say what's on your mind..."
+              rows={1}
+              className="flex-1 bg-slate-700/50 text-white rounded-xl px-4 py-3 text-sm resize-none outline-none focus:ring-2 focus:ring-sky-500/50 placeholder-slate-400"
+              style={{ minHeight: '44px', maxHeight: '120px' }}
+            />
+            <button
+              onClick={() => sendMessage()}
+              disabled={!input.trim() || loading}
+              className="w-11 h-11 rounded-xl bg-sky-600 hover:bg-sky-500 disabled:bg-slate-700 disabled:text-slate-500 text-white flex items-center justify-center transition-colors flex-shrink-0"
+            >
+              <Send />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

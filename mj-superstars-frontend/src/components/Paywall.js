@@ -264,7 +264,7 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
   // Already premium
   if (isPremium) {
     return (
-      <div className="min-h-screen bg-slate-900 p-6 flex flex-col items-center justify-center">
+      <div className="h-full overflow-y-auto bg-slate-900 p-6 flex flex-col items-center justify-center">
         <motion.div
           initial={{ scale: 0 }}
           animate={{ scale: 1 }}
@@ -285,7 +285,7 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 overflow-y-auto">
+    <div className="h-full overflow-y-auto bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-lg p-4 flex items-center justify-between">
         <button

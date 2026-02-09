@@ -9,6 +9,8 @@ import { ProgressAPI, GuestAPI, TokenManager, EmailPrefsAPI, UserAPI } from '../
 import { Fire, Logout } from '../shared/Icons';
 import { useHapticsHook } from '../../services/haptics';
 import NotificationSettings from '../NotificationSettings';
+import { Paywall } from '../Paywall';
+import { useSubscription } from '../../services/subscription';
 
 // ============================================================
 // CONSTANTS
@@ -153,6 +155,8 @@ function EditModal({ title, isOpen, onClose, onSave, saving, children }) {
 function ProfileScreen() {
   const { user, profile, logout, login, setProfile, updateProfile, updateCommunicationStyle } = useAuth();
   const haptics = useHapticsHook();
+  const { isPremium, isOnTrial, daysRemaining, subscription, manage } = useSubscription();
+  const [showPaywall, setShowPaywall] = useState(false);
   const [streaks, setStreaks] = useState(null);
   const [showUpgrade, setShowUpgrade] = useState(false);
   const [upgradeForm, setUpgradeForm] = useState({ email: '', password: '', confirmPassword: '' });
@@ -328,6 +332,17 @@ function ProfileScreen() {
     return <NotificationSettings onBack={() => setShowNotificationSettings(false)} />;
   }
 
+  // Sub-view: Paywall
+  if (showPaywall) {
+    return (
+      <Paywall
+        onClose={() => setShowPaywall(false)}
+        onSuccess={() => setShowPaywall(false)}
+        trigger="profile"
+      />
+    );
+  }
+
   return (
     <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
       {/* ---- HEADER ---- */}
@@ -463,6 +478,46 @@ function ProfileScreen() {
             <p className="text-slate-500 text-sm col-span-3 text-center py-2">Start building your streaks!</p>
           )}
         </div>
+      </SectionCard>
+
+      {/* ---- SUBSCRIPTION STATUS ---- */}
+      <SectionCard title="Subscription" icon="⭐">
+        {isPremium ? (
+          <div>
+            <div className="flex items-center gap-3 bg-gradient-to-r from-sky-900/40 to-violet-900/40 border border-sky-500/20 rounded-xl p-4 mb-3">
+              <div className="w-10 h-10 bg-sky-500/20 rounded-full flex items-center justify-center">
+                <span className="text-xl">✨</span>
+              </div>
+              <div className="flex-1">
+                <p className="text-white font-semibold">Premium Active</p>
+                <p className="text-slate-400 text-xs">
+                  {isOnTrial
+                    ? `Free trial • ${daysRemaining || '?'} days remaining`
+                    : subscription?.productId?.includes('yearly') ? 'Yearly plan' : 'Monthly plan'
+                  }
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => { haptics.buttonPress(); manage(); }}
+              className="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-xl px-4 py-3 text-sm font-semibold transition-colors"
+            >
+              Manage Subscription
+            </button>
+          </div>
+        ) : (
+          <div>
+            <p className="text-slate-400 text-sm mb-3">
+              Unlock unlimited conversations, all coping tools, extended insights, and more.
+            </p>
+            <button
+              onClick={() => { haptics.buttonPress(); setShowPaywall(true); }}
+              className="w-full bg-gradient-to-r from-sky-500 to-purple-500 hover:from-sky-400 hover:to-purple-400 text-white font-semibold rounded-xl px-4 py-3 text-sm transition-colors flex items-center justify-center gap-2"
+            >
+              <span>✨</span> Upgrade to Premium
+            </button>
+          </div>
+        )}
       </SectionCard>
 
       {/* ---- EMAIL PREFERENCES (authenticated only) ---- */}

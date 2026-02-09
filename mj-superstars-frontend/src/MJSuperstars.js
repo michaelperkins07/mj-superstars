@@ -16,6 +16,7 @@ import RitualsScreen from './components/screens/RitualsScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
+import { initSubscription } from './services/subscription';
 import { ToastProvider } from './components/shared/Toast';
 
 // ==========================================================
@@ -27,6 +28,12 @@ function MJSuperstars() {
 
   useEffect(() => {
     initErrorTracking();
+    initSubscription();
+
+    // Listen for cross-screen navigation events (e.g., from ChatScreen upgrade prompt)
+    const handleNavigate = (e) => setActiveTab(e.detail);
+    window.addEventListener('mj-navigate', handleNavigate);
+    return () => window.removeEventListener('mj-navigate', handleNavigate);
   }, []);
 
   // Handler for "Continue without account" - creates a guest profile
