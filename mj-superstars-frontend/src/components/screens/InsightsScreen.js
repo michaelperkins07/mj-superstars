@@ -306,7 +306,7 @@ export default function InsightsScreen({ onNavigateTo }) {
   }, [onNavigateTo]);
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white pb-20">
+    <div className="h-full overflow-y-auto bg-slate-900 text-white pb-20">
       <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="sticky top-0 z-10 bg-slate-900/80 backdrop-blur-md border-b border-slate-800 px-4 py-4">
         <div className="max-w-2xl mx-auto">
           <h1 className="text-2xl font-bold mb-4">Your Insights <span>✨</span></h1>
