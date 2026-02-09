@@ -11,6 +11,7 @@ import MoodScreen from './components/screens/MoodScreen';
 import TasksScreen from './components/screens/TasksScreen';
 import JournalScreen from './components/screens/JournalScreen';
 import ExploreScreen from './components/screens/ExploreScreen';
+import InsightsScreen from './components/screens/InsightsScreen';
 import ProfileScreen from './components/screens/ProfileScreen';
 import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
@@ -93,7 +94,7 @@ function MJSuperstars() {
     { id: 'mood', label: 'Mood', icon: Icons.Mood },
     { id: 'tasks', label: 'Tasks', icon: Icons.Tasks },
     { id: 'journal', label: 'Journal', icon: Icons.Journal },
-    { id: 'explore', label: 'Explore', icon: Icons.Explore },
+    { id: 'insights', label: 'Insights', icon: Icons.Insights },
     { id: 'profile', label: 'Profile', icon: Icons.Profile },
   ];
 
@@ -103,7 +104,7 @@ function MJSuperstars() {
       case 'mood': return <MoodScreen />;
       case 'tasks': return <TasksScreen />;
       case 'journal': return <JournalScreen />;
-      case 'explore': return <ExploreScreen />;
+      case 'insights': return <InsightsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'profile': return <ProfileScreen />;
       default: return <ChatScreen />;
     }
