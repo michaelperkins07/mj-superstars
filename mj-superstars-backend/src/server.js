@@ -48,6 +48,7 @@ import socialFeedRoutes from './routes/social.js';
 import emailPrefRoutes from './routes/email-preferences.js';
 import gamificationRoutes from './routes/gamification.js';
 import legalRoutes from './routes/legal.js';
+import statusRoutes from './routes/status.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -59,6 +60,7 @@ import { initializeDatabase, checkDatabaseHealth, closePool } from './database/d
 import { setupSocketHandlers } from './services/socket.js';
 import { initScheduler } from './services/scheduler.js';
 import { initAPNS, shutdownAPNS } from './services/apns.js';
+import { startMonitoring, stopMonitoring } from './services/monitoring.js';
 import { logger } from './utils/logger.js';
 
 // ============================================================
@@ -281,6 +283,7 @@ app.use('/api/social', socialFeedRoutes);
 app.use('/api/email-preferences', emailPrefRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/legal', legalRoutes);
+app.use('/api/status', statusRoutes);
 
 // ============================================================
 // ERROR HANDLING
@@ -333,6 +336,9 @@ const startServer = async () => {
     // Start notification scheduler (streak reminders, check-ins, nudges)
     initScheduler();
 
+    // Start uptime monitoring (self-checks every 5 min, Sentry alerts)
+    startMonitoring();
+
     httpServer.listen(PORT, '0.0.0.0', () => {
       logger.info(`🚀 White Mike API running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
@@ -362,6 +368,9 @@ const gracefulShutdown = async (signal) => {
 
     // Close database pool
     await closePool();
+
+    // Stop uptime monitoring
+    stopMonitoring();
 
     // Shutdown APNs provider
     shutdownAPNS();
