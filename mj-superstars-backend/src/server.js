@@ -210,20 +210,26 @@ app.use('/api/photos', postLimiter);
 // HEALTH CHECKS (Render monitors these)
 // ============================================================
 
-// Simple health check - Render pings this
+// Simple health check - Render pings this (public, minimal info)
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
-    timestamp: new Date().toISOString(),
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    uptime: Math.floor(process.uptime()) + 's'
+    timestamp: new Date().toISOString()
   });
 });
 
-// Deep health check - includes database & dependencies
-app.get('/health/deep', async (req, res) => {
+// Deep health check - includes database & dependencies (requires admin secret)
+app.get('/api/health/deep', async (req, res) => {
   try {
+    // Verify admin secret header
+    const adminSecret = req.headers['x-admin-secret'];
+    if (adminSecret !== process.env.ADMIN_SECRET) {
+      return res.status(403).json({
+        status: 'forbidden',
+        error: 'Invalid or missing admin secret'
+      });
+    }
+
     const dbHealth = await checkDatabaseHealth();
     const memUsage = process.memoryUsage();
 
@@ -300,16 +306,6 @@ app.use(sentryErrorHandler());
 app.get('/api/version', (req, res) => {
   res.json({ version: '2.0.0', deploy: 'photos-social-gamification', timestamp: new Date().toISOString() });
 
-});
-// API health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    version: '2.0.0',
-    memory: process.memoryUsage()
-  });
 });
 app.use(notFound);
 app.use(errorHandler);

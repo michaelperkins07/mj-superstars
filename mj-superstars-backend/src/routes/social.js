@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import pool from '../database/db.js';
+import { logger } from '../utils/logger.js';
 
 
 // Sanitization helper function
@@ -60,7 +61,7 @@ router.post('/posts', async (req, res) => {
 
     res.status(201).json(post);
   } catch (error) {
-    console.error('Error creating post:', error);
+    logger.error('Error creating post:', error);
     res.status(500).json({ error: 'Failed to create post' });
   }
 });
@@ -124,7 +125,7 @@ router.get('/feed', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching feed:', error);
+    logger.error('Error fetching feed:', error);
     res.status(500).json({ error: 'Failed to fetch feed' });
   }
 });
@@ -216,7 +217,7 @@ router.get('/posts/:id', async (req, res) => {
       comments: commentsResult.rows
     });
   } catch (error) {
-    console.error('Error fetching post:', error);
+    logger.error('Error fetching post:', error);
     res.status(500).json({ error: 'Failed to fetch post' });
   }
 });
@@ -246,7 +247,7 @@ router.delete('/posts/:id', async (req, res) => {
 
     res.json({ message: 'Post deleted successfully' });
   } catch (error) {
-    console.error('Error deleting post:', error);
+    logger.error('Error deleting post:', error);
     res.status(500).json({ error: 'Failed to delete post' });
   }
 });
@@ -312,7 +313,7 @@ router.post('/posts/:id/like', async (req, res) => {
       post: updatedPost.rows[0]
     });
   } catch (error) {
-    console.error('Error liking post:', error);
+    logger.error('Error liking post:', error);
     res.status(500).json({ error: 'Failed to like post' });
   }
 });
@@ -356,7 +357,7 @@ router.delete('/posts/:id/like', async (req, res) => {
       post: updatedPost.rows[0]
     });
   } catch (error) {
-    console.error('Error unliking post:', error);
+    logger.error('Error unliking post:', error);
     res.status(500).json({ error: 'Failed to unlike post' });
   }
 });
@@ -421,7 +422,7 @@ router.post('/posts/:id/comments', async (req, res) => {
 
     res.status(201).json(comment);
   } catch (error) {
-    console.error('Error adding comment:', error);
+    logger.error('Error adding comment:', error);
     res.status(500).json({ error: 'Failed to add comment' });
   }
 });
@@ -459,7 +460,7 @@ router.delete('/comments/:id', async (req, res) => {
 
     res.json({ message: 'Comment deleted successfully' });
   } catch (error) {
-    console.error('Error deleting comment:', error);
+    logger.error('Error deleting comment:', error);
     res.status(500).json({ error: 'Failed to delete comment' });
   }
 });
@@ -511,7 +512,7 @@ router.post('/follow/:userId', async (req, res) => {
 
     res.json({ message: 'User followed successfully' });
   } catch (error) {
-    console.error('Error following user:', error);
+    logger.error('Error following user:', error);
     res.status(500).json({ error: 'Failed to follow user' });
   }
 });
@@ -540,7 +541,7 @@ router.delete('/follow/:userId', async (req, res) => {
 
     res.json({ message: 'User unfollowed successfully' });
   } catch (error) {
-    console.error('Error unfollowing user:', error);
+    logger.error('Error unfollowing user:', error);
     res.status(500).json({ error: 'Failed to unfollow user' });
   }
 });
@@ -582,7 +583,7 @@ router.get('/followers', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching followers:', error);
+    logger.error('Error fetching followers:', error);
     res.status(500).json({ error: 'Failed to fetch followers' });
   }
 });
@@ -624,7 +625,7 @@ router.get('/following', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching following:', error);
+    logger.error('Error fetching following:', error);
     res.status(500).json({ error: 'Failed to fetch following' });
   }
 });
@@ -707,7 +708,7 @@ router.post('/posts/:id/share-external', async (req, res) => {
 
     res.json(shareData);
   } catch (error) {
-    console.error('Error generating share data:', error);
+    logger.error('Error generating share data:', error);
     res.status(500).json({ error: 'Failed to generate share data' });
   }
 });
@@ -771,7 +772,7 @@ router.get('/discover', async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error discovering posts:', error);
+    logger.error('Error discovering posts:', error);
     res.status(500).json({ error: 'Failed to discover posts' });
   }
 });

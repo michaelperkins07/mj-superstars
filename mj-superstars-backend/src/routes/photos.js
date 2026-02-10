@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { authenticateToken } from '../middleware/auth.js';
 import pool from '../database/db.js';
+import { logger } from '../utils/logger.js';
 
 
 
@@ -30,7 +31,7 @@ const verifyPhotoOwnership = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error('Error verifying photo ownership:', error);
+    logger.error('Error verifying photo ownership:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -43,7 +44,7 @@ const awardPoints = async (userId, points, reason) => {
       [points, userId]
     );
   } catch (error) {
-    console.error('Error awarding points:', error);
+    logger.error('Error awarding points:', error);
   }
 };
 
@@ -134,7 +135,7 @@ router.post('/upload', authenticateToken, async (req, res) => {
       pointsAwarded: pointsToAward
     });
   } catch (error) {
-    console.error('Error uploading photo:', error);
+    logger.error('Error uploading photo:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -184,7 +185,7 @@ router.get('/', authenticateToken, async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('Error fetching photos:', error);
+    logger.error('Error fetching photos:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -223,7 +224,7 @@ router.get('/progress', authenticateToken, async (req, res) => {
         }))
     });
   } catch (error) {
-    console.error('Error fetching progress timeline:', error);
+    logger.error('Error fetching progress timeline:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -246,7 +247,7 @@ router.get('/:id', authenticateToken, async (req, res) => {
 
     res.json({ photo: result.rows[0] });
   } catch (error) {
-    console.error('Error fetching photo:', error);
+    logger.error('Error fetching photo:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -297,7 +298,7 @@ router.put('/:id', authenticateToken, verifyPhotoOwnership, async (req, res) => 
       photo: result.rows[0]
     });
   } catch (error) {
-    console.error('Error updating photo:', error);
+    logger.error('Error updating photo:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -311,7 +312,7 @@ router.delete('/:id', authenticateToken, verifyPhotoOwnership, async (req, res) 
 
     res.json({ message: 'Photo deleted successfully' });
   } catch (error) {
-    console.error('Error deleting photo:', error);
+    logger.error('Error deleting photo:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -358,7 +359,7 @@ router.post('/vision-board', authenticateToken, async (req, res) => {
       });
     }
   } catch (error) {
-    console.error('Error managing vision board:', error);
+    logger.error('Error managing vision board:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -399,7 +400,7 @@ router.get('/vision-board', authenticateToken, async (req, res) => {
       items: itemsResult.rows
     });
   } catch (error) {
-    console.error('Error fetching vision board:', error);
+    logger.error('Error fetching vision board:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -477,7 +478,7 @@ router.post('/vision-board/items', authenticateToken, async (req, res) => {
       pointsAwarded: 10
     });
   } catch (error) {
-    console.error('Error adding vision board item:', error);
+    logger.error('Error adding vision board item:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -562,7 +563,7 @@ router.put('/vision-board/items/:id', authenticateToken, async (req, res) => {
       pointsAwarded
     });
   } catch (error) {
-    console.error('Error updating vision board item:', error);
+    logger.error('Error updating vision board item:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
@@ -593,7 +594,7 @@ router.delete('/vision-board/items/:id', authenticateToken, async (req, res) => 
 
     res.json({ message: 'Vision board item deleted successfully' });
   } catch (error) {
-    console.error('Error deleting vision board item:', error);
+    logger.error('Error deleting vision board item:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
