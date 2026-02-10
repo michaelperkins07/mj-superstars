@@ -12,7 +12,7 @@ import { DataProvider } from './contexts/DataContext';
 import MJSuperstars from './MJSuperstars';
 
 // Error tracking with Sentry
-import { SentryErrorBoundary, errors as sentryErrors } from './services/errorTracking';
+import { errors as sentryErrors } from './services/errorTracking';
 
 // Notification handlers
 import { initNotificationHandlers, cleanupNotificationHandlers } from './services/notificationHandler';
