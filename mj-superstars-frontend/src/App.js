@@ -17,6 +17,9 @@ import { SentryErrorBoundary, errors as sentryErrors } from './services/errorTra
 // Notification handlers
 import { initNotificationHandlers, cleanupNotificationHandlers } from './services/notificationHandler';
 
+// Analytics initialization
+import { initAnalytics } from './services/analytics';
+
 // Environment configuration
 const config = {
   apiUrl: process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api',
@@ -146,6 +149,24 @@ function NotificationInitializer() {
   return null;
 }
 
+// Initialize Mixpanel analytics on app startup
+function AnalyticsInitializer() {
+  React.useEffect(() => {
+    try {
+      initAnalytics({
+        token: process.env.REACT_APP_MIXPANEL_TOKEN,
+        debug: process.env.NODE_ENV === 'development',
+        optOut: false
+      });
+      console.log('[App] Analytics initialized');
+    } catch (err) {
+      console.error('[App] Failed to initialize analytics:', err);
+    }
+  }, []);
+
+  return null;
+}
+
 // Main App Component with all providers
 function App() {
   return (
@@ -154,6 +175,7 @@ function App() {
         <DataProvider>
           <NetworkIndicator />
           <NotificationInitializer />
+          <AnalyticsInitializer />
           <MJSuperstars />
         </DataProvider>
       </AuthProvider>

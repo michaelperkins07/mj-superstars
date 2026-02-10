@@ -418,6 +418,140 @@ export const AppService = {
 };
 
 // ============================================================
+// IN-APP PURCHASE SERVICE (StoreKit 2)
+// ============================================================
+
+const InAppPurchasePlugin = getCapPlugin('InAppPurchase');
+
+/**
+ * In-App Purchase service for iOS subscriptions
+ * Uses StoreKit 2 API (requires iOS 15+)
+ */
+export const InAppPurchaseService = {
+  /**
+   * Check if in-app purchases are available
+   */
+  isAvailable() {
+    return !!InAppPurchasePlugin;
+  },
+
+  /**
+   * Initialize the in-app purchase system
+   */
+  async initialize() {
+    if (!InAppPurchasePlugin) {
+      throw new Error('In-app purchases not available');
+    }
+    try {
+      return await InAppPurchasePlugin.initialize();
+    } catch (e) {
+      console.error('[InAppPurchase] Initialize failed:', e);
+      throw e;
+    }
+  },
+  /**
+   * Fetch product information
+   * @param {string[]} productIds - Array of product IDs
+   * @returns {Promise<Object[]>} Array of product objects with localizedPrice, price, productId
+   */
+  async getProducts(productIds) {
+    if (!InAppPurchasePlugin) {
+      throw new Error('In-app purchases not available');
+    }
+    try {
+      const response = await InAppPurchasePlugin.getProducts({ productIds });
+      return response.products || [];
+    } catch (e) {
+      console.error('[InAppPurchase] Get products failed:', e);
+      throw e;
+    }
+  },
+
+  /**
+   * Get current active entitlements
+   * @returns {Promise<Object[]>} Array of entitlements with productId, isActive, expirationDate, etc.
+   */
+  async getCurrentEntitlements() {
+    if (!InAppPurchasePlugin) {
+      throw new Error('In-app purchases not available');
+    }
+    try {
+      const response = await InAppPurchasePlugin.getCurrentEntitlements();
+      return response.entitlements || [];
+    } catch (e) {
+      console.error('[InAppPurchase] Get entitlements failed:', e);
+      throw e;
+    }
+  },
+
+  /**
+   * Purchase a product
+   * @param {string} productId - Product ID to purchase
+   * @returns {Promise<Object>} Transaction result with transactionState, productId, receipt, etc.
+   */
+  async purchase(productId) {
+    if (!InAppPurchasePlugin) {
+      throw new Error('In-app purchases not available');
+    }
+    try {
+      return await InAppPurchasePlugin.purchase({ productId });
+    } catch (e) {
+      console.error('[InAppPurchase] Purchase failed:', e);
+      throw e;
+    }
+  },
+
+  /**
+   * Restore previous purchases
+   * @returns {Promise<void>}
+   */
+  async restorePurchases() {
+    if (!InAppPurchasePlugin) {
+      throw new Error('In-app purchases not available');
+    }
+    try {
+      return await InAppPurchasePlugin.restorePurchases();
+    } catch (e) {
+      console.error('[InAppPurchase] Restore purchases failed:', e);
+      throw e;
+    }
+  },
+
+  /**
+   * Open App Store subscription management UI
+   * @returns {Promise<void>}
+   */
+  async manageSubscriptions() {
+    if (!InAppPurchasePlugin) {
+      throw new Error('In-app purchases not available');
+    }
+    try {
+      return await InAppPurchasePlugin.manageSubscriptions();
+    } catch (e) {
+      console.error('[InAppPurchase] Manage subscriptions failed:', e);
+      throw e;
+    }
+  },
+
+  /**
+   * Add listener for transaction updates
+   * @param {Function} callback - Called when transactions are updated
+   * @returns {Promise<PluginListenerHandle>} Handle to remove listener
+   */
+  addTransactionListener(callback) {
+    if (!InAppPurchasePlugin) {
+      return null;
+    }
+    try {
+      return InAppPurchasePlugin.addListener('transactionUpdate', callback);
+    } catch (e) {
+      console.error('[InAppPurchase] Add listener failed:', e);
+      return null;
+    }
+  }
+};
+
+// ============================================================
 // SAFE AREA
 // ============================================================
 
@@ -454,5 +588,6 @@ export default {
   PushService,
   LocalNotificationService,
   AppService,
+  InAppPurchaseService,
   getSafeAreaInsets,
 };

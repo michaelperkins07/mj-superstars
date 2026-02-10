@@ -6,6 +6,7 @@
 import { query } from '../database/db.js';
 import { NotificationService } from './notifications.js';
 import { logger } from '../utils/logger.js';
+import { processCampaigns } from './campaignScheduler.js';
 
 // Helper wrappers to match the API the scheduler functions expect
 async function sendPushNotification(pushToken, payload) {
@@ -573,6 +574,10 @@ export function initScheduler() {
       // Weekly insights: Sunday 9-11 AM locally
       await sendWeeklyInsights().catch(err =>
         logger.error('Weekly insights failed:', err.message));
+
+      // Campaign scheduler: re-engagement, streak campaigns, mood campaigns
+      await processCampaigns().catch(err =>
+        logger.error('Campaign processing failed:', err.message));
 
     } catch (err) {
       logger.error('Scheduler tick error:', err);

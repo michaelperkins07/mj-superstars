@@ -17,6 +17,7 @@ import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { authLimiter } from '../middleware/security.js';
 import { logger } from '../utils/logger.js';
 import { sendPasswordResetEmail, sendWelcomeEmail } from '../services/email.js';
+import { initializeUserCampaigns } from '../services/campaignScheduler.js';
 
 const router = Router();
 
@@ -107,6 +108,11 @@ router.post('/register',
     // Send welcome email (async, don't block registration)
     sendWelcomeEmail(email, display_name).catch(err =>
       logger.warn('Welcome email failed:', { userId: result.id, error: err.message })
+    );
+
+    // Initialize notification campaigns (async, don't block registration)
+    initializeUserCampaigns(result.id).catch(err =>
+      logger.warn('Campaign init failed:', { userId: result.id, error: err.message })
     );
 
     res.status(201).json({

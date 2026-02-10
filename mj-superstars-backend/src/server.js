@@ -49,6 +49,8 @@ import emailPrefRoutes from './routes/email-preferences.js';
 import gamificationRoutes from './routes/gamification.js';
 import legalRoutes from './routes/legal.js';
 import statusRoutes from './routes/status.js';
+import notificationPreferencesRoutes from './routes/notification-preferences.js';
+import adminCampaignsRoutes from './routes/admin-campaigns.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -284,6 +286,8 @@ app.use('/api/email-preferences', emailPrefRoutes);
 app.use('/api/gamification', gamificationRoutes);
 app.use('/api/legal', legalRoutes);
 app.use('/api/status', statusRoutes);
+app.use('/api/notification-preferences', notificationPreferencesRoutes);
+app.use('/api/admin/campaigns', adminCampaignsRoutes);
 
 // ============================================================
 // ERROR HANDLING
