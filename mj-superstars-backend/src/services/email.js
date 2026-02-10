@@ -121,8 +121,8 @@ class EmailService {
           (SELECT COUNT(*) FROM tasks WHERE user_id = $1 AND completed_at >= NOW() - INTERVAL '7 days' AND completed_at IS NOT NULL) as tasks_completed,
           (SELECT COALESCE(SUM(points), 0) FROM tasks WHERE user_id = $1 AND completed_at >= NOW() - INTERVAL '7 days' AND completed_at IS NOT NULL) as points_earned,
           (SELECT COUNT(*) FROM journal_entries WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '7 days') as journal_entries,
-          (SELECT streak_count FROM users WHERE id = $1) as current_streak,
-          (SELECT last_level_up FROM users WHERE id = $1) as last_achievement
+          (SELECT COALESCE(daily_login_streak, 0) FROM users WHERE id = $1) as current_streak,
+          (SELECT NULL) as last_achievement
         FROM mood_entries
         WHERE user_id = $1
         AND created_at >= NOW() - INTERVAL '7 days'`,
@@ -303,7 +303,7 @@ class EmailService {
         `SELECT
           (SELECT COUNT(*) FROM tasks WHERE user_id = $1 AND completed_at >= NOW() - INTERVAL '7 days' AND completed_at IS NOT NULL) as tasks_completed,
           (SELECT COALESCE(SUM(points), 0) FROM tasks WHERE user_id = $1 AND completed_at >= NOW() - INTERVAL '7 days' AND completed_at IS NOT NULL) as points_earned,
-          (SELECT COALESCE(current_streak, 0) FROM users WHERE id = $1) as current_streak`,
+          (SELECT COALESCE(daily_login_streak, 0) FROM users WHERE id = $1) as current_streak`,
         [userId]
       );
 
