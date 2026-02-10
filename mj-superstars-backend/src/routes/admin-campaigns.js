@@ -5,7 +5,7 @@
 
 import { Router } from 'express';
 import { query } from '../database/db.js';
-import { authenticate } from '../middleware/auth.js';
+import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { asyncHandler, APIError } from '../middleware/errorHandler.js';
 import { logger } from '../utils/logger.js';
 import {
@@ -22,17 +22,9 @@ import {
 
 const router = Router();
 
-// Check if user is admin (adapt to your auth system)
-function isAdmin(req, res, next) {
-  try {
-    if (req.user?.role !== 'admin') {
-      return next(new APIError('Admin access required', 403, 'FORBIDDEN'));
-    }
-    next();
-  } catch (error) {
-    next(error);
-  }
-}
+// Delegate to requireAdmin from auth middleware
+// Supports both ADMIN_EMAILS and x-admin-secret header
+const isAdmin = requireAdmin;
 
 // ============================================================
 // TESTING ENDPOINTS
