@@ -288,7 +288,7 @@ class EmailService {
 
       // Fetch user data
       const userResult = await pool.query(
-        'SELECT id, first_name, level, points FROM users WHERE id = $1',
+        'SELECT id, first_name, 1 AS level, total_points AS points FROM users WHERE id = $1',
         [userId]
       );
 
@@ -303,7 +303,7 @@ class EmailService {
         `SELECT
           (SELECT COUNT(*) FROM tasks WHERE user_id = $1 AND completed_at >= NOW() - INTERVAL '7 days' AND completed_at IS NOT NULL) as tasks_completed,
           (SELECT COALESCE(SUM(points), 0) FROM tasks WHERE user_id = $1 AND completed_at >= NOW() - INTERVAL '7 days' AND completed_at IS NOT NULL) as points_earned,
-          (SELECT streak_count FROM users WHERE id = $1) as current_streak`,
+          (SELECT COALESCE(current_streak, 0) FROM users WHERE id = $1) as current_streak`,
         [userId]
       );
 

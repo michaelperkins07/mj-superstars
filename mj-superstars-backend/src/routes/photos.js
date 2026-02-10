@@ -39,7 +39,7 @@ const verifyPhotoOwnership = async (req, res, next) => {
 const awardPoints = async (userId, points, reason) => {
   try {
     await pool.query(
-      'UPDATE users SET points = COALESCE(points, 0) + $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+      'UPDATE users SET total_points = COALESCE(total_points, 0) + $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
       [points, userId]
     );
   } catch (error) {

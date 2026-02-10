@@ -40,7 +40,7 @@ class GamificationEngine {
       
       // Award points to user
       await pool.query(
-        `UPDATE users SET points = points + $1 WHERE id = $2`,
+        `UPDATE users SET total_points = total_points + $1 WHERE id = $2`,
         [totalPoints, userId]
       );
       
@@ -123,7 +123,7 @@ class GamificationEngine {
       
       // Award bonus points
       await pool.query(
-        `UPDATE users SET points = points + $1, daily_login_streak = $2, last_login_bonus_date = $3
+        `UPDATE users SET total_points = total_points + $1, daily_login_streak = $2, last_login_bonus_date = $3
          WHERE id = $4`,
         [bonusPoints, consecutiveDays, today, userId]
       );
@@ -245,7 +245,7 @@ class GamificationEngine {
   async checkMilestones(userId) {
     try {
       const user = await pool.query(
-        `SELECT points, daily_login_streak FROM users WHERE id = $1`,
+        `SELECT total_points AS points, daily_login_streak FROM users WHERE id = $1`,
         [userId]
       );
       
@@ -418,7 +418,7 @@ class GamificationEngine {
         if (isCompleted) {
           // Award points
           await pool.query(
-            `UPDATE users SET points = points + $1 WHERE id = $2`,
+            `UPDATE users SET total_points = total_points + $1 WHERE id = $2`,
             [pointsEarned, userId]
           );
           
@@ -575,7 +575,7 @@ class GamificationEngine {
     try {
       // Get user data
       const user = await pool.query(
-        `SELECT points, xp_multiplier, daily_login_streak FROM users WHERE id = $1`,
+        `SELECT total_points AS points, xp_multiplier, daily_login_streak FROM users WHERE id = $1`,
         [userId]
       );
       

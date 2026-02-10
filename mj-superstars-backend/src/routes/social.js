@@ -54,7 +54,7 @@ router.post('/posts', async (req, res) => {
 
     // Award points for creating post
     await pool.query(
-      `UPDATE users SET points = COALESCE(points, 0) + 5 WHERE id = $1`,
+      `UPDATE users SET total_points = COALESCE(total_points, 0) + 5 WHERE id = $1`,
       [user_id]
     );
 
@@ -406,7 +406,7 @@ router.post('/posts/:id/comments', async (req, res) => {
 
     // Award points for commenting
     await pool.query(
-      `UPDATE users SET points = COALESCE(points, 0) + 2 WHERE id = $1`,
+      `UPDATE users SET total_points = COALESCE(total_points, 0) + 2 WHERE id = $1`,
       [user_id]
     );
 
