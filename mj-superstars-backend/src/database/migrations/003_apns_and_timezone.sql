@@ -1,5 +1,5 @@
 -- ============================================================
--- Migration 003b: APNS device token + timezone fixes
+-- Migration 003: APNS device token + timezone fixes
 -- ============================================================
 
 -- Add device_token column to push_subscriptions for iOS APNs
