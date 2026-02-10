@@ -5,7 +5,7 @@
 
 import { query } from '../database/db.js';
 import { logger } from '../utils/logger.js';
-import { NotificationService } from './notifications.js';
+import NotificationService from './notifications.js';
 import { addDelayedJob, addScheduledJob } from './jobQueue.js';
 
 /**
