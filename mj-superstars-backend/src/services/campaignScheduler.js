@@ -141,7 +141,8 @@ function getDefaultPreferences() {
 export async function getUserTimezone(userId) {
   try {
     const result = await query(
-      `SELECT timezone FROM users WHERE id = $1`,
+      `SELECT COALESCE(timezone, 'America/New_York') as timezone
+       FROM users WHERE id = $1`,
       [userId]
     );
 
@@ -514,7 +515,7 @@ export async function processStreakReminders() {
   try {
     // Get users with 3+ day streaks who haven't logged today
     const result = await query(
-      `SELECT u.id, u.timezone FROM users u
+      `SELECT u.id, COALESCE(u.timezone, 'America/New_York') as timezone FROM users u
        WHERE u.current_streak >= 3
        AND NOT EXISTS (
          SELECT 1 FROM moods m

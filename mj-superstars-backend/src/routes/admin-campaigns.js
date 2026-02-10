@@ -241,7 +241,7 @@ router.get('/user/:userId',
 
     // Verify user exists
     const userResult = await query(
-      'SELECT id, email, timezone, current_streak, last_login_at FROM users WHERE id = $1',
+      `SELECT id, email, timezone, current_streak, last_active_at FROM users WHERE id = $1`,
       [userId]
     );
 
@@ -296,7 +296,7 @@ router.get('/user/:userId',
         email: user.email,
         timezone: user.timezone,
         current_streak: user.current_streak,
-        last_login_at: user.last_login_at
+        last_active_at: user.last_active_at
       },
       preferences: prefs,
       campaigns: campaignSummary
@@ -485,7 +485,7 @@ router.get('/debug/user-prefs/:userId',
     );
 
     const userResult = await query(
-      'SELECT id, email, timezone, created_at FROM users WHERE id = $1',
+      `SELECT id, email, timezone, created_at FROM users WHERE id = $1`,
       [userId]
     );
 

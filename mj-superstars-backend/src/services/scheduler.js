@@ -152,7 +152,7 @@ function getDayOfWeekInTimezone(timezone) {
 async function isQuietHours(userId) {
   try {
     const result = await query(
-      `SELECT notification_settings, timezone FROM users WHERE id = $1`,
+      `SELECT notification_settings, COALESCE(timezone, 'America/New_York') as timezone FROM users WHERE id = $1`,
       [userId]
     );
 
