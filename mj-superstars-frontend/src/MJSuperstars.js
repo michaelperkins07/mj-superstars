@@ -126,14 +126,14 @@ function MJSuperstars() {
   return (
     <SentryErrorBoundary>
       <ToastProvider>
-      <div className="min-h-screen bg-slate-900 flex flex-col" style={{ height: '100dvh' }}>
+      <div className="bg-slate-900 flex flex-col" style={{ height: '100dvh', height: '100vh', maxHeight: '-webkit-fill-available' }}>
       {/* Main Content */}
-      <div className="flex-1 overflow-hidden">
+      <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
         {renderScreen()}
       </div>
 
-      {/* Bottom Tab Bar */}
-      <div className="bg-slate-800/90 backdrop-blur border-t border-slate-700/50 px-2 pb-safe">
+      {/* Bottom Tab Bar — fixed to bottom with safe area padding */}
+      <div className="flex-shrink-0 bg-slate-800/90 backdrop-blur border-t border-slate-700/50 px-2 pb-safe">
         <div className="flex justify-around py-2">
           {tabs.map((tab) => {
             const Icon = tab.icon;

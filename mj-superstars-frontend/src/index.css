@@ -2,6 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── App Shell: Lock to viewport, prevent overscroll ── */
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
 /* Custom global styles */
 body {
   margin: 0;
@@ -11,7 +28,17 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scrolling */
+/* Safe area utility for notched devices */
+@layer utilities {
+  .pb-safe {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+}
+
+/* Smooth scrolling (within scroll containers only) */
 html {
   scroll-behavior: smooth;
 }
