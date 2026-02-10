@@ -95,7 +95,7 @@ const campaignTemplates = {
 /**
  * Get user notification preferences
  */
-async function getUserPreferences(userId) {
+export async function getUserPreferences(userId) {
   try {
     const result = await query(
       `SELECT
@@ -138,7 +138,7 @@ function getDefaultPreferences() {
 /**
  * Get user's timezone
  */
-async function getUserTimezone(userId) {
+export async function getUserTimezone(userId) {
   try {
     const result = await query(
       `SELECT timezone FROM users WHERE id = $1`,
