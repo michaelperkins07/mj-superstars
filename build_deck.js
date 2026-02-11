@@ -304,7 +304,7 @@ async function buildDeck() {
     { icon: icons.users, title: "Social Feed", desc: "Share wins, support others, see the leaderboard. Positive accountability from day one.", color: C.electric },
     { icon: icons.star, title: "Vision Board", desc: "Photo-powered goal visualization. Upload dreams, track progress, stay obsessed.", color: C.brightGold },
     { icon: icons.bell, title: "Smart Alerts", desc: "AI-optimized push notifications. Right message, right time. Based on your behavior patterns.", color: C.accent },
-    { icon: icons.lock, title: "Premium Paywall", desc: "Freemium model with $9.99/mo or $79.99/yr tiers. High-value features behind the gate.", color: C.gold },
+    { icon: icons.lock, title: "Premium Paywall", desc: "Freemium model with $19.99/mo or $199.99/yr Elite tiers. 30-day free trial included.", color: C.gold },
   ];
 
   const drawFeatureList = (feats, startX) => {
@@ -444,7 +444,7 @@ async function buildDeck() {
     ["Social Community & Accountability", "YES", "No", "Forum only", "No"],
     ["Vision Board & Goal Tracking", "YES", "No", "No", "No"],
     ["Personalized Smart Notifications", "YES", "Generic", "Generic", "Generic"],
-    ["Price (Monthly)", "$9.99", "$12.99", "$80+", "$14.99"],
+    ["Price (Monthly)", "$19.99", "$12.99", "$80+", "$14.99"],
   ];
 
   const tableRows = compHeaders.concat(compRows.map(row => {
@@ -506,7 +506,7 @@ async function buildDeck() {
 
   // Revenue streams
   const revenue = [
-    { icon: icons.crown, title: "Premium Subscription", desc: "$9.99/mo or $79.99/yr\nUnlimited AI coaching, advanced analytics,\npremium challenges, priority support", amount: "Primary Revenue", color: C.brightGold },
+    { icon: icons.crown, title: "Premium Subscription", desc: "$19.99/mo or $199.99/yr\nUnlimited AI coaching, advanced analytics,\npremium challenges, priority support", amount: "Primary Revenue", color: C.brightGold },
     { icon: icons.users, title: "Referral Engine", desc: "Built-in viral referral system\n100pts referrer + 50pts referred\nLeaderboard gamification drives organic growth", amount: "Viral Growth", color: C.electric },
     { icon: icons.globe, title: "Enterprise / B2B", desc: "Employer wellness packages\nTeam performance dashboards\nBulk licensing for organizations", amount: "Enterprise Upsell", color: C.green },
     { icon: icons.chartBar, title: "Data Insights", desc: "Anonymized wellness trends\nWorkplace mental health analytics\nPartnership opportunities", amount: "Future Revenue", color: C.purple },
@@ -576,7 +576,7 @@ async function buildDeck() {
   const techStats = [
     { num: "150+", label: "API\nEndpoints" },
     { num: "9", label: "Core\nScreens" },
-    { num: "14", label: "Database\nTables" },
+    { num: "16", label: "Database\nTables" },
     { num: "12", label: "Engineering\nPhases Complete" },
   ];
 
@@ -611,7 +611,7 @@ async function buildDeck() {
 
   const techRight = [
     "Apple App Store ready (Bundle ID registered)",
-    "RevenueCat subscription management",
+    "StoreKit 2 subscription management",
     "Redis caching for performance",
     "End-to-end encryption for messages",
     "Automated email campaigns (SendGrid)",
@@ -938,7 +938,139 @@ async function buildDeck() {
   });
 
   // ============================================================
-  // SLIDE 12: FINANCIAL PROJECTIONS
+  // SLIDE 12: NEXT 20 PRIORITIES (2-WEEK SPRINT)
+  // ============================================================
+  let sPriority = pres.addSlide();
+  sPriority.background = { color: C.darkBg };
+
+  sPriority.addShape(pres.shapes.RECTANGLE, {
+    x: 0, y: 0, w: 10, h: 0.06,
+    fill: { color: C.brightGold }
+  });
+
+  sPriority.addText("DEVELOPMENT ROADMAP", {
+    x: 0.5, y: 0.15, w: 9, h: 0.35,
+    fontSize: 12, fontFace: "Calibri",
+    color: C.gold, align: "center",
+    charSpacing: 6, bold: true, margin: 0
+  });
+
+  sPriority.addText("Next 20 Priorities — 2-Week Sprint", {
+    x: 0.5, y: 0.45, w: 9, h: 0.45,
+    fontSize: 26, fontFace: "Arial Black",
+    color: C.white, align: "center", margin: 0
+  });
+
+  // Tier definitions
+  const tiers = [
+    {
+      title: "TIER 1: Immediate User Delight",
+      timeline: "Days 1–4",
+      color: C.green,
+      items: [
+        "TestFlight Beta Launch",
+        "Enhanced Onboarding Experience",
+        "Streak Celebrations & Milestone Rewards",
+        "Smart Push Notification Reminders",
+        "Daily Motivational Content Feed"
+      ]
+    },
+    {
+      title: "TIER 2: Deeper Engagement",
+      timeline: "Days 4–8",
+      color: C.electric,
+      items: [
+        "AI-Suggested Journal Prompts",
+        "Voice Input for AI Coaching",
+        "Mood Pattern Predictions",
+        "Apple Watch Companion (Basic)",
+        "HealthKit Integration"
+      ]
+    },
+    {
+      title: "TIER 3: Social & Accountability",
+      timeline: "Days 8–11",
+      color: C.brightGold,
+      items: [
+        "Buddy Matching System",
+        "Guided Challenges & Programs",
+        "Achievement Sharing",
+        "Goal Setting & Progress Tracking",
+        "Custom Reminder Scheduling"
+      ]
+    },
+    {
+      title: "TIER 4: Power User Features",
+      timeline: "Days 11–14",
+      color: C.accent,
+      items: [
+        "Exportable Progress Reports",
+        "Cross-Metric Correlation Insights",
+        "Weekly Summary Digest",
+        "Advanced Coping Tools Library",
+        "Search Across History"
+      ]
+    }
+  ];
+
+  tiers.forEach((tier, ti) => {
+    const col = ti % 2;
+    const row = Math.floor(ti / 2);
+    const x = 0.4 + col * 4.85;
+    const y = 1.05 + row * 2.3;
+
+    // Card background
+    sPriority.addShape(pres.shapes.RECTANGLE, {
+      x, y, w: 4.55, h: 2.1,
+      fill: { color: "151515" },
+      shadow: mkShadow({ blur: 3, offset: 1, opacity: 0.25 })
+    });
+    // Accent left bar
+    sPriority.addShape(pres.shapes.RECTANGLE, {
+      x, y, w: 0.06, h: 2.1,
+      fill: { color: tier.color }
+    });
+    // Tier title
+    sPriority.addText(tier.title, {
+      x: x + 0.2, y: y + 0.08, w: 3.3, h: 0.28,
+      fontSize: 11, fontFace: "Calibri",
+      color: tier.color, bold: true, margin: 0
+    });
+    // Timeline badge
+    sPriority.addShape(pres.shapes.ROUNDED_RECTANGLE, {
+      x: x + 3.4, y: y + 0.08, w: 0.95, h: 0.25,
+      fill: { color: tier.color },
+      rectRadius: 0.05
+    });
+    sPriority.addText(tier.timeline, {
+      x: x + 3.4, y: y + 0.08, w: 0.95, h: 0.25,
+      fontSize: 8, fontFace: "Calibri",
+      color: C.black, align: "center", valign: "middle",
+      bold: true, margin: 0
+    });
+
+    // Items
+    tier.items.forEach((item, ii) => {
+      const num = ti * 5 + ii + 1;
+      sPriority.addText([
+        { text: `${num}. `, options: { color: tier.color, bold: true, fontSize: 9 } },
+        { text: item, options: { color: C.lightGray, fontSize: 9 } }
+      ], {
+        x: x + 0.2, y: y + 0.42 + ii * 0.32, w: 4.15, h: 0.3,
+        fontFace: "Calibri", margin: 0
+      });
+    });
+  });
+
+  // Footer
+  sPriority.addText("Prioritized by user satisfaction impact  |  All features achievable within 2-week sprint", {
+    x: 0.5, y: 5.3, w: 9, h: 0.25,
+    fontSize: 9, fontFace: "Calibri",
+    color: C.gray, align: "center", italic: true, margin: 0
+  });
+
+  // ============================================================
+  // SLIDE 13: FINANCIAL PROJECTIONS
   // ============================================================
   let s12 = pres.addSlide();
   s12.background = { color: C.darkBg };
