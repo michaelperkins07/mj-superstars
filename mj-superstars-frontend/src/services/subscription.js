@@ -223,7 +223,7 @@ async function checkSubscriptionWithBackend() {
     const token = localStorage.getItem('mj_auth_token');
     if (!token) return;
 
-    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/subscriptions/status`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/subscriptions/status`, {
       headers: {
         'Authorization': `Bearer ${token}`
       }
@@ -249,7 +249,7 @@ async function syncSubscriptionWithBackend(transaction) {
     const token = localStorage.getItem('mj_auth_token');
     if (!token) return;
 
-    await fetch(`${process.env.REACT_APP_API_URL}/api/subscriptions/sync`, {
+    await fetch(`${process.env.REACT_APP_API_URL}/subscriptions/sync`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${token}`,

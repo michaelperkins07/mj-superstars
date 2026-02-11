@@ -138,7 +138,7 @@ async function fetchFlags(force = false) {
         headers['Authorization'] = `Bearer ${token}`;
       }
 
-      const response = await fetch(`${API_URL}/api/flags`, { headers });
+      const response = await fetch(`${API_URL}/flags`, { headers });
 
       if (!response.ok) {
         throw new Error(`Failed to fetch flags: ${response.status}`);
@@ -376,7 +376,7 @@ async function getVariant(experimentKey, variants = ['control', 'variant']) {
     });
 
     const response = await fetch(
-      `${API_URL}/api/flags/experiment/${experimentKey}?${params}`,
+      `${API_URL}/flags/experiment/${experimentKey}?${params}`,
       { headers }
     );
 
