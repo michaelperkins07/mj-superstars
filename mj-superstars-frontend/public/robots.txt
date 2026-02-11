@@ -1,0 +1,7 @@
+# MJ's Superstars / White Mike
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+Sitemap: https://mj-superstars-app.onrender.com/sitemap.xml

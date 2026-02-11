@@ -6,12 +6,11 @@ import express from 'express';
 import { createServer } from 'http';
 import { Server as SocketIO } from 'socket.io';
 import cors from 'cors';
-import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
 import dotenv from 'dotenv';
-import { sanitizeBody } from './middleware/security.js';
+import { helmet as securityHelmet, sanitizeBody } from './middleware/security.js';
 
 // Load environment variables FIRST
 dotenv.config();
@@ -114,13 +113,8 @@ const io = new SocketIO(httpServer, {
 // Sentry request handler - MUST be first middleware
 app.use(sentryRequestHandler());
 
-// Security headers
-app.use(helmet({
-  contentSecurityPolicy: false,
-  crossOriginEmbedderPolicy: false,
-  // Allow WebSocket connections
-  crossOriginOpenerPolicy: false
-}));
+// Security headers (CSP, HSTS, referrer-policy, etc. from security.js)
+app.use(securityHelmet);
 
 // CORS
 app.use(cors({

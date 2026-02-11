@@ -16,20 +16,35 @@ const helmetConfig = helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdn.mxpnl.com"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "https:"],
-      connectSrc: ["'self'", "https://api.anthropic.com", "wss:"],
+      imgSrc: ["'self'", "data:", "https:", "blob:"],
+      connectSrc: [
+        "'self'",
+        "https://api.anthropic.com",
+        "https://*.ingest.us.sentry.io",
+        "https://api-js.mixpanel.com",
+        "https://mj-superstars.onrender.com",
+        "wss://mj-superstars.onrender.com",
+        "wss:"
+      ],
       frameSrc: ["'none'"],
       objectSrc: ["'none'"],
+      workerSrc: ["'self'", "blob:"],
+      manifestSrc: ["'self'"],
       upgradeInsecureRequests: []
     }
   },
   crossOriginEmbedderPolicy: false,
   crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
   crossOriginResourcePolicy: { policy: "cross-origin" },
-  referrerPolicy: { policy: "strict-origin-when-cross-origin" }
+  referrerPolicy: { policy: "strict-origin-when-cross-origin" },
+  strictTransportSecurity: {
+    maxAge: 31536000,
+    includeSubDomains: true,
+    preload: true
+  }
 });
 
 // ============================================================

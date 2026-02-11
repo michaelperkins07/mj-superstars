@@ -2,23 +2,26 @@
 // MJ's Superstars - Main App Component
 // Handles navigation between Auth, Onboarding, and Main App
 // ==========================================================
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useAuth } from './contexts/AuthContext';
+import { lazyWithPreload, LoadingFallback } from './utils/performance';
 import AuthScreen from './components/AuthScreen';
 import Onboarding from './components/Onboarding';
 import ChatScreen from './components/screens/ChatScreen';
-import MoodScreen from './components/screens/MoodScreen';
-import TasksScreen from './components/screens/TasksScreen';
-import JournalScreen from './components/screens/JournalScreen';
-import ExploreScreen from './components/screens/ExploreScreen';
-import InsightsScreen from './components/screens/InsightsScreen';
-import RitualsScreen from './components/screens/RitualsScreen';
-import ProfileScreen from './components/screens/ProfileScreen';
-import GamificationScreen from './components/screens/GamificationScreen';
 import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
 import { initSubscription } from './services/subscription';
 import { ToastProvider } from './components/shared/Toast';
+
+// Lazy-loaded screens (not needed on initial render)
+const MoodScreen = lazyWithPreload(() => import('./components/screens/MoodScreen'));
+const TasksScreen = lazyWithPreload(() => import('./components/screens/TasksScreen'));
+const JournalScreen = lazyWithPreload(() => import('./components/screens/JournalScreen'));
+const ExploreScreen = lazyWithPreload(() => import('./components/screens/ExploreScreen'));
+const InsightsScreen = lazyWithPreload(() => import('./components/screens/InsightsScreen'));
+const RitualsScreen = lazyWithPreload(() => import('./components/screens/RitualsScreen'));
+const ProfileScreen = lazyWithPreload(() => import('./components/screens/ProfileScreen'));
+const GamificationScreen = lazyWithPreload(() => import('./components/screens/GamificationScreen'));
 
 // ==========================================================
 // MAIN APP COMPONENT
@@ -129,7 +132,9 @@ function MJSuperstars() {
       <div className="bg-slate-900 flex flex-col" style={{ height: '100dvh', height: '100vh', maxHeight: '-webkit-fill-available' }}>
       {/* Main Content */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden min-h-0">
-        {renderScreen()}
+        <Suspense fallback={<LoadingFallback />}>
+          {renderScreen()}
+        </Suspense>
       </div>
 
       {/* Bottom Tab Bar — fixed to bottom with safe area padding */}
