@@ -5,7 +5,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
-import { ProgressAPI, GuestAPI, TokenManager, EmailPrefsAPI, UserAPI } from '../../services/api';
+import { ProgressAPI, GuestAPI, TokenManager, EmailPrefsAPI, UserAPI, ReferralAPI } from '../../services/api';
+import { ReferralCard } from '../ShareButton';
 import { Fire, Logout } from '../shared/Icons';
 import { useHapticsHook } from '../../services/haptics';
 import NotificationSettings from '../NotificationSettings';
@@ -582,6 +583,9 @@ function ProfileScreen() {
           </svg>
         </button>
       </SectionCard>
+
+      {/* ---- INVITE FRIENDS ---- */}
+      {!isGuest && <ReferralCard className="mb-4" />}
 
       {/* ---- PERSONALIZATION TOOLS ---- */}
       <SectionCard title="Personalization" icon="🔄">

@@ -933,6 +933,45 @@ export const EmailPrefsAPI = {
 };
 
 // ============================================================
+// REFERRAL API
+// ============================================================
+
+export const ReferralAPI = {
+  async getMyCode() {
+    return request('/referral/my-code');
+  },
+
+  async getStats() {
+    return request('/referral/stats');
+  },
+
+  async validateCode(code) {
+    return request('/referral/validate', {
+      method: 'POST',
+      body: JSON.stringify({ code })
+    });
+  },
+
+  async redeemCode(code) {
+    return request('/referral/redeem', {
+      method: 'POST',
+      body: JSON.stringify({ code })
+    });
+  },
+
+  async trackShare(shareType, platform, contentId = null) {
+    return request('/referral/share-event', {
+      method: 'POST',
+      body: JSON.stringify({ share_type: shareType, platform, content_id: contentId })
+    });
+  },
+
+  async getLeaderboard() {
+    return request('/referral/leaderboard');
+  }
+};
+
+// ============================================================
 // EXPORT ALL
 // ============================================================
 
@@ -954,5 +993,6 @@ export default {
   PhotoAPI,
   SocialAPI,
   GamificationAPI,
-  EmailPrefsAPI
+  EmailPrefsAPI,
+  ReferralAPI
 };

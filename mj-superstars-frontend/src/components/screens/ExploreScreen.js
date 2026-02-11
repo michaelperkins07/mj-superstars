@@ -9,6 +9,7 @@ import React, { useState, useEffect } from 'react';
 import { ContentAPI, GamificationAPI, SocialAPI, RitualAPI, TokenManager } from '../../services/api';
 import { useToast } from '../shared/Toast';
 import * as haptics from '../../services/haptics';
+import ShareButton from '../ShareButton';
 
 // ============================================================
 // QUICK COPING EXERCISES (works without auth)
@@ -680,6 +681,12 @@ function ExploreScreen({ onNavigateTo }) {
                       >
                         ❤️ {post.heart_count || 0}
                       </button>
+                      <ShareButton
+                        variant="icon"
+                        text={post.content || "Check out this post on MJ's Superstars!"}
+                        shareType="post"
+                        contentId={post.id}
+                      />
                     </div>
                   </div>
                 ))}

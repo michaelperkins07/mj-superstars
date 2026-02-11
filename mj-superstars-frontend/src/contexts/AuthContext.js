@@ -4,7 +4,7 @@
 // ============================================================
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { AuthAPI, TokenManager, UserAPI, SocialAuthAPI } from '../services/api';
+import { AuthAPI, TokenManager, UserAPI, SocialAuthAPI, ReferralAPI } from '../services/api';
 import { socketService } from '../services/socket';
 
 const AuthContext = createContext(null);
@@ -112,6 +112,18 @@ export function AuthProvider({ children }) {
 
       // Connect socket
       socketService.connect();
+
+      // Auto-redeem referral code if one was stored via deep link
+      const storedReferralCode = localStorage.getItem('mj_referral_code') || sessionStorage.getItem('mj_referral_code');
+      if (storedReferralCode) {
+        try {
+          await ReferralAPI.redeemCode(storedReferralCode);
+          localStorage.removeItem('mj_referral_code');
+          sessionStorage.removeItem('mj_referral_code');
+        } catch (refErr) {
+          console.log('Referral redemption skipped:', refErr.message);
+        }
+      }
 
       return response;
     } catch (err) {

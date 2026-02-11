@@ -50,6 +50,7 @@ import legalRoutes from './routes/legal.js';
 import statusRoutes from './routes/status.js';
 import notificationPreferencesRoutes from './routes/notification-preferences.js';
 import adminCampaignsRoutes from './routes/admin-campaigns.js';
+import referralRoutes from './routes/referral.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -289,6 +290,7 @@ app.use('/api/legal', legalRoutes);
 app.use('/api/status', statusRoutes);
 app.use('/api/notification-preferences', notificationPreferencesRoutes);
 app.use('/api/admin/campaigns', adminCampaignsRoutes);
+app.use('/api/referral', referralRoutes);
 
 // ============================================================
 // ERROR HANDLING
