@@ -37,7 +37,7 @@ INSERT INTO users (
         "notification_time": "09:00"
     }'::jsonb,
     'premium',
-    'com.mjsuperstars.premium.yearly',
+    'com.topperformer.premium.yearly',
     '2026-12-31 23:59:59+00',
     14,
     21,

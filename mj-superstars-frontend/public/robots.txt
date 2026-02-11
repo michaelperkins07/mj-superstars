@@ -1,4 +1,4 @@
-# MJ's Superstars / White Mike
+# Top Performer — AI + EI
 User-agent: *
 Allow: /
 Disallow: /api/

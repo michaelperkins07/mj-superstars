@@ -51,6 +51,7 @@ import statusRoutes from './routes/status.js';
 import notificationPreferencesRoutes from './routes/notification-preferences.js';
 import adminCampaignsRoutes from './routes/admin-campaigns.js';
 import referralRoutes from './routes/referral.js';
+import commitmentRoutes from './routes/commitments.js';
 
 // Import middleware
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -291,6 +292,7 @@ app.use('/api/status', statusRoutes);
 app.use('/api/notification-preferences', notificationPreferencesRoutes);
 app.use('/api/admin/campaigns', adminCampaignsRoutes);
 app.use('/api/referral', referralRoutes);
+app.use('/api/commitments', commitmentRoutes);
 
 // ============================================================
 // ERROR HANDLING
@@ -342,7 +344,7 @@ const startServer = async () => {
     startMonitoring();
 
     httpServer.listen(PORT, '0.0.0.0', () => {
-      logger.info(`🚀 White Mike API running on port ${PORT}`);
+      logger.info(`🚀 Top Performer API running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`Health check: http://0.0.0.0:${PORT}/health`);
     });

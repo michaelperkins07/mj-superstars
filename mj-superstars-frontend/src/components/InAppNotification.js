@@ -83,7 +83,7 @@ export default function InAppNotificationBanner() {
             {/* Content */}
             <div className="flex-1 min-w-0">
               <h4 className="text-white font-semibold text-sm">
-                {notification.title || "White Mike"}
+                {notification.title || "Coach Mike"}
               </h4>
               <p className="text-slate-300 text-sm line-clamp-2">
                 {notification.body}

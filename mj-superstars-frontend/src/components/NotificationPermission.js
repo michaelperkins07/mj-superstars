@@ -172,7 +172,7 @@ export function NotificationPermissionModal({ isOpen, onClose, onEnabled }) {
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">You're All Set! 🎉</h2>
             <p className="text-slate-400">
-              White Mike will send you gentle reminders to check in.
+              Coach Mike will send you gentle reminders to check in.
               You can customize these anytime in Settings.
             </p>
           </div>
@@ -185,7 +185,7 @@ export function NotificationPermissionModal({ isOpen, onClose, onEnabled }) {
             </div>
             <h2 className="text-xl font-bold text-white mb-2">No Problem!</h2>
             <p className="text-slate-400 mb-6">
-              You can enable notifications anytime in your device Settings or from the White Mike settings menu.
+              You can enable notifications anytime in your device Settings or from the Top Performer settings menu.
             </p>
             <button
               onClick={handleSkip}

@@ -6,7 +6,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>MJ's Superstars</string>
+	<string>Top Performer</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -62,21 +62,21 @@
 
 	<!-- Privacy Usage Descriptions -->
 	<key>NSCameraUsageDescription</key>
-	<string>MJ's Superstars uses your camera for profile photos and sharing achievements.</string>
+	<string>Top Performer uses your camera for profile photos and sharing achievements.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>MJ's Superstars uses your photo library to set your profile picture and share your progress.</string>
+	<string>Top Performer uses your photo library to set your profile picture and share your progress.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>MJ's Superstars saves your progress images to your photo library when you share achievements.</string>
+	<string>Top Performer saves your progress images to your photo library when you share achievements.</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>MJ's Superstars uses your microphone for voice conversations with MJ.</string>
+	<string>Top Performer uses your microphone for voice conversations with Coach Mike.</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>MJ's Superstars uses speech recognition to transcribe your voice messages.</string>
+	<string>Top Performer uses speech recognition to transcribe your voice messages.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>MJ's Superstars reads your health data to correlate sleep, activity, and heart rate with your mood patterns.</string>
+	<string>Top Performer reads your health data to correlate sleep, activity, and heart rate with your mood patterns.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>MJ's Superstars can log mindful minutes to your Health app.</string>
+	<string>Top Performer can log mindful minutes to your Health app.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>MJ's Superstars uses your location to provide local resources and time-appropriate check-ins.</string>
+	<string>Top Performer uses your location to provide local resources and time-appropriate check-ins.</string>
 
 	<!-- Push Notifications -->
 	<key>aps-environment</key>
@@ -87,10 +87,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.mjsuperstars.app</string>
+			<string>com.topperformer.app</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>mjsuperstars</string>
+				<string>topperformer</string>
 			</array>
 		</dict>
 	</array>
@@ -98,13 +98,13 @@
 	<!-- Associated Domains (for universal links) -->
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>applinks:mjsuperstars.app</string>
+		<string>applinks:topperformer.app</string>
 	</array>
 
 	<!-- App Groups (for sharing data with widgets) -->
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.com.mjsuperstars.app</string>
+		<string>group.com.topperformer.app</string>
 	</array>
 
 	<!-- Capacitor Specific -->

@@ -4,7 +4,7 @@
     "details": [
       {
         "appIDs": [
-          "FAAWCBHB9C.com.mjsuperstars.app"
+          "FAAWCBHB9C.com.topperformer.app"
         ],
         "components": [
           { "/": "/mood/*", "comment": "Open mood tracking" },
@@ -24,7 +24,7 @@
   },
   "webcredentials": {
     "apps": [
-      "FAAWCBHB9C.com.mjsuperstars.app"
+      "FAAWCBHB9C.com.topperformer.app"
     ]
   }
 }

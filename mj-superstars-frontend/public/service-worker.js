@@ -97,7 +97,7 @@ self.addEventListener('push', (event) => {
     };
 
     event.waitUntil(
-      self.registration.showNotification(data.title || 'White Mike', options)
+      self.registration.showNotification(data.title || 'Top Performer', options)
     );
   } catch (err) {
     console.error('Push notification error:', err);

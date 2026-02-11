@@ -2,7 +2,7 @@
 # Upload metadata AND screenshots to App Store Connect
 
 # App identifier
-app_identifier("com.mjsuperstars.app")
+app_identifier("com.topperformer.app")
 
 # Metadata path
 metadata_path("./fastlane/metadata")

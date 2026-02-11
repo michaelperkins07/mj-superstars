@@ -14,12 +14,12 @@ import { addDelayedJob, addScheduledJob } from './jobQueue.js';
 const campaignTemplates = {
   onboardingDrip: {
     day0: {
-      title: 'Welcome to MJ Superstars! 🌟',
+      title: 'Welcome to Top Performer! 🌟',
       body: 'Glad to have you here. Let\'s start your journey together.'
     },
     day1: {
       title: 'How are you doing? 👋',
-      body: 'White Mike here. Ready for your first check-in?'
+      body: 'Coach Mike here. Ready for your first check-in?'
     },
     day3: {
       title: 'You\'re doing great! 💪',
@@ -45,7 +45,7 @@ const campaignTemplates = {
   dailyMoodCheck: [
     {
       title: 'How\'s your vibe? ✨',
-      body: 'Quick mood check-in with White Mike'
+      body: 'Quick mood check-in with Coach Mike'
     },
     {
       title: 'Checking in 💭',

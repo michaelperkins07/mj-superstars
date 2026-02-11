@@ -134,7 +134,7 @@ function WelcomeStep() {
         transition={{ delay: 0.2 }}
         className="text-3xl font-bold text-white mb-3"
       >
-        Yo, I'm White Mike
+        I'm Coach Mike
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 20 }}

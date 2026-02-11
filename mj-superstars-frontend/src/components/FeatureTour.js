@@ -10,12 +10,21 @@ import { motion, AnimatePresence } from 'framer-motion';
 // ============================================================
 const TOUR_STEPS = [
   {
+    id: 'commitments',
+    emoji: '🛡️',
+    gradient: 'from-sky-500 to-emerald-500',
+    title: '3 Pillars',
+    subtitle: 'Physical • Mental • Social',
+    description: 'Every day, make three commitments: Move your body, learn something new, and connect with empathy. This is the foundation of everything.',
+    tip: 'Complete all 3 daily to build your Clear Mind Score',
+  },
+  {
     id: 'chat',
     emoji: '💬',
     gradient: 'from-sky-500 to-blue-600',
-    title: 'Chat with White Mike',
-    subtitle: 'Your personal AI coach',
-    description: 'Talk about anything — stress, goals, habits, emotions. MJ keeps it real and helps you level up.',
+    title: 'Chat with Coach Mike',
+    subtitle: 'Your personal AI + EI coach',
+    description: 'Talk about anything — stress, goals, habits, emotions. Coach Mike keeps it real and helps you level up.',
     tip: 'Try: "I\'m feeling stuck" or "Give me a push"',
   },
   {
@@ -24,7 +33,7 @@ const TOUR_STEPS = [
     gradient: 'from-violet-500 to-purple-600',
     title: 'Track Your Mood',
     subtitle: 'Know yourself better',
-    description: 'Log how you feel daily. Over time, MJ spots patterns and helps you understand your emotional rhythms.',
+    description: 'Log how you feel daily. Over time, Coach Mike spots patterns and helps you understand your emotional rhythms.',
     tip: 'Daily check-ins build your streak',
   },
   {
@@ -37,21 +46,12 @@ const TOUR_STEPS = [
     tip: 'New tools unlock as you use the app',
   },
   {
-    id: 'tasks',
-    emoji: '✅',
-    gradient: 'from-amber-500 to-orange-600',
-    title: 'Tasks & Rituals',
-    subtitle: 'Build daily habits',
-    description: 'Set intentions, build routines, and track your progress. Small reps lead to big changes.',
-    tip: 'Start with just one morning ritual',
-  },
-  {
     id: 'journal',
     emoji: '📓',
     gradient: 'from-rose-500 to-pink-600',
     title: 'Journal & Insights',
     subtitle: 'Reflect and grow',
-    description: 'Write freely or use guided prompts. MJ analyzes your entries to surface insights about your growth.',
+    description: 'Write freely or use guided prompts. Coach Mike analyzes your entries to surface insights about your growth.',
     tip: 'Even 2 sentences count as a journal entry',
   },
 ];

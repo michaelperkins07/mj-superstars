@@ -515,6 +515,42 @@ export const RitualAPI = {
 };
 
 // ============================================================
+// COMMITMENT API (3 Pillars)
+// ============================================================
+
+export const CommitmentAPI = {
+  async getToday() {
+    return request('/commitments/today');
+  },
+
+  async completePillar(pillar, data) {
+    return request(`/commitments/complete/${pillar}`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  async getHistory(days = 30) {
+    return request(`/commitments/history?days=${days}`);
+  },
+
+  async getStats() {
+    return request('/commitments/stats');
+  },
+
+  async getFriction() {
+    return request('/commitments/friction');
+  },
+
+  async addReflection(id, reflection) {
+    return request(`/commitments/${id}/reflect`, {
+      method: 'POST',
+      body: JSON.stringify({ daily_reflection: reflection })
+    });
+  }
+};
+
+// ============================================================
 // JOURNAL API
 // ============================================================
 
@@ -994,5 +1030,6 @@ export default {
   SocialAPI,
   GamificationAPI,
   EmailPrefsAPI,
-  ReferralAPI
+  ReferralAPI,
+  CommitmentAPI
 };

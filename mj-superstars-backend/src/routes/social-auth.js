@@ -48,7 +48,7 @@ async function verifyAppleToken(idToken) {
     algorithms: ['RS256'],
     issuer: 'https://appleid.apple.com',
     // audience is your app's bundle ID (or Services ID for web)
-    audience: process.env.APPLE_CLIENT_ID || process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app',
+    audience: process.env.APPLE_CLIENT_ID || process.env.APNS_BUNDLE_ID || 'com.topperformer.app',
   });
 
   return payload;
@@ -151,9 +151,9 @@ const findOrCreateSocialUser = async (provider, providerData) => {
          VALUES ($1, $2, $3, $4, $5)
          RETURNING id, email, display_name, is_premium`,
         [
-          email || `${provider}_${provider_user_id}@social.mjsuperstars.com`,
+          email || `${provider}_${provider_user_id}@social.topperformer.com`,
           crypto.randomBytes(32).toString('hex'), // Random password (social-only users)
-          name || 'Superstar',
+          name || 'Top Performer',
           avatar_url,
           provider
         ]

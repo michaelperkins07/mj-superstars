@@ -1,16 +1,16 @@
 {
-  "short_name": "White Mike",
-  "name": "White Mike - Become Your Best Self",
-  "description": "AI-powered mental wellness coaching with White Mike. Track your mood, journal, build rituals, and grow every day.",
+  "short_name": "Top Performer",
+  "name": "Top Performer - AI + EI",
+  "description": "Where AI meets Emotional Intelligence. Physical, mental, and social commitments — every single day. Join the 1%.",
   "icons": [
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%237C3AED'/><text x='96' y='120' text-anchor='middle' font-size='80' font-family='Arial,sans-serif' font-weight='bold' fill='white'>MJ</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='40' fill='%230EA5E9'/><text x='96' y='120' text-anchor='middle' font-size='70' font-family='Arial,sans-serif' font-weight='bold' fill='white'>TP</text></svg>",
       "sizes": "192x192",
       "type": "image/svg+xml",
       "purpose": "any maskable"
     },
     {
-      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%237C3AED'/><text x='256' y='320' text-anchor='middle' font-size='220' font-family='Arial,sans-serif' font-weight='bold' fill='white'>MJ</text></svg>",
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%230EA5E9'/><text x='256' y='320' text-anchor='middle' font-size='180' font-family='Arial,sans-serif' font-weight='bold' fill='white'>TP</text></svg>",
       "sizes": "512x512",
       "type": "image/svg+xml",
       "purpose": "any maskable"
@@ -18,7 +18,7 @@
   ],
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#7C3AED",
+  "theme_color": "#0EA5E9",
   "background_color": "#0F172A",
   "orientation": "portrait",
   "scope": "/",
@@ -28,7 +28,7 @@
   "related_applications": [
     {
       "platform": "itunes",
-      "url": "https://apps.apple.com/app/white-mike/id6743862814"
+      "url": "https://apps.apple.com/app/top-performer/id6743862814"
     }
   ]
 }

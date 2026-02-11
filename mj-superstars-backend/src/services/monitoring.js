@@ -194,7 +194,7 @@ async function handleAlert(check) {
     issues.push(`Frontend: ${check.checks.frontend.error || `HTTP ${check.checks.frontend.statusCode}`}`);
   }
 
-  const alertMessage = `🚨 MJ Superstars Health Alert\nStatus: ${check.overall}\nConsecutive failures: ${consecutiveFailures}\nIssues:\n${issues.map(i => `  - ${i}`).join('\n')}`;
+  const alertMessage = `🚨 Top Performer Health Alert\nStatus: ${check.overall}\nConsecutive failures: ${consecutiveFailures}\nIssues:\n${issues.map(i => `  - ${i}`).join('\n')}`;
 
   // Send to Sentry as a warning/error
   try {
@@ -213,7 +213,7 @@ async function handleAlert(check) {
 
 async function handleRecovery(check) {
   const downtime = consecutiveFailures * (CHECK_INTERVAL_MS / 1000 / 60);
-  const message = `✅ MJ Superstars Recovered\nService healthy after ${consecutiveFailures} failed checks (~${downtime} min estimated downtime)`;
+  const message = `✅ Top Performer Recovered\nService healthy after ${consecutiveFailures} failed checks (~${downtime} min estimated downtime)`;
 
   try {
     captureMessage(message, 'info');

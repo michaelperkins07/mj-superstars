@@ -1,5 +1,5 @@
 // ==========================================================
-// MJ's Superstars - Main App Component
+// Top Performer - Main App Component
 // Handles navigation between Auth, Onboarding, and Main App
 // ==========================================================
 import React, { useState, useEffect, useRef, Suspense } from 'react';
@@ -25,6 +25,7 @@ const InsightsScreen = lazyWithPreload(() => import('./components/screens/Insigh
 const RitualsScreen = lazyWithPreload(() => import('./components/screens/RitualsScreen'));
 const ProfileScreen = lazyWithPreload(() => import('./components/screens/ProfileScreen'));
 const GamificationScreen = lazyWithPreload(() => import('./components/screens/GamificationScreen'));
+const CommitmentsScreen = lazyWithPreload(() => import('./components/screens/CommitmentsScreen'));
 
 // ==========================================================
 // MAIN APP COMPONENT
@@ -101,13 +102,18 @@ function MJSuperstars() {
     }
   }, [profile, user]);
 
+  // Apply any pending deep link navigation on first render
+  useEffect(() => {
+    applyDeepLink();
+  }, []);
+
   // Show loading spinner while checking auth state
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-900 flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-2xl font-bold mx-auto mb-4 animate-pulse">
-            MJ
+            TP
           </div>
           <p className="text-slate-400 text-sm">Loading...</p>
         </div>
@@ -135,17 +141,12 @@ function MJSuperstars() {
     return <Onboarding onComplete={handleOnboardingComplete} />;
   }
 
-  // Apply any pending deep link navigation on first render
-  useEffect(() => {
-    applyDeepLink();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
   // Main App with Tab Navigation
   const tabs = [
     { id: 'chat', label: 'Chat', icon: Icons.Chat },
+    { id: 'commitments', label: '3 Pillars', icon: Icons.Pillars },
     { id: 'mood', label: 'Mood', icon: Icons.Mood },
     { id: 'explore', label: 'Explore', icon: Icons.Explore },
-    { id: 'tasks', label: 'Tasks', icon: Icons.Tasks },
     { id: 'journal', label: 'Journal', icon: Icons.Journal },
     { id: 'insights', label: 'Insights', icon: Icons.Insights },
     { id: 'profile', label: 'Profile', icon: Icons.Profile },
@@ -154,6 +155,7 @@ function MJSuperstars() {
   const renderScreen = () => {
     switch (activeTab) {
       case 'chat': return <ChatScreen />;
+      case 'commitments': return <CommitmentsScreen />;
       case 'mood': return <MoodScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'rituals': return <RitualsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'explore': return <ExploreScreen onNavigateTo={(tab) => setActiveTab(tab)} />;

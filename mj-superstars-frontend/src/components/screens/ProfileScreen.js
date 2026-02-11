@@ -650,7 +650,7 @@ function ProfileScreen() {
         </button>
       )}
 
-      <p className="text-center text-slate-600 text-xs mt-4 mb-8">White Mike v1.0.0</p>
+      <p className="text-center text-slate-600 text-xs mt-4 mb-8">Top Performer v2.0.0</p>
 
       {/* ============================================================ */}
       {/* EDIT MODALS                                                   */}

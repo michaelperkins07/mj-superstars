@@ -28,7 +28,7 @@ function TermsOfService() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">1. Agreement to Terms</h2>
             <p className="leading-relaxed">
-              By accessing and using the White Mike (MJ Superstars) mobile application ("App"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the App.
+              By accessing and using the Top Performer mobile application ("App"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the App.
             </p>
             <p className="leading-relaxed mt-3">
               <strong>Service Provider:</strong> Michael Steven Perkins<br />
@@ -41,7 +41,7 @@ function TermsOfService() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">2. Service Description</h2>
             <p className="leading-relaxed">
-              White Mike is a personal mental wellness application providing:
+              Top Performer is a personal mental wellness application providing:
             </p>
             <ul className="list-disc list-inside space-y-2 ml-2 mt-3">
               <li>Daily mood tracking and emotional check-ins</li>
@@ -217,13 +217,13 @@ function TermsOfService() {
           <section className="bg-purple-500/10 border border-purple-500/30 rounded-xl p-6">
             <h2 className="text-lg font-bold text-white mb-3">Your Acknowledgment</h2>
             <p className="leading-relaxed text-sm">
-              By using the White Mike app, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. You also acknowledge that this app is not a substitute for professional mental health treatment.
+              By using the Top Performer app, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service and our Privacy Policy. You also acknowledge that this app is not a substitute for professional mental health treatment.
             </p>
           </section>
 
           {/* Footer */}
           <div className="text-center text-slate-500 text-sm pt-8">
-            <p>White Mike (MJ Superstars) - Mental Wellness Companion</p>
+            <p>Top Performer - Mental Wellness Companion</p>
             <p>© 2024 Michael Steven Perkins. All rights reserved.</p>
           </div>
         </motion.div>

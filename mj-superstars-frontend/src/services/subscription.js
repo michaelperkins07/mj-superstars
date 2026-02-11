@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Subscription Service
+// Top Performer - Subscription Service
 // StoreKit 2 integration for iOS subscriptions
 // ============================================================
 
@@ -18,8 +18,8 @@ import {
 // ============================================================
 
 export const PRODUCTS = {
-  MONTHLY: 'com.mjsuperstars.premium.monthly',
-  YEARLY: 'com.mjsuperstars.premium.yearly'
+  MONTHLY: 'com.topperformer.premium.monthly',
+  YEARLY: 'com.topperformer.premium.yearly'
 };
 
 export const PRODUCT_DETAILS = {
