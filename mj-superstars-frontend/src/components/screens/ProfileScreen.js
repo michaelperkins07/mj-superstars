@@ -179,6 +179,8 @@ function ProfileScreen() {
   const [editGoals, setEditGoals] = useState([]);
   const [editingCommStyle, setEditingCommStyle] = useState(false);
   const [editCommStyle, setEditCommStyle] = useState('');
+  const [editingCoachName, setEditingCoachName] = useState(false);
+  const [editCoachName, setEditCoachName] = useState('mike');
   const [saving, setSaving] = useState(false);
 
   const isGuest = !TokenManager.isAuthenticated();
@@ -188,6 +190,8 @@ function ProfileScreen() {
   const challenges = profile?.challenges || profile?.struggles || [];
   const goals = profile?.goals || [];
   const commStyle = profile?.communication_preference || profile?.communicationPref || 'mix';
+  const coachNamePref = profile?.coach_name_preference || 'mike';
+  const coachDisplayName = coachNamePref === 'perkins' ? 'Perkins' : 'Mike';
 
   // Load email prefs
   useEffect(() => {
@@ -256,6 +260,11 @@ function ProfileScreen() {
     await saveProfileField({ goals: editGoals });
     setEditingGoals(false);
   }, [editGoals, saveProfileField]);
+
+  const handleSaveCoachName = useCallback(async () => {
+    await saveProfileField({ coach_name_preference: editCoachName });
+    setEditingCoachName(false);
+  }, [editCoachName, saveProfileField]);
 
   const handleSaveCommStyle = useCallback(async () => {
     await saveProfileField({ communication_preference: editCommStyle });
@@ -447,10 +456,27 @@ function ProfileScreen() {
         </SectionCard>
       )}
 
+      {/* ---- COACH NAME PREFERENCE ---- */}
+      <SectionCard
+        title="My Coach"
+        icon="🎤"
+        onEdit={() => { setEditCoachName(coachNamePref); setEditingCoachName(true); }}
+      >
+        <div className="flex items-center gap-3 bg-slate-700/40 rounded-xl p-3">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-sm font-bold">
+            MP
+          </div>
+          <div>
+            <p className="text-white text-sm font-semibold">Coach {coachDisplayName}</p>
+            <p className="text-slate-400 text-xs">{coachNamePref === 'perkins' ? 'Work mode — most people at work call me Perkins' : 'Personal mode — friends & family call me Mike'}</p>
+          </div>
+        </div>
+      </SectionCard>
+
       {/* ---- COMMUNICATION STYLE ---- */}
       {commStyle && COMM_STYLES_MAP[commStyle] && (
         <SectionCard
-          title="How MJ Talks to Me"
+          title={`How Coach ${coachDisplayName} Talks to Me`}
           icon="🗣️"
           onEdit={() => { setEditCommStyle(commStyle); setEditingCommStyle(true); }}
         >
@@ -662,7 +688,7 @@ function ProfileScreen() {
           type="text"
           value={editName}
           onChange={e => setEditName(e.target.value)}
-          placeholder="What should MJ call you?"
+          placeholder={`What should Coach ${coachDisplayName} call you?`}
           className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-lg outline-none focus:ring-2 focus:ring-sky-500"
           autoFocus
         />
@@ -686,7 +712,7 @@ function ProfileScreen() {
 
       {/* ---- Edit Goals Modal ---- */}
       <EditModal title="What You're Building" isOpen={editingGoals} onClose={() => setEditingGoals(false)} onSave={handleSaveGoals} saving={saving}>
-        <p className="text-slate-400 text-sm mb-4">Pick your goals — MJ will help you stay on track.</p>
+        <p className="text-slate-400 text-sm mb-4">Pick your goals — Coach {coachDisplayName} will help you stay on track.</p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(GOALS_MAP).map(([id, item]) => (
             <Chip
@@ -700,8 +726,35 @@ function ProfileScreen() {
         </div>
       </EditModal>
 
+      {/* ---- Edit Coach Name Modal ---- */}
+      <EditModal title="Choose Your Coach Name" isOpen={editingCoachName} onClose={() => setEditingCoachName(false)} onSave={handleSaveCoachName} saving={saving}>
+        <p className="text-slate-400 text-sm mb-4">I'm Mike Perkins — pick the name that fits your vibe.</p>
+        <div className="space-y-3">
+          {[
+            { id: 'mike', label: 'Coach Mike', desc: 'Friends & family call me this', emoji: '🤝' },
+            { id: 'perkins', label: 'Coach Perkins', desc: 'Most people at work call me this', emoji: '💼' },
+          ].map((opt) => (
+            <button
+              key={opt.id}
+              onClick={() => { haptics.selection(); setEditCoachName(opt.id); }}
+              className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all text-left ${
+                editCoachName === opt.id
+                  ? 'bg-sky-500/15 border-sky-500/50 text-white'
+                  : 'bg-slate-700/40 border-slate-600/30 text-slate-300'
+              }`}
+            >
+              <span className="text-2xl">{opt.emoji}</span>
+              <div>
+                <p className={`text-sm font-semibold ${editCoachName === opt.id ? 'text-sky-300' : 'text-white'}`}>{opt.label}</p>
+                <p className="text-xs text-slate-400">{opt.desc}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+      </EditModal>
+
       {/* ---- Edit Communication Style Modal ---- */}
-      <EditModal title="How Should MJ Talk to You?" isOpen={editingCommStyle} onClose={() => setEditingCommStyle(false)} onSave={handleSaveCommStyle} saving={saving}>
+      <EditModal title={`How Should Coach ${coachDisplayName} Talk to You?`} isOpen={editingCommStyle} onClose={() => setEditingCommStyle(false)} onSave={handleSaveCommStyle} saving={saving}>
         <div className="space-y-3">
           {Object.entries(COMM_STYLES_MAP).map(([id, item]) => (
             <button

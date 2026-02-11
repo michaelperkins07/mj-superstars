@@ -126,7 +126,7 @@ function WelcomeStep() {
         transition={{ type: 'spring', stiffness: 200, damping: 15 }}
         className="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-3xl font-bold mb-6 shadow-xl shadow-sky-500/20"
       >
-        MJ
+        MP
       </motion.div>
       <motion.h1
         initial={{ opacity: 0, y: 20 }}
@@ -134,7 +134,7 @@ function WelcomeStep() {
         transition={{ delay: 0.2 }}
         className="text-3xl font-bold text-white mb-3"
       >
-        I'm Coach Mike
+        I'm Mike Perkins
       </motion.h1>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -142,7 +142,7 @@ function WelcomeStep() {
         transition={{ delay: 0.35 }}
         className="text-lg text-sky-300 mb-4 font-medium"
       >
-        Your AI mental health coach
+        Your morale cheat code
       </motion.p>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -150,13 +150,78 @@ function WelcomeStep() {
         transition={{ delay: 0.5 }}
         className="text-slate-400 max-w-sm leading-relaxed"
       >
-        I'm here to help you build a stronger mindset, track your growth, and show up for yourself every day. Let me get to know you real quick so I can coach you the right way.
+        We're going to hit goals and get you paid the right way. Money follows performance — let me get to know you real quick so I can coach you the right way.
       </motion.p>
     </div>
   );
 }
 
-// Step 1: Name
+// Step 1: Coach Name Preference
+function CoachNameStep({ coachName, onSelect }) {
+  const options = [
+    { id: 'mike', label: 'Mike', desc: 'Friends & family call me this', emoji: '🤝' },
+    { id: 'perkins', label: 'Perkins', desc: 'Most people at work call me this', emoji: '💼' },
+  ];
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="w-24 h-24 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-5xl mb-6 shadow-xl shadow-sky-500/20"
+      >
+        🎤
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-2xl font-bold text-white mb-2"
+      >
+        What do you call me?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-slate-400 mb-8 max-w-sm"
+      >
+        I'm Mike Perkins — pick the name that feels right for us.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-sm flex flex-col gap-3"
+      >
+        {options.map((opt) => (
+          <motion.button
+            key={opt.id}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => onSelect(opt.id)}
+            className={`w-full text-left p-4 rounded-2xl border transition-all ${
+              coachName === opt.id
+                ? 'bg-sky-500/15 border-sky-500 shadow-lg shadow-sky-500/10'
+                : 'bg-slate-800/60 border-slate-700 hover:border-slate-500'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">{opt.emoji}</span>
+              <div>
+                <div className={`font-semibold ${coachName === opt.id ? 'text-sky-300' : 'text-white'}`}>
+                  Coach {opt.label}
+                </div>
+                <div className="text-sm text-slate-400">{opt.desc}</div>
+              </div>
+            </div>
+          </motion.button>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+// Step 2: Name
 function NameStep({ name, setName }) {
   return (
     <div className="flex flex-col items-center text-center">
@@ -329,7 +394,7 @@ function CommStyleStep({ selected, onSelect }) {
 }
 
 // Step 5: Ready
-function ReadyStep({ name }) {
+function ReadyStep({ name, coachName }) {
   const displayName = name || 'Friend';
   return (
     <div className="flex flex-col items-center text-center">
@@ -355,7 +420,7 @@ function ReadyStep({ name }) {
         transition={{ delay: 0.35 }}
         className="text-lg text-sky-300 mb-4 font-medium"
       >
-        I'm locked in on your goals
+        Coach {coachName === 'perkins' ? 'Perkins' : 'Mike'} is locked in
       </motion.p>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -363,7 +428,7 @@ function ReadyStep({ name }) {
         transition={{ delay: 0.5 }}
         className="text-slate-400 max-w-sm leading-relaxed"
       >
-        I know what you're working through and how you want me to show up. Every conversation, every check-in — it's all dialed in for you. Let's get this.
+        I know what you're working through and how you want me to show up. Every word matters, every sentence is a parlay — I'm here to make sure you hit and win at life. Let's get this.
       </motion.p>
     </div>
   );
@@ -372,7 +437,7 @@ function ReadyStep({ name }) {
 // ============================================================
 // MAIN ONBOARDING COMPONENT
 // ============================================================
-const TOTAL_STEPS = 6;
+const TOTAL_STEPS = 7;
 
 export function Onboarding({ onComplete }) {
   const [step, setStep] = useState(0);
@@ -380,6 +445,7 @@ export function Onboarding({ onComplete }) {
   const [struggles, setStruggles] = useState([]);
   const [goals, setGoals] = useState([]);
   const [commStyle, setCommStyle] = useState('');
+  const [coachName, setCoachName] = useState('mike');
   const haptics = useHapticsHook();
 
   useEffect(() => {
@@ -402,15 +468,21 @@ export function Onboarding({ onComplete }) {
     setCommStyle(id);
   }, [haptics]);
 
+  const selectCoachName = useCallback((id) => {
+    haptics.selection();
+    setCoachName(id);
+  }, [haptics]);
+
   // Can user advance?
   const canProceed = () => {
     switch (step) {
       case 0: return true; // welcome
-      case 1: return name.trim().length > 0;
-      case 2: return struggles.length > 0;
-      case 3: return goals.length > 0;
-      case 4: return commStyle !== '';
-      case 5: return true; // ready screen
+      case 1: return coachName !== ''; // coach name preference
+      case 2: return name.trim().length > 0;
+      case 3: return struggles.length > 0;
+      case 4: return goals.length > 0;
+      case 5: return commStyle !== '';
+      case 6: return true; // ready screen
       default: return true;
     }
   };
@@ -418,24 +490,25 @@ export function Onboarding({ onComplete }) {
   const handleNext = useCallback(() => {
     if (!canProceed()) return;
     haptics.buttonPress();
-    trackOnboardingStepCompleted(step, { stepId: ['welcome', 'name', 'struggles', 'goals', 'commStyle', 'ready'][step] });
+    trackOnboardingStepCompleted(step, { stepId: ['welcome', 'coachName', 'name', 'struggles', 'goals', 'commStyle', 'ready'][step] });
 
     if (step === TOTAL_STEPS - 1) {
       // Final step — submit everything
       const onboardingData = {
         preferred_name: name.trim(),
+        coach_name_preference: coachName,
         challenges: struggles,
         goals: goals,
         interests: [],
         communication_preference: commStyle,
         onboardingCompleted: true,
       };
-      trackOnboardingCompleted({ struggles: struggles.length, goals: goals.length, commStyle });
+      trackOnboardingCompleted({ struggles: struggles.length, goals: goals.length, commStyle, coachName });
       onComplete(onboardingData);
     } else {
       setStep(prev => prev + 1);
     }
-  }, [step, name, struggles, goals, commStyle, haptics, onComplete]);
+  }, [step, name, struggles, goals, commStyle, coachName, haptics, onComplete]);
 
   const handleBack = useCallback(() => {
     if (step > 0) {
@@ -461,11 +534,12 @@ export function Onboarding({ onComplete }) {
   const renderStep = () => {
     switch (step) {
       case 0: return <WelcomeStep />;
-      case 1: return <NameStep name={name} setName={setName} />;
-      case 2: return <StrugglesStep selected={struggles} onToggle={toggleStruggle} />;
-      case 3: return <GoalsStep selected={goals} onToggle={toggleGoal} />;
-      case 4: return <CommStyleStep selected={commStyle} onSelect={selectCommStyle} />;
-      case 5: return <ReadyStep name={name} />;
+      case 1: return <CoachNameStep coachName={coachName} onSelect={selectCoachName} />;
+      case 2: return <NameStep name={name} setName={setName} />;
+      case 3: return <StrugglesStep selected={struggles} onToggle={toggleStruggle} />;
+      case 4: return <GoalsStep selected={goals} onToggle={toggleGoal} />;
+      case 5: return <CommStyleStep selected={commStyle} onSelect={selectCommStyle} />;
+      case 6: return <ReadyStep name={name} coachName={coachName} />;
       default: return null;
     }
   };

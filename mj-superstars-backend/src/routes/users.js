@@ -129,8 +129,15 @@ router.put('/me/personalization',
       values,
       preferred_name,
       preferred_pronouns,
-      health_context
+      health_context,
+      coach_name_preference
     } = req.body;
+
+    // Validate coach_name_preference
+    const validCoachNames = ['mike', 'perkins'];
+    if (coach_name_preference !== undefined && coach_name_preference !== null && !validCoachNames.includes(coach_name_preference)) {
+      throw new APIError('Invalid coach_name_preference - must be mike or perkins', 400, 'INVALID_COACH_NAME');
+    }
 
     // Validate string fields have reasonable length limits
     if (preferred_name !== undefined && preferred_name !== null && (typeof preferred_name !== 'string' || preferred_name.length > 100)) {
@@ -161,6 +168,7 @@ router.put('/me/personalization',
          preferred_name = COALESCE($9, preferred_name),
          preferred_pronouns = COALESCE($10, preferred_pronouns),
          health_context = COALESCE($11, health_context),
+         coach_name_preference = COALESCE($12, coach_name_preference),
          updated_at = NOW()
        WHERE user_id = $1
        RETURNING *`,
@@ -175,7 +183,8 @@ router.put('/me/personalization',
         values ? JSON.stringify(values) : null,
         preferred_name,
         preferred_pronouns,
-        health_context ? JSON.stringify(health_context) : null
+        health_context ? JSON.stringify(health_context) : null,
+        coach_name_preference || null
       ]
     );
 
@@ -201,6 +210,7 @@ router.post('/me/onboarding',
     if (onboarding_data) {
       const {
         preferred_name,
+        coach_name_preference,
         challenges,
         goals,
         interests,
@@ -213,13 +223,15 @@ router.post('/me/onboarding',
            preferred_name = COALESCE($2, preferred_name),
            goals = COALESCE($3, goals),
            interests = COALESCE($4, interests),
+           coach_name_preference = COALESCE($5, coach_name_preference),
            updated_at = NOW()
          WHERE user_id = $1`,
         [
           req.user.id,
           preferred_name,
           goals ? JSON.stringify(goals) : null,
-          interests ? JSON.stringify(interests) : null
+          interests ? JSON.stringify(interests) : null,
+          coach_name_preference || 'mike'
         ]
       );
 
