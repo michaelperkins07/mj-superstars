@@ -63,6 +63,7 @@ import { setupSocketHandlers } from './services/socket.js';
 import { initScheduler } from './services/scheduler.js';
 import { initAPNS, shutdownAPNS } from './services/apns.js';
 import { startMonitoring, stopMonitoring } from './services/monitoring.js';
+import { initializeAppStoreVerification } from './services/appStoreVerification.js';
 import { logger } from './utils/logger.js';
 
 // ============================================================
@@ -335,6 +336,11 @@ const startServer = async () => {
 
     // Start notification scheduler (streak reminders, check-ins, nudges)
     initScheduler();
+
+    // Initialize App Store verification (StoreKit 2 / IAP)
+    initializeAppStoreVerification().catch(err =>
+      logger.warn('App Store verification init warning:', err.message)
+    );
 
     // Start uptime monitoring (self-checks every 5 min, Sentry alerts)
     startMonitoring();
