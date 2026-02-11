@@ -94,7 +94,7 @@ export function init() {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: ENVIRONMENT,
-    release: `mj-superstars-frontend@${RELEASE}`,
+    release: `top-performer-frontend@${RELEASE}`,
     tracesSampleRate: ENVIRONMENT === 'production' ? 0.2 : 1.0,
     integrations,
     replaysSessionSampleRate: ENVIRONMENT === 'production' ? 0.1 : 0,

@@ -1,5 +1,5 @@
 # ============================================================
-# MJ's Superstars - Docker Compose (Development)
+# Top Performer - Docker Compose (Development)
 # ============================================================
 
 version: '3.8'
@@ -17,7 +17,7 @@ services:
     environment:
       - NODE_ENV=development
       - PORT=3001
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/mj_superstars
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/top_performer
       - REDIS_URL=redis://redis:6379
       - JWT_SECRET=${JWT_SECRET:-dev-jwt-secret-change-in-production}
       - ENCRYPTION_KEY=${ENCRYPTION_KEY}
@@ -33,7 +33,7 @@ services:
       - ./mj-superstars-backend/src:/app/src:ro
     restart: unless-stopped
     networks:
-      - mj-network
+      - tp-network
 
   # ============================================================
   # POSTGRESQL DATABASE
@@ -45,7 +45,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=mj_superstars
+      - POSTGRES_DB=top_performer
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./mj-superstars-backend/src/database/migrations:/docker-entrypoint-initdb.d:ro
@@ -56,7 +56,7 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - mj-network
+      - tp-network
 
   # ============================================================
   # REDIS (for sessions & caching)
@@ -74,7 +74,7 @@ services:
       retries: 5
     restart: unless-stopped
     networks:
-      - mj-network
+      - tp-network
 
   # ============================================================
   # FRONTEND (Development)
@@ -96,7 +96,7 @@ services:
       - api
     restart: unless-stopped
     networks:
-      - mj-network
+      - tp-network
 
   # ============================================================
   # ADMINER (Database UI)
@@ -109,12 +109,12 @@ services:
       - db
     restart: unless-stopped
     networks:
-      - mj-network
+      - tp-network
 
 volumes:
   postgres_data:
   redis_data:
 
 networks:
-  mj-network:
+  tp-network:
     driver: bridge

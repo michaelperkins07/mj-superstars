@@ -1,7 +1,7 @@
 {
-  "name": "mj-superstars",
+  "name": "top-performer",
   "version": "1.0.0",
-  "description": "MJ's Superstars - AI-powered mental health coaching app",
+  "description": "Top Performer - AI meets Emotional Intelligence coaching app",
   "private": true,
   "workspaces": [
     "mj-superstars-backend",

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Uptime Monitoring & Alerting Service
+// Top Performer - Uptime Monitoring & Alerting Service
 // Self-monitoring with Sentry integration + admin status API
 // ============================================================
 
@@ -72,7 +72,7 @@ async function checkFrontend() {
     const resp = await fetch(FRONTEND_URL, {
       method: 'HEAD',
       signal: controller.signal,
-      headers: { 'User-Agent': 'MJ-Superstars-Monitor/1.0' }
+      headers: { 'User-Agent': 'Top-Performer-Monitor/1.0' }
     });
     clearTimeout(timeout);
     const latency = Date.now() - start;

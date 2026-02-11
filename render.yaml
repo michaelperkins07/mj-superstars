@@ -1,5 +1,5 @@
 # ============================================================
-# White Mike - Render Blueprint (Full Stack)
+# Top Performer - Render Blueprint (Full Stack)
 # One-click deployment for the complete application
 # ============================================================
 # Deploy: Connect repo to Render → Select "Blueprint" → Deploy
@@ -10,7 +10,7 @@ services:
   # BACKEND API (Node.js + Express + Socket.IO)
   # ==========================================================
   - type: web
-    name: mj-superstars-api
+    name: top-performer-api
     runtime: node
     region: ohio
     plan: starter  # Upgrade to "standard" ($25/mo) for production traffic
@@ -29,13 +29,13 @@ services:
       # Database
       - key: DATABASE_URL
         fromDatabase:
-          name: mj-superstars-db
+          name: top-performer-db
           property: connectionString
 
       # Redis
       - key: REDIS_URL
         fromService:
-          name: mj-superstars-redis
+          name: top-performer-redis
           type: redis
           property: connectionString
 
@@ -87,7 +87,7 @@ services:
   # FRONTEND (React/Capacitor - Static Site)
   # ==========================================================
   - type: web
-    name: mj-superstars-web
+    name: top-performer-web
     runtime: static
     region: ohio
     plan: starter
@@ -124,7 +124,7 @@ services:
   # BACKGROUND WORKER (Job Processing)
   # ==========================================================
   - type: worker
-    name: mj-superstars-worker
+    name: top-performer-worker
     runtime: node
     region: ohio
     plan: starter
@@ -137,11 +137,11 @@ services:
         value: production
       - key: DATABASE_URL
         fromDatabase:
-          name: mj-superstars-db
+          name: top-performer-db
           property: connectionString
       - key: REDIS_URL
         fromService:
-          name: mj-superstars-redis
+          name: top-performer-redis
           type: redis
           property: connectionString
       - key: ANTHROPIC_API_KEY
@@ -153,7 +153,7 @@ services:
   # CRON JOBS (Scheduled Tasks)
   # ==========================================================
   - type: cron
-    name: mj-daily-cleanup
+    name: tp-daily-cleanup
     runtime: node
     region: ohio
     plan: starter
@@ -164,25 +164,25 @@ services:
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: mj-superstars-db
+          name: top-performer-db
           property: connectionString
 
 # ==========================================================
 # DATABASES
 # ==========================================================
 databases:
-  - name: mj-superstars-db
+  - name: top-performer-db
     region: ohio
     plan: starter  # $7/mo - upgrade for production
-    databaseName: mj_superstars
-    user: mj_admin
+    databaseName: top_performer
+    user: tp_admin
     postgresMajorVersion: "16"
     ipAllowList: []  # Internal only
 
 # ==========================================================
 # REDIS (Sessions, Caching, Job Queues)
 # ==========================================================
-  - name: mj-superstars-redis
+  - name: top-performer-redis
     type: redis
     region: ohio
     plan: starter  # $7/mo

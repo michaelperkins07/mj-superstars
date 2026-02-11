@@ -349,7 +349,7 @@ async function deliverWebhook(url, payload, secret) {
         'X-MJ-Webhook-Signature': signature,
         'X-MJ-Webhook-Timestamp': timestamp.toString(),
         'X-MJ-Webhook-Event': payload.event,
-        'User-Agent': 'MJ-Superstars-Webhook/1.0',
+        'User-Agent': 'Top-Performer-Webhook/1.0',
       },
       body,
       signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),

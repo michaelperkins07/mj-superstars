@@ -47,7 +47,7 @@ const getDbConfig = () => {
   return {
     host: process.env.DB_HOST || 'localhost',
     port: parseInt(process.env.DB_PORT) || 5432,
-    database: process.env.DB_NAME || 'mj_superstars',
+    database: process.env.DB_NAME || 'top_performer',
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'postgres',
     max: parseInt(process.env.DB_POOL_SIZE) || 20,

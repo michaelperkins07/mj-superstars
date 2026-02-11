@@ -1,9 +1,9 @@
 // ============================================================
-// MJ's Superstars - Service Worker (Cache-first for static, network-first for API)
+// Top Performer - Service Worker (Cache-first for static, network-first for API)
 // ============================================================
 
-const CACHE_NAME = 'mj-superstars-v1';
-const STATIC_CACHE = 'mj-static-v1';
+const CACHE_NAME = 'top-performer-v2';
+const STATIC_CACHE = 'tp-static-v2';
 
 // Static assets to pre-cache on install
 const PRECACHE_URLS = [
@@ -91,7 +91,7 @@ self.addEventListener('push', (event) => {
       body: data.body || 'You have a new notification',
       icon: '/manifest.json',
       badge: '/manifest.json',
-      tag: data.tag || 'mj-notification',
+      tag: data.tag || 'tp-notification',
       data: { url: data.url || '/' },
       vibrate: [100, 50, 100]
     };

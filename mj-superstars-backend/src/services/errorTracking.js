@@ -71,7 +71,7 @@ async function init() {
   Sentry.init({
     dsn: SENTRY_DSN,
     environment: ENVIRONMENT,
-    release: `mj-superstars-backend@${RELEASE}`,
+    release: `top-performer-backend@${RELEASE}`,
 
     // Performance monitoring
     tracesSampleRate: ENVIRONMENT === 'production' ? 0.2 : 1.0,

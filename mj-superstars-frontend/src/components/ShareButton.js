@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - ShareButton Component
+// Top Performer - ShareButton Component
 // Reusable share button with native Web Share API + fallback
 // ============================================================
 import React, { useState } from 'react';

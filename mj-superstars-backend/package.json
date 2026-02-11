@@ -1,7 +1,7 @@
 {
-  "name": "mj-superstars-backend",
+  "name": "top-performer-backend",
   "version": "1.0.0",
-  "description": "Backend API for MJ's Superstars Mental Health Coaching App",
+  "description": "Backend API for Top Performer - AI + EI Coaching App",
   "main": "src/server.js",
   "type": "module",
   "scripts": {

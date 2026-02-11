@@ -1,29 +1,29 @@
 # ============================================================
-# MJ's Superstars - Kubernetes Deployment
+# Top Performer - Kubernetes Deployment
 # ============================================================
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mj-superstars-api
-  namespace: mj-superstars
+  name: top-performer-api
+  namespace: top-performer
   labels:
-    app: mj-superstars
+    app: top-performer
     component: api
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: mj-superstars
+      app: top-performer
       component: api
   template:
     metadata:
       labels:
-        app: mj-superstars
+        app: top-performer
         component: api
     spec:
       containers:
         - name: api
-          image: ghcr.io/your-org/mj-superstars/backend:latest
+          image: ghcr.io/your-org/top-performer/backend:latest
           ports:
             - containerPort: 3001
           env:
@@ -34,22 +34,22 @@ spec:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: mj-secrets
+                  name: tp-secrets
                   key: database-url
             - name: JWT_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: mj-secrets
+                  name: tp-secrets
                   key: jwt-secret
             - name: ENCRYPTION_KEY
               valueFrom:
                 secretKeyRef:
-                  name: mj-secrets
+                  name: tp-secrets
                   key: encryption-key
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: mj-secrets
+                  name: tp-secrets
                   key: anthropic-api-key
           resources:
             requests:
@@ -74,11 +74,11 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: mj-superstars-api
-  namespace: mj-superstars
+  name: top-performer-api
+  namespace: top-performer
 spec:
   selector:
-    app: mj-superstars
+    app: top-performer
     component: api
   ports:
     - protocol: TCP
@@ -89,24 +89,24 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: mj-superstars-ingress
-  namespace: mj-superstars
+  name: top-performer-ingress
+  namespace: top-performer
   annotations:
     kubernetes.io/ingress.class: nginx
     cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   tls:
     - hosts:
-        - api.mjsuperstars.com
-      secretName: mj-tls
+        - api.topperformer.app
+      secretName: tp-tls
   rules:
-    - host: api.mjsuperstars.com
+    - host: api.topperformer.app
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: mj-superstars-api
+                name: top-performer-api
                 port:
                   number: 80

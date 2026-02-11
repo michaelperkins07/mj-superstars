@@ -1,8 +1,8 @@
-# MJ's Superstars - App Store Metadata Guide
+# Top Performer - App Store Metadata Guide
 
-**Last Updated:** February 8, 2026
+**Last Updated:** February 11, 2026
 **Target Platform:** iOS 14.0+
-**App Store Connect ID:** 6758818206
+**App Store Connect ID:** 6743862814
 
 ---
 
@@ -10,23 +10,19 @@
 
 ### 1. App Name
 **Character Limit:** 30 characters
-**Current:** MJ's Superstars
-**Status:** ✓ Valid (15 characters)
-
-Alternative names to consider:
-- White Mike (7 characters) - Shorter, memorable
-- MJ Superstars (11 characters) - Without apostrophe
+**Current:** Top Performer
+**Status:** ✓ Valid (13 characters)
 
 ---
 
 ### 2. Subtitle
 **Character Limit:** 30 characters
-**Recommended:** Your AI Mental Health Coach
-**Status:** ✓ Valid (29 characters)
+**Recommended:** AI + Emotional Intelligence Coach
+**Status:** ✓ Valid (30 characters)
 
 Other options:
-- AI Mental Wellness Companion (29 characters)
-- Personal Mental Health Support (30 characters)
+- Your AI Wellness Coach (23 characters)
+- AI Coaching, Real Connection (29 characters)
 
 ---
 
@@ -35,22 +31,26 @@ Other options:
 **Tone:** Friendly, warm, empowering, professional
 
 ```
-Experience personalized mental health support with White Mike,
-your AI-powered wellness companion. MJ's Superstars helps you
-build better habits, track your emotional journey, and connect
-with a supportive community—all in one beautiful app.
+Experience personalized coaching with Top Performer, where AI
+meets Emotional Intelligence. Real people helping real people —
+get support from coaches who understand your journey and adapt
+to your unique communication style.
 
 KEY FEATURES:
 
-🤖 White Mike AI Coach
+🧠 AI + EI Coaching
 Get personalized guidance, encouragement, and support tailored
-to your unique needs. White Mike learns your communication
+to your unique needs. Your coach learns your communication
 preferences and adapts their approach to match your style.
+Choose from multiple conversation modes: Perk Mode for daily
+motivation, Empathy Mode for emotional support, Problem Solve
+Mode for working through challenges, and Elite Communicator
+Mode for leveling up your people skills.
 
 📊 Mood Tracking & Insights
 Log your daily emotions, track patterns, and gain meaningful
-insights into your mental health journey. Understand what
-influences your mood and build awareness.
+insights into your wellness journey. Understand what influences
+your mood and build awareness.
 
 🔥 Habit Building & Gamification
 Transform wellness into a game. Build daily streaks, earn
@@ -68,7 +68,7 @@ wellness record. Your thoughts, your space, always private.
 
 ⚙️ Personalized Experience
 Customize check-in times, communication style, and wellness goals.
-MJ Superstars adapts to YOU, not the other way around.
+Top Performer adapts to YOU, not the other way around.
 
 🎯 Goal Tracking & Vision Board
 Set meaningful wellness goals and visualize your progress. Create
@@ -76,7 +76,7 @@ a vision board to inspire daily action.
 
 MENTAL HEALTH SUPPORT:
 
-MJ's Superstars is NOT a replacement for professional mental
+Top Performer is NOT a replacement for professional mental
 health care. If you're in crisis, please contact a mental health
 professional or crisis hotline immediately. Our app complements
 therapy, medication, and professional care.
@@ -101,12 +101,12 @@ Free tier includes basic mood tracking and community features.
 Premium unlocks unlimited AI coaching, advanced insights, and
 exclusive community features.
 
-Join thousands using MJ's Superstars to build better mental
+Join thousands using Top Performer to build better mental
 health habits. Your journey to wellness starts now.
 
 ---
 
-Made with by the MJ's Superstars team.
+Made with ❤️ by the Top Performer team.
 ```
 
 **Character Count:** ~1,850 (well within 4000 limit)
@@ -119,8 +119,8 @@ Made with by the MJ's Superstars team.
 
 **Current:**
 ```
-New year, new mental health habits! Get started with White Mike's
-personalized guidance today.
+New year, new habits! Get started with personalized AI coaching
+that adapts to your style today.
 ```
 
 **Alternative versions for seasonal updates:**
@@ -174,7 +174,7 @@ mental health, mood tracker, wellness, anxiety, meditation, habit tracker, AI co
 
 **Mental Health Disclaimer Required in App:**
 ```
-IMPORTANT: MJ's Superstars is a wellness companion tool, not a
+IMPORTANT: Top Performer is a wellness companion tool, not a
 medical app or replacement for professional mental health care.
 If you're experiencing a mental health crisis, please contact:
 - National Suicide Prevention Lifeline: 988 (US)
@@ -220,14 +220,14 @@ If you're experiencing a mental health crisis, please contact:
 **For Version 1.0 Launch:**
 
 ```
-Welcome to MJ's Superstars!
+Welcome to Top Performer!
 
-We're thrilled to introduce White Mike, your personal AI mental
-health companion. This initial release includes:
+We're thrilled to introduce your personal AI + Emotional
+Intelligence coaching companion. This initial release includes:
 
 FEATURES:
 - Beautiful, guided onboarding experience
-- White Mike AI coach with personalized conversation
+- AI coach with personalized conversation and 5 coaching modes
 - Daily mood tracking with emoji expression
 - Mood trend insights and pattern recognition
 - Digital journaling with privacy protection
@@ -247,7 +247,7 @@ FEEDBACK:
 We love hearing from you! Use the Feedback button in Settings
 to share your experience, report bugs, or suggest features.
 
-Thank you for being part of the mental health revolution.
+Thank you for being part of the wellness revolution.
 ```
 
 ---
@@ -264,9 +264,9 @@ Thank you for being part of the mental health revolution.
 ### Recommended Screenshots (5-8 screens)
 
 **Screenshot 1: Welcome/Hero**
-- Show: Onboarding screen with "Meet White Mike" title
+- Show: Onboarding screen with "Meet Your Coach" title
 - Emoji: 🤖
-- Text overlay (optional): "Your Personal Mental Health Companion"
+- Text overlay (optional): "Your Personal AI + EI Coach"
 
 **Screenshot 2: Mood Tracking**
 - Show: Mood picker interface with emoji options
@@ -274,7 +274,7 @@ Thank you for being part of the mental health revolution.
 - Subtitle: "Track Your Emotional Journey Daily"
 
 **Screenshot 3: AI Coach Interaction**
-- Show: Chat interface with White Mike
+- Show: Chat interface with coach
 - Highlight: Personalized conversation, warm tone
 - Subtitle: "Get Support When You Need It"
 
@@ -300,7 +300,7 @@ Thank you for being part of the mental health revolution.
 
 **Screenshot 8: Personalization**
 - Show: Settings with customization options
-- Highlight: Communication style, check-in times
+- Highlight: Communication style, coaching modes
 - Subtitle: "Customize Your Experience"
 
 ---
@@ -310,9 +310,9 @@ Thank you for being part of the mental health revolution.
 ### Review Notes (Required for Initial Submission)
 
 ```
-ABOUT MJ'S SUPERSTARS:
+ABOUT TOP PERFORMER:
 
-MJ's Superstars is a wellness companion app that provides mental
+Top Performer is a wellness companion app that provides mental
 health support through AI coaching, mood tracking, journaling,
 and community features. Our primary user is anyone interested in
 their mental health and wellness journey.
@@ -324,8 +324,8 @@ onboarding and settings. Users are encouraged to work with
 licensed mental health professionals for serious conditions.
 
 KEY FEATURES:
-1. White Mike AI Coach: Personalized conversations (no medical
-   advice given)
+1. AI Coach: Personalized conversations with 5 coaching modes
+   (no medical advice given)
 2. Mood Tracking: Simple emotion logging (not diagnostic)
 3. Journaling: Private reflection space
 4. Habit Tracking: Gamified wellness habit building
@@ -358,7 +358,7 @@ POTENTIAL CONCERNS & CLARIFICATIONS:
 
 SUPPORT:
 Support page: https://mj-superstars-app.onrender.com/support
-Contact: support@mjsuperstars.app
+Contact: support@topperformer.app
 
 We're happy to answer any questions during review.
 ```
@@ -383,7 +383,7 @@ Phone: +1 (555) 123-4567
 - Active community posts
 
 **Testing Suggestions for Reviewers:**
-1. Complete onboarding (4 screens, ~2 minutes)
+1. Complete onboarding (8 screens, ~3 minutes)
 2. Log a mood and view mood history
 3. View trending insights
 4. Read and write a journal entry
@@ -413,7 +413,7 @@ Phone: +1 (555) 123-4567
 - [ ] Proper attribution for any referenced research
 
 ### Third-Party Libraries
-- [ ] React Native (MIT)
+- [ ] React (MIT)
 - [ ] Framer Motion (MIT)
 - [ ] All dependencies comply with App Store policies
 
@@ -449,7 +449,7 @@ Phone: +1 (555) 123-4567
 - [ ] Age rating questionnaire completed
 - [ ] Test account created and documented
 - [ ] Review notes prepared
-- [ ] Bundle ID verified: com.mjsuperstars.app
+- [ ] Bundle ID verified: com.topperformer.app
 - [ ] Version number set to 1.0
 - [ ] Build number incremented
 - [ ] All content rights reviewed
@@ -462,9 +462,9 @@ Phone: +1 (555) 123-4567
 
 ### For App Store Connect Form
 
-**Name:** MJ's Superstars
+**Name:** Top Performer
 
-**Subtitle:** Your AI Mental Health Coach
+**Subtitle:** AI + Emotional Intelligence Coach
 
 **Keywords:** mental health, mood tracker, wellness, anxiety, meditation, habit tracker, AI coach, journaling, stress
 
@@ -476,16 +476,16 @@ Phone: +1 (555) 123-4567
 
 **Privacy Policy URL:** https://mj-superstars-app.onrender.com/privacy
 
-**Contact Email:** support@mjsuperstars.app
+**Contact Email:** support@topperformer.app
 
 ---
 
 ## MARKETING CAMPAIGN HASHTAGS
 
-#MJSuperstars #MentalWellness #WhiteMike #AICoach #MentalHealthApp #WellnessJourney #MindfulnessMoment #MentalHealthMatters #WellnessHabits #AnxietySupport
+#TopPerformer #MentalWellness #AICoach #MentalHealthApp #WellnessJourney #MindfulnessMoment #MentalHealthMatters #WellnessHabits #AnxietySupport #EICoaching
 
 ---
 
 **Document Status:** Ready for submission
-**Last Reviewed:** February 8, 2026
+**Last Reviewed:** February 11, 2026
 **Next Review:** Before each version update

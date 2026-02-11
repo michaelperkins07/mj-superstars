@@ -65,7 +65,7 @@ async function generateExportFile(userId, format = 'json') {
     return {
       content: JSON.stringify(data, null, 2),
       contentType: 'application/json',
-      filename: `mj-superstars-data-${userId}-${Date.now()}.json`,
+      filename: `top-performer-data-${userId}-${Date.now()}.json`,
     };
   }
 
@@ -75,7 +75,7 @@ async function generateExportFile(userId, format = 'json') {
     return {
       content: csvData,
       contentType: 'text/csv',
-      filename: `mj-superstars-data-${userId}-${Date.now()}.csv`,
+      filename: `top-performer-data-${userId}-${Date.now()}.csv`,
     };
   }
 

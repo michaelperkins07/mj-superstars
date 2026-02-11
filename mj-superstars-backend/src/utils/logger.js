@@ -30,7 +30,7 @@ export const logger = createLogger({
     errors({ stack: true }),
     logFormat
   ),
-  defaultMeta: { service: 'mj-superstars' },
+  defaultMeta: { service: 'top-performer' },
   transports: [
     // Console transport
     new transports.Console({

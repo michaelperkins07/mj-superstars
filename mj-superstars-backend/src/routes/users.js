@@ -304,7 +304,7 @@ router.get('/me/export',
     };
 
     res.setHeader('Content-Type', 'application/json');
-    res.setHeader('Content-Disposition', `attachment; filename="mj-superstars-export-${Date.now()}.json"`);
+    res.setHeader('Content-Disposition', `attachment; filename="top-performer-export-${Date.now()}.json"`);
     res.json(exportData);
   })
 );
