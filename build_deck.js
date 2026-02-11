@@ -103,7 +103,7 @@ async function buildDeck() {
   // Main title
   s1.addText("TOP PERFORMER", {
     x: 0.5, y: 2.3, w: 9, h: 1,
-    fontSize: 54, fontFace: "Liberation Sans",
+    fontSize: 54, fontFace: "Arial Black",
     color: C.white, align: "center",
     charSpacing: 8, bold: true, margin: 0
   });
@@ -116,7 +116,7 @@ async function buildDeck() {
   });
   s1.addText("TP 1%", {
     x: 3.5, y: 3.4, w: 3, h: 0.7,
-    fontSize: 30, fontFace: "Liberation Sans",
+    fontSize: 30, fontFace: "Arial Black",
     color: C.black, align: "center", valign: "middle",
     bold: true, charSpacing: 4, margin: 0
   });
@@ -124,7 +124,7 @@ async function buildDeck() {
   // Tagline
   s1.addText("The Mental Coach You Always Needed", {
     x: 1, y: 4.3, w: 8, h: 0.5,
-    fontSize: 20, fontFace: "Carlito",
+    fontSize: 20, fontFace: "Calibri",
     color: C.gold, align: "center", italic: true, margin: 0
   });
 
@@ -135,7 +135,7 @@ async function buildDeck() {
     { text: "Emotional Intelligence", options: { color: C.accent, bold: true } },
   ], {
     x: 1, y: 4.85, w: 8, h: 0.4,
-    fontSize: 15, fontFace: "Carlito",
+    fontSize: 15, fontFace: "Calibri",
     align: "center", margin: 0
   });
 
@@ -158,14 +158,14 @@ async function buildDeck() {
 
   s2.addText("THE PROBLEM", {
     x: 0.5, y: 0.3, w: 9, h: 0.7,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.accent, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s2.addText("99% of People Are Underperforming", {
     x: 0.5, y: 0.85, w: 9, h: 0.7,
-    fontSize: 34, fontFace: "Liberation Sans",
+    fontSize: 34, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -185,20 +185,20 @@ async function buildDeck() {
     });
     s2.addText(p.stat, {
       x, y: 2.0, w: 2.7, h: 1.0,
-      fontSize: 42, fontFace: "Liberation Sans",
+      fontSize: 42, fontFace: "Arial Black",
       color: p.color, align: "center", valign: "middle",
       bold: true, margin: 0
     });
     s2.addText(p.label, {
       x, y: 3.1, w: 2.7, h: 1.2,
-      fontSize: 13, fontFace: "Carlito",
+      fontSize: 13, fontFace: "Calibri",
       color: C.lightGray, align: "center", valign: "top", margin: 0
     });
   });
 
   s2.addText("They don't need another meditation app. They need a COACH.", {
     x: 0.5, y: 4.85, w: 9, h: 0.5,
-    fontSize: 18, fontFace: "Carlito",
+    fontSize: 18, fontFace: "Calibri",
     color: C.gold, align: "center", italic: true, bold: true, margin: 0
   });
 
@@ -215,7 +215,7 @@ async function buildDeck() {
 
   s3.addText("THE SOLUTION", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.gold, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
@@ -224,13 +224,13 @@ async function buildDeck() {
 
   s3.addText("Your AI Mental Performance Coach", {
     x: 1.9, y: 1.15, w: 7, h: 0.6,
-    fontSize: 30, fontFace: "Liberation Sans",
+    fontSize: 30, fontFace: "Arial Black",
     color: C.white, margin: 0
   });
 
   s3.addText("Top Performer uses advanced AI to deliver personalized coaching that was previously only available to elite athletes, CEOs, and top-tier executives.", {
     x: 1.0, y: 2.0, w: 8, h: 0.7,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.lightGray, margin: 0
   });
 
@@ -258,12 +258,12 @@ async function buildDeck() {
     s3.addImage({ data: f.icon, x: x + 0.15, y: y + 0.2, w: 0.4, h: 0.4 });
     s3.addText(f.title, {
       x: x + 0.65, y: y + 0.12, w: 2.0, h: 0.35,
-      fontSize: 12, fontFace: "Carlito",
+      fontSize: 12, fontFace: "Calibri",
       color: C.white, bold: true, margin: 0
     });
     s3.addText(f.desc, {
       x: x + 0.65, y: y + 0.5, w: 2.0, h: 0.5,
-      fontSize: 10, fontFace: "Carlito",
+      fontSize: 10, fontFace: "Calibri",
       color: C.gray, margin: 0
     });
   });
@@ -281,14 +281,14 @@ async function buildDeck() {
 
   s4.addText("WHAT'S INSIDE", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.electric, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s4.addText("9 Screens. Zero Fluff. All Performance.", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 30, fontFace: "Liberation Sans",
+    fontSize: 30, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -313,12 +313,12 @@ async function buildDeck() {
       s4.addImage({ data: f.icon, x: startX, y: y + 0.05, w: 0.35, h: 0.35 });
       s4.addText(f.title, {
         x: startX + 0.5, y, w: 4.0, h: 0.35,
-        fontSize: 13, fontFace: "Carlito",
+        fontSize: 13, fontFace: "Calibri",
         color: f.color, bold: true, margin: 0
       });
       s4.addText(f.desc, {
         x: startX + 0.5, y: y + 0.35, w: 4.0, h: 0.5,
-        fontSize: 10, fontFace: "Carlito",
+        fontSize: 10, fontFace: "Calibri",
         color: C.gray, margin: 0
       });
     });
@@ -346,14 +346,14 @@ async function buildDeck() {
 
   s5.addText("MARKET OPPORTUNITY", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.green, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s5.addText("This Market Is Exploding", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 34, fontFace: "Liberation Sans",
+    fontSize: 34, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -374,17 +374,17 @@ async function buildDeck() {
     s5.addImage({ data: icons.money, x: x + 1.05, y: 1.75, w: 0.5, h: 0.5 });
     s5.addText(m.value, {
       x, y: 2.35, w: 2.8, h: 0.7,
-      fontSize: 36, fontFace: "Liberation Sans",
+      fontSize: 36, fontFace: "Arial Black",
       color: m.color, align: "center", bold: true, margin: 0
     });
     s5.addText(m.label, {
       x, y: 3.05, w: 2.8, h: 0.65,
-      fontSize: 12, fontFace: "Carlito",
+      fontSize: 12, fontFace: "Calibri",
       color: C.lightGray, align: "center", margin: 0
     });
     s5.addText(m.sub, {
       x, y: 3.65, w: 2.8, h: 0.3,
-      fontSize: 10, fontFace: "Carlito",
+      fontSize: 10, fontFace: "Calibri",
       color: C.gray, align: "center", italic: true, margin: 0
     });
   });
@@ -392,13 +392,13 @@ async function buildDeck() {
   // Why now section
   s5.addText("WHY NOW?", {
     x: 0.5, y: 4.2, w: 9, h: 0.4,
-    fontSize: 16, fontFace: "Liberation Sans",
+    fontSize: 16, fontFace: "Arial Black",
     color: C.gold, align: "center", margin: 0
   });
 
   s5.addText("Post-pandemic mental health awareness at all-time high  |  AI technology finally capable of real coaching  |  Gen Z spending 2x more on mental wellness  |  Employer wellness budgets expanding 25% YoY", {
     x: 0.5, y: 4.6, w: 9, h: 0.8,
-    fontSize: 11, fontFace: "Carlito",
+    fontSize: 11, fontFace: "Calibri",
     color: C.gray, align: "center", margin: 0
   });
 
@@ -415,25 +415,25 @@ async function buildDeck() {
 
   s6.addText("COMPETITIVE EDGE", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.accent, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s6.addText("Why Top Performer Wins", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 34, fontFace: "Liberation Sans",
+    fontSize: 34, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
   // Comparison table
   const compHeaders = [
     [
-      { text: "Feature", options: { fill: { color: C.brightGold }, color: C.black, bold: true, fontSize: 12, fontFace: "Carlito" } },
-      { text: "Top Performer", options: { fill: { color: C.brightGold }, color: C.black, bold: true, fontSize: 12, fontFace: "Carlito", align: "center" } },
-      { text: "Headspace", options: { fill: { color: "333333" }, color: C.lightGray, bold: true, fontSize: 12, fontFace: "Carlito", align: "center" } },
-      { text: "BetterHelp", options: { fill: { color: "333333" }, color: C.lightGray, bold: true, fontSize: 12, fontFace: "Carlito", align: "center" } },
-      { text: "Calm", options: { fill: { color: "333333" }, color: C.lightGray, bold: true, fontSize: 12, fontFace: "Carlito", align: "center" } },
+      { text: "Feature", options: { fill: { color: C.brightGold }, color: C.black, bold: true, fontSize: 12, fontFace: "Calibri" } },
+      { text: "Top Performer", options: { fill: { color: C.brightGold }, color: C.black, bold: true, fontSize: 12, fontFace: "Calibri", align: "center" } },
+      { text: "Headspace", options: { fill: { color: "333333" }, color: C.lightGray, bold: true, fontSize: 12, fontFace: "Calibri", align: "center" } },
+      { text: "BetterHelp", options: { fill: { color: "333333" }, color: C.lightGray, bold: true, fontSize: 12, fontFace: "Calibri", align: "center" } },
+      { text: "Calm", options: { fill: { color: "333333" }, color: C.lightGray, bold: true, fontSize: 12, fontFace: "Calibri", align: "center" } },
     ]
   ];
 
@@ -458,7 +458,7 @@ async function buildDeck() {
           color: isYes ? C.green : (isTP ? C.electric : C.gray),
           bold: isYes || ci === 0,
           fontSize: 11,
-          fontFace: "Carlito",
+          fontFace: "Calibri",
           align: ci === 0 ? "left" : "center",
           valign: "middle"
         }
@@ -476,7 +476,7 @@ async function buildDeck() {
 
   s6.addText("Top Performer doesn't compete with meditation apps. It REPLACES your need for a $200/hr performance coach.", {
     x: 0.5, y: 5.0, w: 9, h: 0.4,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.gold, align: "center", italic: true, bold: true, margin: 0
   });
 
@@ -493,14 +493,14 @@ async function buildDeck() {
 
   s7.addText("REVENUE MODEL", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.green, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s7.addText("Multiple Revenue Streams Built In", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 32, fontFace: "Liberation Sans",
+    fontSize: 32, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -533,17 +533,17 @@ async function buildDeck() {
     s7.addImage({ data: r.icon, x: x + 0.25, y: y + 0.15, w: 0.4, h: 0.4 });
     s7.addText(r.title, {
       x: x + 0.8, y: y + 0.1, w: 2.5, h: 0.35,
-      fontSize: 14, fontFace: "Carlito",
+      fontSize: 14, fontFace: "Calibri",
       color: C.white, bold: true, margin: 0
     });
     s7.addText(r.amount, {
       x: x + 3.0, y: y + 0.15, w: 1.3, h: 0.3,
-      fontSize: 9, fontFace: "Carlito",
+      fontSize: 9, fontFace: "Calibri",
       color: r.color, align: "right", bold: true, margin: 0
     });
     s7.addText(r.desc, {
       x: x + 0.3, y: y + 0.55, w: 4.0, h: 1.0,
-      fontSize: 10, fontFace: "Carlito",
+      fontSize: 10, fontFace: "Calibri",
       color: C.gray, margin: 0
     });
   });
@@ -561,14 +561,14 @@ async function buildDeck() {
 
   s8.addText("BUILT. SHIPPED. LIVE.", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.electric, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s8.addText("This Isn't a Mockup. It's LIVE.", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 34, fontFace: "Liberation Sans",
+    fontSize: 34, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -589,12 +589,12 @@ async function buildDeck() {
     });
     s8.addText(t.num, {
       x, y: 1.55, w: 2.1, h: 0.6,
-      fontSize: 32, fontFace: "Liberation Sans",
+      fontSize: 32, fontFace: "Arial Black",
       color: C.electric, align: "center", bold: true, margin: 0
     });
     s8.addText(t.label, {
       x, y: 2.2, w: 2.1, h: 0.45,
-      fontSize: 10, fontFace: "Carlito",
+      fontSize: 10, fontFace: "Calibri",
       color: C.gray, align: "center", margin: 0
     });
   });
@@ -621,7 +621,7 @@ async function buildDeck() {
   techLeft.forEach((t, i) => {
     s8.addText(t, {
       x: 0.7, y: 2.95 + i * 0.38, w: 4.3, h: 0.35,
-      fontSize: 11, fontFace: "Carlito",
+      fontSize: 11, fontFace: "Calibri",
       color: C.lightGray, bullet: true, margin: 0
     });
   });
@@ -629,14 +629,14 @@ async function buildDeck() {
   techRight.forEach((t, i) => {
     s8.addText(t, {
       x: 5.3, y: 2.95 + i * 0.38, w: 4.3, h: 0.35,
-      fontSize: 11, fontFace: "Carlito",
+      fontSize: 11, fontFace: "Calibri",
       color: C.lightGray, bullet: true, margin: 0
     });
   });
 
   s8.addText("Live now: mj-superstars-app.onrender.com", {
     x: 0.5, y: 5.1, w: 9, h: 0.35,
-    fontSize: 12, fontFace: "Carlito",
+    fontSize: 12, fontFace: "Calibri",
     color: C.gold, align: "center", italic: true, margin: 0
   });
 
@@ -653,14 +653,14 @@ async function buildDeck() {
 
   s9.addText("BRAND STRATEGY", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.gold, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s9.addText("Brand Identity + Logo Concepts", {
     x: 0.5, y: 0.8, w: 9, h: 0.6,
-    fontSize: 30, fontFace: "Liberation Sans",
+    fontSize: 30, fontFace: "Arial Black",
     color: C.white, align: "center", bold: true, margin: 0
   });
 
@@ -674,7 +674,7 @@ async function buildDeck() {
   });
   s9.addText("Option A", {
     x: 0.6, y: logoY + 0.05, w: 2.6, h: 0.25,
-    fontSize: 9, fontFace: "Carlito",
+    fontSize: 9, fontFace: "Calibri",
     color: C.gray, align: "center", margin: 0
   });
   s9.addShape(pres.shapes.ROUNDED_RECTANGLE, {
@@ -684,18 +684,18 @@ async function buildDeck() {
   });
   s9.addText("TP 1%", {
     x: 1.1, y: logoY + 0.4, w: 1.6, h: 0.65,
-    fontSize: 26, fontFace: "Liberation Sans",
+    fontSize: 26, fontFace: "Arial Black",
     color: C.black, align: "center", valign: "middle",
     bold: true, charSpacing: 3, margin: 0
   });
   s9.addText("Classic badge mark", {
     x: 0.6, y: logoY + 1.2, w: 2.6, h: 0.3,
-    fontSize: 10, fontFace: "Carlito",
+    fontSize: 10, fontFace: "Calibri",
     color: C.lightGray, align: "center", margin: 0
   });
   s9.addText("Compact. Iconic. Merch-ready.", {
     x: 0.6, y: logoY + 1.5, w: 2.6, h: 0.3,
-    fontSize: 9, fontFace: "Carlito",
+    fontSize: 9, fontFace: "Calibri",
     color: C.gray, align: "center", italic: true, margin: 0
   });
 
@@ -707,7 +707,7 @@ async function buildDeck() {
   });
   s9.addText("Option B", {
     x: 3.7, y: logoY + 0.05, w: 2.6, h: 0.25,
-    fontSize: 9, fontFace: "Carlito",
+    fontSize: 9, fontFace: "Calibri",
     color: C.gray, align: "center", margin: 0
   });
   s9.addText([
@@ -715,16 +715,16 @@ async function buildDeck() {
     { text: "TOP PERFORMER", options: { fontSize: 11, color: C.white, bold: true, charSpacing: 4 } },
   ], {
     x: 3.7, y: logoY + 0.3, w: 2.6, h: 1.0,
-    fontFace: "Liberation Sans", align: "center", margin: 0
+    fontFace: "Arial Black", align: "center", margin: 0
   });
   s9.addText("Stacked wordmark", {
     x: 3.7, y: logoY + 1.2, w: 2.6, h: 0.3,
-    fontSize: 10, fontFace: "Carlito",
+    fontSize: 10, fontFace: "Calibri",
     color: C.lightGray, align: "center", margin: 0
   });
   s9.addText("Bold hierarchy. Premium feel.", {
     x: 3.7, y: logoY + 1.5, w: 2.6, h: 0.3,
-    fontSize: 9, fontFace: "Carlito",
+    fontSize: 9, fontFace: "Calibri",
     color: C.gray, align: "center", italic: true, margin: 0
   });
 
@@ -736,23 +736,23 @@ async function buildDeck() {
   });
   s9.addText("Option C", {
     x: 6.8, y: logoY + 0.05, w: 2.6, h: 0.25,
-    fontSize: 9, fontFace: "Carlito",
+    fontSize: 9, fontFace: "Calibri",
     color: C.gray, align: "center", margin: 0
   });
   s9.addText("1%", {
     x: 6.8, y: logoY + 0.35, w: 2.6, h: 0.9,
-    fontSize: 48, fontFace: "Liberation Sans",
+    fontSize: 48, fontFace: "Arial Black",
     color: C.brightGold, align: "center", valign: "middle",
     bold: true, margin: 0
   });
   s9.addText("Minimalist icon", {
     x: 6.8, y: logoY + 1.2, w: 2.6, h: 0.3,
-    fontSize: 10, fontFace: "Carlito",
+    fontSize: 10, fontFace: "Calibri",
     color: C.lightGray, align: "center", margin: 0
   });
   s9.addText("App icon. Wearable. Statement.", {
     x: 6.8, y: logoY + 1.5, w: 2.6, h: 0.3,
-    fontSize: 9, fontFace: "Carlito",
+    fontSize: 9, fontFace: "Calibri",
     color: C.gray, align: "center", italic: true, margin: 0
   });
 
@@ -770,7 +770,7 @@ async function buildDeck() {
     { text: " (Emotional Intelligence)", options: { color: C.gray, fontSize: 12 } },
   ], {
     x: 2.0, y: 3.65, w: 6.0, h: 0.55,
-    fontFace: "Carlito", align: "center", valign: "middle", margin: 0
+    fontFace: "Calibri", align: "center", valign: "middle", margin: 0
   });
 
   // Brand positioning cards
@@ -796,12 +796,12 @@ async function buildDeck() {
     s9.addImage({ data: b.icon, x: x + 0.25, y: y + 0.15, w: 0.35, h: 0.35 });
     s9.addText(b.title, {
       x: x + 0.7, y: y + 0.1, w: 3.5, h: 0.35,
-      fontSize: 14, fontFace: "Carlito",
+      fontSize: 14, fontFace: "Calibri",
       color: b.color, bold: true, margin: 0
     });
     s9.addText(b.desc, {
       x: x + 0.25, y: y + 0.5, w: 4.0, h: 0.85,
-      fontSize: 10, fontFace: "Carlito",
+      fontSize: 10, fontFace: "Calibri",
       color: C.gray, margin: 0
     });
   });
@@ -819,14 +819,14 @@ async function buildDeck() {
 
   s10.addText("GO-TO-MARKET", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.accent, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s10.addText("Marketing Strategies That Print Money", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 32, fontFace: "Liberation Sans",
+    fontSize: 32, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -856,12 +856,12 @@ async function buildDeck() {
     });
     s10.addText(m.title, {
       x: x + 0.2, y: y + 0.08, w: 4.1, h: 0.3,
-      fontSize: 12, fontFace: "Carlito",
+      fontSize: 12, fontFace: "Calibri",
       color: m.color, bold: true, margin: 0
     });
     s10.addText(m.desc, {
       x: x + 0.2, y: y + 0.4, w: 4.1, h: 0.7,
-      fontSize: 9.5, fontFace: "Carlito",
+      fontSize: 9.5, fontFace: "Calibri",
       color: C.gray, margin: 0
     });
   });
@@ -879,14 +879,14 @@ async function buildDeck() {
 
   s11.addText("LAUNCH ROADMAP", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.electric, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s11.addText("From Here to Market Domination", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 32, fontFace: "Liberation Sans",
+    fontSize: 32, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -915,7 +915,7 @@ async function buildDeck() {
     // Phase label
     s11.addText(p.phase, {
       x: x, y: 2.1, w: 1.7, h: 0.3,
-      fontSize: 10, fontFace: "Carlito",
+      fontSize: 10, fontFace: "Calibri",
       color: p.color, align: "center", bold: true, margin: 0
     });
     // Card
@@ -927,12 +927,12 @@ async function buildDeck() {
     s11.addImage({ data: p.icon, x: x + 0.55, y: 2.55, w: 0.45, h: 0.45 });
     s11.addText(p.title, {
       x: x + 0.1, y: 3.1, w: 1.5, h: 0.5,
-      fontSize: 11, fontFace: "Carlito",
+      fontSize: 11, fontFace: "Calibri",
       color: C.white, align: "center", bold: true, margin: 0
     });
     s11.addText(p.items, {
       x: x + 0.1, y: 3.6, w: 1.5, h: 1.2,
-      fontSize: 9, fontFace: "Carlito",
+      fontSize: 9, fontFace: "Calibri",
       color: C.gray, align: "center", margin: 0
     });
   });
@@ -950,14 +950,14 @@ async function buildDeck() {
 
   s12.addText("FINANCIAL PROJECTIONS", {
     x: 0.5, y: 0.3, w: 9, h: 0.5,
-    fontSize: 14, fontFace: "Carlito",
+    fontSize: 14, fontFace: "Calibri",
     color: C.green, align: "center",
     charSpacing: 6, bold: true, margin: 0
   });
 
   s12.addText("The Numbers Don't Lie", {
     x: 0.5, y: 0.75, w: 9, h: 0.6,
-    fontSize: 34, fontFace: "Liberation Sans",
+    fontSize: 34, fontFace: "Arial Black",
     color: C.white, align: "center", margin: 0
   });
 
@@ -997,19 +997,19 @@ async function buildDeck() {
     const y = 1.6 + i * 0.55;
     s12.addText(p.metric, {
       x: 6.5, y, w: 2.0, h: 0.4,
-      fontSize: 11, fontFace: "Carlito",
+      fontSize: 11, fontFace: "Calibri",
       color: C.gray, margin: 0
     });
     s12.addText(p.value, {
       x: 8.3, y, w: 1.5, h: 0.4,
-      fontSize: 14, fontFace: "Liberation Sans",
+      fontSize: 14, fontFace: "Arial Black",
       color: p.color, align: "right", margin: 0
     });
   });
 
   s12.addText("Conservative estimates based on 2% market penetration in target demographic", {
     x: 0.5, y: 5.1, w: 9, h: 0.35,
-    fontSize: 10, fontFace: "Carlito",
+    fontSize: 10, fontFace: "Calibri",
     color: C.gray, align: "center", italic: true, margin: 0
   });
 
@@ -1028,7 +1028,7 @@ async function buildDeck() {
 
   s13.addText("JOIN THE 1%", {
     x: 0.5, y: 2.1, w: 9, h: 0.8,
-    fontSize: 48, fontFace: "Liberation Sans",
+    fontSize: 48, fontFace: "Arial Black",
     color: C.white, align: "center",
     charSpacing: 6, margin: 0
   });
@@ -1041,27 +1041,27 @@ async function buildDeck() {
   });
   s13.addText("TOP PERFORMER", {
     x: 3.5, y: 3.0, w: 3, h: 0.7,
-    fontSize: 22, fontFace: "Liberation Sans",
+    fontSize: 22, fontFace: "Arial Black",
     color: C.black, align: "center", valign: "middle",
     bold: true, charSpacing: 2, margin: 0
   });
 
   s13.addText("The app is built. The market is ready. The only question is:", {
     x: 1, y: 3.9, w: 8, h: 0.4,
-    fontSize: 16, fontFace: "Carlito",
+    fontSize: 16, fontFace: "Calibri",
     color: C.lightGray, align: "center", margin: 0
   });
 
   s13.addText("Are you in?", {
     x: 1, y: 4.35, w: 8, h: 0.5,
-    fontSize: 28, fontFace: "Liberation Sans",
+    fontSize: 28, fontFace: "Arial Black",
     color: C.gold, align: "center", italic: true, margin: 0
   });
 
   // Contact info
   s13.addText("Mike  |  michaelperkins07@gmail.com  |  mj-superstars-app.onrender.com", {
     x: 1, y: 5.0, w: 8, h: 0.35,
-    fontSize: 11, fontFace: "Carlito",
+    fontSize: 11, fontFace: "Calibri",
     color: C.gray, align: "center", margin: 0
   });
 
