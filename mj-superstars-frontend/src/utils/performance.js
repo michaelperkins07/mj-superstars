@@ -64,32 +64,6 @@ export function LazyLoad({ children, fallback }) {
 }
 
 // ============================================================
-// LAZY-LOADED ROUTES
-// ============================================================
-
-// Define lazy routes with preload
-export const LazyRoutes = {
-  // Main screens
-  Home: lazyWithPreload(() => import('../screens/Home')),
-  Chat: lazyWithPreload(() => import('../screens/Chat')),
-  Progress: lazyWithPreload(() => import('../screens/Progress')),
-  Profile: lazyWithPreload(() => import('../screens/Profile')),
-
-  // Features
-  MoodLogger: lazyWithPreload(() => import('../components/MoodLogger')),
-  Journal: lazyWithPreload(() => import('../screens/Journal')),
-  Tasks: lazyWithPreload(() => import('../screens/Tasks')),
-  CopingTools: lazyWithPreload(() => import('../screens/CopingTools')),
-
-  // Settings
-  Settings: lazyWithPreload(() => import('../screens/Settings')),
-  NotificationSettings: lazyWithPreload(() => import('../components/NotificationSettings')),
-
-  // Onboarding & Auth
-  Onboarding: lazyWithPreload(() => import('../components/Onboarding'))
-};
-
-// ============================================================
 // MEMOIZATION UTILITIES
 // ============================================================
 
@@ -555,7 +529,6 @@ export default {
   preloadComponent,
   LoadingFallback,
   LazyLoad,
-  LazyRoutes,
 
   // Memoization
   deepMemo,
