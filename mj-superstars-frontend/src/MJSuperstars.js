@@ -14,6 +14,7 @@ import { initSubscription } from './services/subscription';
 import { ToastProvider } from './components/shared/Toast';
 import { NotificationPermissionModal } from './components/NotificationPermission';
 import FeatureTour from './components/FeatureTour';
+import { applyDeepLink } from './services/deepLinkRouter';
 
 // Lazy-loaded screens (not needed on initial render)
 const MoodScreen = lazyWithPreload(() => import('./components/screens/MoodScreen'));
@@ -133,6 +134,11 @@ function MJSuperstars() {
   if (!onboardingComplete) {
     return <Onboarding onComplete={handleOnboardingComplete} />;
   }
+
+  // Apply any pending deep link navigation on first render
+  useEffect(() => {
+    applyDeepLink();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Main App with Tab Navigation
   const tabs = [
