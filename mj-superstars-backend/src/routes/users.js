@@ -130,13 +130,20 @@ router.put('/me/personalization',
       preferred_name,
       preferred_pronouns,
       health_context,
-      coach_name_preference
+      coach_name_preference,
+      conversation_mode
     } = req.body;
 
     // Validate coach_name_preference
     const validCoachNames = ['mike', 'perkins'];
     if (coach_name_preference !== undefined && coach_name_preference !== null && !validCoachNames.includes(coach_name_preference)) {
       throw new APIError('Invalid coach_name_preference - must be mike or perkins', 400, 'INVALID_COACH_NAME');
+    }
+
+    // Validate conversation_mode
+    const validModes = ['empathy', 'confused', 'perk'];
+    if (conversation_mode !== undefined && conversation_mode !== null && !validModes.includes(conversation_mode)) {
+      throw new APIError('Invalid conversation_mode - must be empathy, confused, or perk', 400, 'INVALID_CONVERSATION_MODE');
     }
 
     // Validate string fields have reasonable length limits
@@ -169,6 +176,7 @@ router.put('/me/personalization',
          preferred_pronouns = COALESCE($10, preferred_pronouns),
          health_context = COALESCE($11, health_context),
          coach_name_preference = COALESCE($12, coach_name_preference),
+         conversation_mode = COALESCE($13, conversation_mode),
          updated_at = NOW()
        WHERE user_id = $1
        RETURNING *`,
@@ -184,7 +192,8 @@ router.put('/me/personalization',
         preferred_name,
         preferred_pronouns,
         health_context ? JSON.stringify(health_context) : null,
-        coach_name_preference || null
+        coach_name_preference || null,
+        conversation_mode || null
       ]
     );
 
@@ -211,6 +220,7 @@ router.post('/me/onboarding',
       const {
         preferred_name,
         coach_name_preference,
+        conversation_mode,
         challenges,
         goals,
         interests,
@@ -224,6 +234,7 @@ router.post('/me/onboarding',
            goals = COALESCE($3, goals),
            interests = COALESCE($4, interests),
            coach_name_preference = COALESCE($5, coach_name_preference),
+           conversation_mode = COALESCE($6, conversation_mode),
            updated_at = NOW()
          WHERE user_id = $1`,
         [
@@ -231,7 +242,8 @@ router.post('/me/onboarding',
           preferred_name,
           goals ? JSON.stringify(goals) : null,
           interests ? JSON.stringify(interests) : null,
-          coach_name_preference || 'mike'
+          coach_name_preference || 'mike',
+          conversation_mode || 'perk'
         ]
       );
 

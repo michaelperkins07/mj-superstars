@@ -45,6 +45,12 @@ const COMM_STYLES_MAP = {
   mix: { label: 'Mix It Up', desc: 'Read the room — adapt to what I need', emoji: '🎭' },
 };
 
+const MODES_MAP = {
+  perk: { label: 'Perk Mode', desc: 'Full energy — real stories, accountability, and hype', emoji: '🔥' },
+  empathy: { label: 'Empathy Mode', desc: 'Gentle, supportive — here to pick you up', emoji: '💙' },
+  confused: { label: 'Prep Mode', desc: 'Structured help — organize and get prepared', emoji: '🧩' },
+};
+
 // ============================================================
 // HELPER COMPONENTS
 // ============================================================
@@ -181,6 +187,8 @@ function ProfileScreen() {
   const [editCommStyle, setEditCommStyle] = useState('');
   const [editingCoachName, setEditingCoachName] = useState(false);
   const [editCoachName, setEditCoachName] = useState('mike');
+  const [editingMode, setEditingMode] = useState(false);
+  const [editMode, setEditMode] = useState('perk');
   const [saving, setSaving] = useState(false);
 
   const isGuest = !TokenManager.isAuthenticated();
@@ -192,6 +200,7 @@ function ProfileScreen() {
   const commStyle = profile?.communication_preference || profile?.communicationPref || 'mix';
   const coachNamePref = profile?.coach_name_preference || 'mike';
   const coachDisplayName = coachNamePref === 'perkins' ? 'Perkins' : 'Mike';
+  const currentMode = profile?.conversation_mode || 'perk';
 
   // Load email prefs
   useEffect(() => {
@@ -265,6 +274,11 @@ function ProfileScreen() {
     await saveProfileField({ coach_name_preference: editCoachName });
     setEditingCoachName(false);
   }, [editCoachName, saveProfileField]);
+
+  const handleSaveMode = useCallback(async () => {
+    await saveProfileField({ conversation_mode: editMode });
+    setEditingMode(false);
+  }, [editMode, saveProfileField]);
 
   const handleSaveCommStyle = useCallback(async () => {
     await saveProfileField({ communication_preference: editCommStyle });
@@ -458,7 +472,7 @@ function ProfileScreen() {
 
       {/* ---- COACH NAME PREFERENCE ---- */}
       <SectionCard
-        title="My Coach"
+        title="Mike Perkins"
         icon="🎤"
         onEdit={() => { setEditCoachName(coachNamePref); setEditingCoachName(true); }}
       >
@@ -467,8 +481,23 @@ function ProfileScreen() {
             MP
           </div>
           <div>
-            <p className="text-white text-sm font-semibold">Coach {coachDisplayName}</p>
+            <p className="text-white text-sm font-semibold">{coachDisplayName}</p>
             <p className="text-slate-400 text-xs">{coachNamePref === 'perkins' ? 'Work mode — most people at work call me Perkins' : 'Personal mode — friends & family call me Mike'}</p>
+          </div>
+        </div>
+      </SectionCard>
+
+      {/* ---- CONVERSATION MODE ---- */}
+      <SectionCard
+        title="Conversation Mode"
+        icon="🎭"
+        onEdit={() => { setEditMode(currentMode); setEditingMode(true); }}
+      >
+        <div className="flex items-center gap-3 bg-slate-700/40 rounded-xl p-3">
+          <span className="text-2xl">{MODES_MAP[currentMode]?.emoji || '🔥'}</span>
+          <div>
+            <p className="text-white text-sm font-semibold">{MODES_MAP[currentMode]?.label || 'Perk Mode'}</p>
+            <p className="text-slate-400 text-xs">{MODES_MAP[currentMode]?.desc || 'Full energy — real stories, accountability, and hype'}</p>
           </div>
         </div>
       </SectionCard>
@@ -476,7 +505,7 @@ function ProfileScreen() {
       {/* ---- COMMUNICATION STYLE ---- */}
       {commStyle && COMM_STYLES_MAP[commStyle] && (
         <SectionCard
-          title={`How Coach ${coachDisplayName} Talks to Me`}
+          title={`How ${coachDisplayName} Talks to Me`}
           icon="🗣️"
           onEdit={() => { setEditCommStyle(commStyle); setEditingCommStyle(true); }}
         >
@@ -688,7 +717,7 @@ function ProfileScreen() {
           type="text"
           value={editName}
           onChange={e => setEditName(e.target.value)}
-          placeholder={`What should Coach ${coachDisplayName} call you?`}
+          placeholder={`What should ${coachDisplayName} call you?`}
           className="w-full bg-slate-700 text-white rounded-xl px-4 py-3 text-lg outline-none focus:ring-2 focus:ring-sky-500"
           autoFocus
         />
@@ -712,7 +741,7 @@ function ProfileScreen() {
 
       {/* ---- Edit Goals Modal ---- */}
       <EditModal title="What You're Building" isOpen={editingGoals} onClose={() => setEditingGoals(false)} onSave={handleSaveGoals} saving={saving}>
-        <p className="text-slate-400 text-sm mb-4">Pick your goals — Coach {coachDisplayName} will help you stay on track.</p>
+        <p className="text-slate-400 text-sm mb-4">Pick your goals — {coachDisplayName} will help you stay on track.</p>
         <div className="flex flex-wrap gap-2">
           {Object.entries(GOALS_MAP).map(([id, item]) => (
             <Chip
@@ -731,8 +760,8 @@ function ProfileScreen() {
         <p className="text-slate-400 text-sm mb-4">I'm Mike Perkins — pick the name that fits your vibe.</p>
         <div className="space-y-3">
           {[
-            { id: 'mike', label: 'Coach Mike', desc: 'Friends & family call me this', emoji: '🤝' },
-            { id: 'perkins', label: 'Coach Perkins', desc: 'Most people at work call me this', emoji: '💼' },
+            { id: 'mike', label: 'Mike', desc: 'Friends & family call me this', emoji: '🤝' },
+            { id: 'perkins', label: 'Perkins', desc: 'Most people at work call me this', emoji: '💼' },
           ].map((opt) => (
             <button
               key={opt.id}
@@ -753,8 +782,32 @@ function ProfileScreen() {
         </div>
       </EditModal>
 
+      {/* ---- Edit Conversation Mode Modal ---- */}
+      <EditModal title="Choose Your Mode" isOpen={editingMode} onClose={() => setEditingMode(false)} onSave={handleSaveMode} saving={saving}>
+        <p className="text-slate-400 text-sm mb-4">Pick the energy you need right now — you can switch anytime.</p>
+        <div className="space-y-3">
+          {Object.entries(MODES_MAP).map(([id, item]) => (
+            <button
+              key={id}
+              onClick={() => { haptics.selection(); setEditMode(id); }}
+              className={`w-full flex items-center gap-3 p-4 rounded-xl border transition-all text-left ${
+                editMode === id
+                  ? 'bg-sky-500/15 border-sky-500/50 text-white'
+                  : 'bg-slate-700/40 border-slate-600/30 text-slate-300'
+              }`}
+            >
+              <span className="text-2xl">{item.emoji}</span>
+              <div>
+                <p className={`text-sm font-semibold ${editMode === id ? 'text-sky-300' : 'text-white'}`}>{item.label}</p>
+                <p className="text-xs text-slate-400">{item.desc}</p>
+              </div>
+            </button>
+          ))}
+        </div>
+      </EditModal>
+
       {/* ---- Edit Communication Style Modal ---- */}
-      <EditModal title={`How Should Coach ${coachDisplayName} Talk to You?`} isOpen={editingCommStyle} onClose={() => setEditingCommStyle(false)} onSave={handleSaveCommStyle} saving={saving}>
+      <EditModal title={`How Should ${coachDisplayName} Talk to You?`} isOpen={editingCommStyle} onClose={() => setEditingCommStyle(false)} onSave={handleSaveCommStyle} saving={saving}>
         <div className="space-y-3">
           {Object.entries(COMM_STYLES_MAP).map(([id, item]) => (
             <button

@@ -142,7 +142,7 @@ function WelcomeStep() {
         transition={{ delay: 0.35 }}
         className="text-lg text-sky-300 mb-4 font-medium"
       >
-        Your morale cheat code
+        Your corner man for life
       </motion.p>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -150,7 +150,7 @@ function WelcomeStep() {
         transition={{ delay: 0.5 }}
         className="text-slate-400 max-w-sm leading-relaxed"
       >
-        We're going to hit goals and get you paid the right way. Money follows performance — let me get to know you real quick so I can coach you the right way.
+        Real people helping real people. I've been where you are — let me learn a little about you so we can figure this out together. No pressure, just curiosity.
       </motion.p>
     </div>
   );
@@ -209,7 +209,7 @@ function CoachNameStep({ coachName, onSelect }) {
               <span className="text-2xl">{opt.emoji}</span>
               <div>
                 <div className={`font-semibold ${coachName === opt.id ? 'text-sky-300' : 'text-white'}`}>
-                  Coach {opt.label}
+                  {opt.label}
                 </div>
                 <div className="text-sm text-slate-400">{opt.desc}</div>
               </div>
@@ -393,7 +393,60 @@ function CommStyleStep({ selected, onSelect }) {
   );
 }
 
-// Step 5: Ready
+// Step 5: Conversation Mode
+function ModeStep({ selected, onSelect, coachName }) {
+  const displayName = coachName === 'perkins' ? 'Perkins' : 'Mike';
+  const modes = [
+    { id: 'perk', label: 'Perk Mode', desc: `Full ${displayName} energy — real stories, accountability, and hype`, emoji: '🔥' },
+    { id: 'empathy', label: 'Empathy Mode', desc: 'Gentle, supportive — here to pick you up when things are heavy', emoji: '💙' },
+    { id: 'confused', label: 'Prep Mode', desc: 'Structured help — organize your thoughts and get prepared', emoji: '🧩' },
+  ];
+  return (
+    <div className="flex flex-col items-center text-center">
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+        className="text-6xl mb-6"
+      >
+        🎭
+      </motion.div>
+      <motion.h1
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2 }}
+        className="text-2xl font-bold text-white mb-2"
+      >
+        How should I show up?
+      </motion.h1>
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="text-slate-400 mb-8 max-w-sm"
+      >
+        Pick the energy that fits where you're at right now. You can always change this later.
+      </motion.p>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.4 }}
+        className="w-full max-w-sm flex flex-col gap-3"
+      >
+        {modes.map((mode) => (
+          <StyleCard
+            key={mode.id}
+            option={mode}
+            isSelected={selected === mode.id}
+            onSelect={() => onSelect(mode.id)}
+          />
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+
+// Step 6: Ready
 function ReadyStep({ name, coachName }) {
   const displayName = name || 'Friend';
   return (
@@ -420,7 +473,7 @@ function ReadyStep({ name, coachName }) {
         transition={{ delay: 0.35 }}
         className="text-lg text-sky-300 mb-4 font-medium"
       >
-        Coach {coachName === 'perkins' ? 'Perkins' : 'Mike'} is locked in
+        {coachName === 'perkins' ? 'Perkins' : 'Mike'} is locked in
       </motion.p>
       <motion.p
         initial={{ opacity: 0, y: 20 }}
@@ -437,7 +490,7 @@ function ReadyStep({ name, coachName }) {
 // ============================================================
 // MAIN ONBOARDING COMPONENT
 // ============================================================
-const TOTAL_STEPS = 7;
+const TOTAL_STEPS = 8;
 
 export function Onboarding({ onComplete }) {
   const [step, setStep] = useState(0);
@@ -446,6 +499,7 @@ export function Onboarding({ onComplete }) {
   const [goals, setGoals] = useState([]);
   const [commStyle, setCommStyle] = useState('');
   const [coachName, setCoachName] = useState('mike');
+  const [conversationMode, setConversationMode] = useState('perk');
   const haptics = useHapticsHook();
 
   useEffect(() => {
@@ -473,6 +527,11 @@ export function Onboarding({ onComplete }) {
     setCoachName(id);
   }, [haptics]);
 
+  const selectMode = useCallback((id) => {
+    haptics.selection();
+    setConversationMode(id);
+  }, [haptics]);
+
   // Can user advance?
   const canProceed = () => {
     switch (step) {
@@ -482,7 +541,8 @@ export function Onboarding({ onComplete }) {
       case 3: return struggles.length > 0;
       case 4: return goals.length > 0;
       case 5: return commStyle !== '';
-      case 6: return true; // ready screen
+      case 6: return conversationMode !== ''; // mode selection
+      case 7: return true; // ready screen
       default: return true;
     }
   };
@@ -490,7 +550,7 @@ export function Onboarding({ onComplete }) {
   const handleNext = useCallback(() => {
     if (!canProceed()) return;
     haptics.buttonPress();
-    trackOnboardingStepCompleted(step, { stepId: ['welcome', 'coachName', 'name', 'struggles', 'goals', 'commStyle', 'ready'][step] });
+    trackOnboardingStepCompleted(step, { stepId: ['welcome', 'coachName', 'name', 'struggles', 'goals', 'commStyle', 'mode', 'ready'][step] });
 
     if (step === TOTAL_STEPS - 1) {
       // Final step — submit everything
@@ -501,14 +561,15 @@ export function Onboarding({ onComplete }) {
         goals: goals,
         interests: [],
         communication_preference: commStyle,
+        conversation_mode: conversationMode,
         onboardingCompleted: true,
       };
-      trackOnboardingCompleted({ struggles: struggles.length, goals: goals.length, commStyle, coachName });
+      trackOnboardingCompleted({ struggles: struggles.length, goals: goals.length, commStyle, coachName, conversationMode });
       onComplete(onboardingData);
     } else {
       setStep(prev => prev + 1);
     }
-  }, [step, name, struggles, goals, commStyle, coachName, haptics, onComplete]);
+  }, [step, name, struggles, goals, commStyle, coachName, conversationMode, haptics, onComplete]);
 
   const handleBack = useCallback(() => {
     if (step > 0) {
@@ -539,7 +600,8 @@ export function Onboarding({ onComplete }) {
       case 3: return <StrugglesStep selected={struggles} onToggle={toggleStruggle} />;
       case 4: return <GoalsStep selected={goals} onToggle={toggleGoal} />;
       case 5: return <CommStyleStep selected={commStyle} onSelect={selectCommStyle} />;
-      case 6: return <ReadyStep name={name} coachName={coachName} />;
+      case 6: return <ModeStep selected={conversationMode} onSelect={selectMode} coachName={coachName} />;
+      case 7: return <ReadyStep name={name} coachName={coachName} />;
       default: return null;
     }
   };
