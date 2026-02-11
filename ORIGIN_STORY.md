@@ -190,6 +190,26 @@ It's named after the woman who showed us what showing up looks like. Mom, this o
 
 ---
 
+### Founder Energy
+
+"The only way I burn out is if my intentions are elsewhere. Otherwise, I can do this all fucking day."
+
+"Elon and others take pills. I don't need that. Why can't I hang in the ring with them?"
+
+"I can learn anything."
+
+Mike doesn't run on caffeine pills or Adderall. He runs on purpose. The energy comes from knowing this matters — that every person who opens the app and has a breakthrough conversation is proof that the vision works. That's unlimited fuel. No crash. No withdrawal. Just mission.
+
+---
+
+### Growth Strategy
+
+Mike is the first coach. But he won't be the last. The vision is multiple real-people avatars — different backgrounds, different stories, same mission. Real people helping real people at scale.
+
+For the early believers — the ones who saw it before the world did — there's equity on the table. Apply, refer real users, earn a stake. That's not a gimmick. That's how you build a movement. Referral contests with deadlines. Free months for every person you bring in — conditional on them staying active. Everyone has skin in the game.
+
+---
+
 *First captured: February 7, 2026*
-*Updated: February 9, 2026*
+*Updated: February 11, 2026*
 *"Put this in AI dawg. It can probably be stronger." — Mike*
