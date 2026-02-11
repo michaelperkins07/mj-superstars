@@ -57,6 +57,30 @@ services:
         value: "900000"
       - key: RATE_LIMIT_MAX_REQUESTS
         value: "100"
+      # --- Analytics & Error Tracking ---
+      - key: SENTRY_DSN
+        sync: false  # Set in Render dashboard
+      - key: MIXPANEL_TOKEN
+        sync: false  # Set in Render dashboard
+      # --- Apple Push Notifications ---
+      - key: APNS_TEAM_ID
+        sync: false  # Apple Developer Team ID
+      - key: APNS_KEY_ID
+        sync: false  # APNs Auth Key ID
+      - key: APNS_KEY_CONTENT
+        sync: false  # APNs Auth Key (.p8) content
+      # --- Security ---
+      - key: ADMIN_SECRET
+        generateValue: true  # Admin API access key
+      - key: ENCRYPTION_KEY
+        generateValue: true  # Data encryption key
+      # --- App Config ---
+      - key: FRONTEND_URL
+        sync: false  # Set after frontend deploy
+      - key: FROM_EMAIL
+        sync: false  # Notification sender email
+      - key: APP_VERSION
+        value: "1.0.0"
 
   # ----------------------------------------------------------
   # Database Migration Job (runs on deploy)
