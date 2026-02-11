@@ -49,6 +49,8 @@ const MODES_MAP = {
   perk: { label: 'Perk Mode', desc: 'Full energy — real stories, accountability, and hype', emoji: '🔥' },
   empathy: { label: 'Empathy Mode', desc: 'Gentle, supportive — here to pick you up', emoji: '💙' },
   confused: { label: 'Prep Mode', desc: 'Structured help — organize and get prepared', emoji: '🧩' },
+  problem_solve: { label: 'Problem Solve Mode', desc: 'Break it down, find the root cause, build a solution', emoji: '🛠️' },
+  elite_comm: { label: 'Elite Communicator Mode', desc: 'Level up how you speak, write, and present', emoji: '🎤' },
 };
 
 // ============================================================

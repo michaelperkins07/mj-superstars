@@ -400,6 +400,8 @@ function ModeStep({ selected, onSelect, coachName }) {
     { id: 'perk', label: 'Perk Mode', desc: `Full ${displayName} energy — real stories, accountability, and hype`, emoji: '🔥' },
     { id: 'empathy', label: 'Empathy Mode', desc: 'Gentle, supportive — here to pick you up when things are heavy', emoji: '💙' },
     { id: 'confused', label: 'Prep Mode', desc: 'Structured help — organize your thoughts and get prepared', emoji: '🧩' },
+    { id: 'problem_solve', label: 'Problem Solve Mode', desc: `${displayName} helps you break it down, find the root cause, and build a real solution`, emoji: '🛠️' },
+    { id: 'elite_comm', label: 'Elite Communicator Mode', desc: `Level up how you speak, write, and present — ${displayName} coaches your communication game`, emoji: '🎤' },
   ];
   return (
     <div className="flex flex-col items-center text-center">

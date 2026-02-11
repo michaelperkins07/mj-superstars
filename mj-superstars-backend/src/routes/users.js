@@ -141,9 +141,9 @@ router.put('/me/personalization',
     }
 
     // Validate conversation_mode
-    const validModes = ['empathy', 'confused', 'perk'];
+    const validModes = ['empathy', 'confused', 'perk', 'problem_solve', 'elite_comm'];
     if (conversation_mode !== undefined && conversation_mode !== null && !validModes.includes(conversation_mode)) {
-      throw new APIError('Invalid conversation_mode - must be empathy, confused, or perk', 400, 'INVALID_CONVERSATION_MODE');
+      throw new APIError('Invalid conversation_mode - must be empathy, confused, perk, problem_solve, or elite_comm', 400, 'INVALID_CONVERSATION_MODE');
     }
 
     // Validate string fields have reasonable length limits
