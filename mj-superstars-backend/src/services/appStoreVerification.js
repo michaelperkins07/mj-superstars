@@ -100,16 +100,19 @@ async function buildAPIClient() {
     keyContent = Buffer.from(keyContent.replace('base64:', ''), 'base64').toString('utf8');
   }
 
+  // Apple library Environment enum: 'Production', 'Sandbox' (mixed case required)
   const environment = process.env.NODE_ENV === 'production'
-    ? 'PRODUCTION'
-    : 'SANDBOX';
+    ? 'Production'
+    : 'Sandbox';
 
   try {
+    // 4th param is bundleId (string like 'com.example.app'), NOT numeric App Apple ID
+    const bundleId = process.env.APP_BUNDLE_ID || 'com.mjsuperstars.app';
     const client = new AppStoreServerAPIClient(
       keyContent,
       keyId,
       issuerId,
-      process.env.APP_APPLE_ID || '6758818206',
+      bundleId,
       environment
     );
     logger.info('AppStoreServerAPIClient initialized', { environment, issuerId });
