@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Paywall / Subscription Screen
+// Top Performer - Elite Subscription Paywall
 // Beautiful paywall with plan selection and purchase flow
 // TODO: Wire up payment processor (RevenueCat/StoreKit2) before enabling
 // TODO: Not currently in navigation — add when IAP is fully integrated
@@ -144,8 +144,8 @@ function PlanCard({ plan, isSelected, onSelect, isPopular }) {
       </div>
 
       {plan.trialDays > 0 && (
-        <div className="mt-2 text-sm text-sky-300">
-          {plan.trialDays}-day free trial
+        <div className="mt-2 text-sm text-emerald-400 font-medium">
+          ✨ First month free
         </div>
       )}
     </motion.button>
@@ -178,7 +178,7 @@ function FeatureRow({ feature }) {
           )}
         </div>
 
-        {/* Premium column */}
+        {/* Elite column */}
         <div className="w-20 text-center">
           {typeof feature.premium === 'boolean' ? (
             feature.premium ? (
@@ -261,7 +261,7 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
     }
   };
 
-  // Already premium
+  // Already Elite
   if (isPremium) {
     return (
       <div className="h-full overflow-y-auto bg-slate-900 p-6 flex flex-col items-center justify-center">
@@ -272,8 +272,8 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
         >
           ⭐
         </motion.div>
-        <h2 className="text-2xl font-bold text-white mb-2">You're Premium!</h2>
-        <p className="text-slate-400 mb-6">Enjoy all the features.</p>
+        <h2 className="text-2xl font-bold text-white mb-2">You're Elite!</h2>
+        <p className="text-slate-400 mb-6">You bet on yourself. Enjoy all the features.</p>
         <button
           onClick={onClose}
           className="bg-sky-500 text-white font-semibold py-3 px-6 rounded-xl"
@@ -321,7 +321,7 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
           animate={{ opacity: 1, y: 0 }}
           className="text-3xl font-bold text-white mb-2"
         >
-          Unlock Your Full Potential
+          Bet On Yourself
         </motion.h1>
 
         <motion.p
@@ -330,8 +330,48 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
           transition={{ delay: 0.1 }}
           className="text-slate-400"
         >
-          Get unlimited access to all premium features
+          Most people bet $20 and lose. Invest in yourself for the ultimate return.
         </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-emerald-400 font-semibold text-sm mt-2"
+        >
+          🎯 First month FREE — no risk, all reward
+        </motion.p>
+
+        {/* Aspirational taglines */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="mt-4 flex flex-wrap justify-center gap-2"
+        >
+          {[
+            'Be the best person',
+            'Be the best mom',
+            'Be the best dad',
+            'Be the best son',
+            'Be the best daughter',
+            'Be yourself'
+          ].map((tagline, i) => (
+            <motion.span
+              key={i}
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5 + i * 0.08 }}
+              className={`text-xs px-3 py-1.5 rounded-full ${
+                tagline === 'Be yourself'
+                  ? 'bg-sky-500/30 text-sky-300 font-semibold'
+                  : 'bg-slate-800/80 text-slate-300'
+              }`}
+            >
+              {tagline}
+            </motion.span>
+          ))}
+        </motion.div>
       </div>
 
       {/* Plan Selection */}
@@ -355,10 +395,10 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
         </div>
       </div>
 
-      {/* Premium Benefits Preview */}
+      {/* Elite Benefits Preview */}
       <div className="px-6 mb-6">
         <div className="bg-slate-800/50 rounded-2xl p-5">
-          <h3 className="text-white font-semibold mb-4">Premium includes:</h3>
+          <h3 className="text-white font-semibold mb-4">Elite includes:</h3>
           <div className="grid grid-cols-2 gap-3">
             {[
               { icon: '💬', text: 'Unlimited conversations' },
@@ -406,7 +446,7 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
                 <h3 className="text-white font-semibold">Compare Plans</h3>
                 <div className="flex gap-6 text-sm">
                   <span className="w-20 text-center text-slate-400">Free</span>
-                  <span className="w-20 text-center text-sky-400 font-medium">Premium</span>
+                  <span className="w-20 text-center text-sky-400 font-medium">Elite</span>
                 </div>
               </div>
 
@@ -454,15 +494,15 @@ export function Paywall({ onClose, onSuccess, trigger = 'general' }) {
             </>
           ) : (
             <>
-              Start Free Trial
+              Start Your Free Month
             </>
           )}
         </motion.button>
 
         <p className="text-center text-slate-500 text-xs mt-3">
           {selectedPlan === PRODUCTS.YEARLY
-            ? '14-day free trial, then $79.99/year. Cancel anytime.'
-            : '7-day free trial, then $9.99/month. Cancel anytime.'
+            ? 'First month free, then $199.99/year. Cancel anytime.'
+            : 'First month free, then $19.99/month. Cancel anytime.'
           }
         </p>
 
@@ -509,7 +549,7 @@ export function UpgradePrompt({ feature, onUpgrade, onClose }) {
           </h3>
 
           <p className="text-slate-400">
-            This feature is available with Premium. Upgrade to get unlimited access.
+            This feature is available with Elite. Bet on yourself to get unlimited access.
           </p>
         </div>
 
@@ -520,7 +560,7 @@ export function UpgradePrompt({ feature, onUpgrade, onClose }) {
           }}
           className="w-full bg-gradient-to-r from-sky-500 to-purple-500 text-white font-semibold py-4 rounded-xl mb-3"
         >
-          Upgrade to Premium
+          Go Elite — First Month Free
         </button>
 
         <button

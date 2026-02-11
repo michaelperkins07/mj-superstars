@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Subscription Service Tests
+// Top Performer - Subscription Service Tests
 // ============================================================
 
 import {
@@ -20,22 +20,22 @@ describe('Subscription Service', () => {
 
   describe('Product Configuration', () => {
     test('PRODUCTS contains monthly and yearly options', () => {
-      expect(PRODUCTS.MONTHLY).toBe('com.mjsuperstars.premium.monthly');
-      expect(PRODUCTS.YEARLY).toBe('com.mjsuperstars.premium.yearly');
+      expect(PRODUCTS.MONTHLY).toBe('com.topperformer.premium.monthly');
+      expect(PRODUCTS.YEARLY).toBe('com.topperformer.premium.yearly');
     });
 
-    test('PRODUCT_DETAILS has correct pricing', () => {
-      expect(PRODUCT_DETAILS[PRODUCTS.MONTHLY].priceValue).toBe(9.99);
-      expect(PRODUCT_DETAILS[PRODUCTS.YEARLY].priceValue).toBe(79.99);
+    test('PRODUCT_DETAILS has correct Elite pricing', () => {
+      expect(PRODUCT_DETAILS[PRODUCTS.MONTHLY].priceValue).toBe(19.99);
+      expect(PRODUCT_DETAILS[PRODUCTS.YEARLY].priceValue).toBe(199.99);
     });
 
-    test('PRODUCT_DETAILS has trial periods', () => {
-      expect(PRODUCT_DETAILS[PRODUCTS.MONTHLY].trialDays).toBe(7);
-      expect(PRODUCT_DETAILS[PRODUCTS.YEARLY].trialDays).toBe(14);
+    test('PRODUCT_DETAILS has first month free trial', () => {
+      expect(PRODUCT_DETAILS[PRODUCTS.MONTHLY].trialDays).toBe(30);
+      expect(PRODUCT_DETAILS[PRODUCTS.YEARLY].trialDays).toBe(30);
     });
 
     test('Yearly plan shows savings', () => {
-      expect(PRODUCT_DETAILS[PRODUCTS.YEARLY].savings).toBe('33%');
+      expect(PRODUCT_DETAILS[PRODUCTS.YEARLY].savings).toBe('2 months free');
     });
   });
 
@@ -81,20 +81,20 @@ describe('Subscription Service', () => {
   // PREMIUM FEATURES TESTS
   // ============================================================
 
-  describe('Premium Features', () => {
-    test('Premium has unlimited messages', () => {
+  describe('Elite Features', () => {
+    test('Elite has unlimited messages', () => {
       expect(PREMIUM_FEATURES.MESSAGES_PER_DAY).toBe(Infinity);
     });
 
-    test('Premium has unlimited mood logs', () => {
+    test('Elite has unlimited mood logs', () => {
       expect(PREMIUM_FEATURES.MOOD_LOGS_PER_DAY).toBe(Infinity);
     });
 
-    test('Premium has unlimited journal entries', () => {
+    test('Elite has unlimited journal entries', () => {
       expect(PREMIUM_FEATURES.JOURNAL_ENTRIES_PER_WEEK).toBe(Infinity);
     });
 
-    test('Premium has all coping tools', () => {
+    test('Elite has all coping tools', () => {
       expect(PREMIUM_FEATURES.COPING_TOOLS).toContain('breathing');
       expect(PREMIUM_FEATURES.COPING_TOOLS).toContain('grounding');
       expect(PREMIUM_FEATURES.COPING_TOOLS).toContain('visualization');
@@ -102,23 +102,23 @@ describe('Subscription Service', () => {
       expect(PREMIUM_FEATURES.COPING_TOOLS).toContain('affirmations');
     });
 
-    test('Premium has 365-day insights', () => {
+    test('Elite has 365-day insights', () => {
       expect(PREMIUM_FEATURES.INSIGHTS_DAYS).toBe(365);
     });
 
-    test('Premium includes Watch app', () => {
+    test('Elite includes Watch app', () => {
       expect(PREMIUM_FEATURES.WATCH_APP).toBe(true);
     });
 
-    test('Premium includes HealthKit', () => {
+    test('Elite includes HealthKit', () => {
       expect(PREMIUM_FEATURES.HEALTH_INTEGRATION).toBe(true);
     });
 
-    test('Premium includes data export', () => {
+    test('Elite includes data export', () => {
       expect(PREMIUM_FEATURES.EXPORT_DATA).toBe(true);
     });
 
-    test('Premium includes custom reminders', () => {
+    test('Elite includes custom reminders', () => {
       expect(PREMIUM_FEATURES.CUSTOM_REMINDERS).toBe(true);
     });
   });
@@ -177,13 +177,13 @@ describe('Subscription Service', () => {
     test('formats monthly price correctly', () => {
       const product = PRODUCT_DETAILS[PRODUCTS.MONTHLY];
       const formatted = `${product.price}/${product.period === 'year' ? 'year' : 'mo'}`;
-      expect(formatted).toBe('$9.99/mo');
+      expect(formatted).toBe('$19.99/mo');
     });
 
     test('formats yearly price correctly', () => {
       const product = PRODUCT_DETAILS[PRODUCTS.YEARLY];
       const formatted = `${product.price}/${product.period === 'year' ? 'year' : 'mo'}`;
-      expect(formatted).toBe('$79.99/year');
+      expect(formatted).toBe('$199.99/year');
     });
   });
 
@@ -204,14 +204,14 @@ describe('Subscription Service', () => {
     ];
 
     test.each(featureTests)(
-      '%s: Free tier has %p, Premium has %p',
+      '%s: Free tier has %p, Elite has %p',
       (feature, freeValue, premiumValue) => {
         expect(FREE_LIMITS[feature]).toBe(freeValue);
         expect(PREMIUM_FEATURES[feature]).toBe(premiumValue);
       }
     );
 
-    test('Premium coping tools is superset of free', () => {
+    test('Elite coping tools is superset of free', () => {
       FREE_LIMITS.COPING_TOOLS.forEach(tool => {
         expect(PREMIUM_FEATURES.COPING_TOOLS).toContain(tool);
       });
@@ -228,9 +228,9 @@ describe('Subscription Service', () => {
       const yearlyPrice = PRODUCT_DETAILS[PRODUCTS.YEARLY].priceValue;
       const savings = ((monthlyAnnual - yearlyPrice) / monthlyAnnual) * 100;
 
-      // Should be approximately 33% savings
-      expect(savings).toBeGreaterThan(30);
-      expect(savings).toBeLessThan(40);
+      // Should be approximately 17% savings (2 months free)
+      expect(savings).toBeGreaterThan(15);
+      expect(savings).toBeLessThan(20);
     });
 
     test('Yearly plan has longer trial', () => {

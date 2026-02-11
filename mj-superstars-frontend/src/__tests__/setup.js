@@ -140,7 +140,7 @@ export const mockUser = {
 export const mockSubscription = {
   isPremium: true,
   subscription: {
-    productId: 'com.mjsuperstars.premium.monthly',
+    productId: 'com.topperformer.premium.monthly',
     expirationDate: '2026-01-01T00:00:00Z',
     isTrialPeriod: false,
     willAutoRenew: true

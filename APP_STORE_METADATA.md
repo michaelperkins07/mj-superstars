@@ -98,8 +98,9 @@ Your mental health data is sacred. We employ:
 SUBSCRIPTION:
 
 Free tier includes basic mood tracking and community features.
-Premium unlocks unlimited AI coaching, advanced insights, and
-exclusive community features.
+Elite ($19.99/mo — first month free) unlocks unlimited AI coaching,
+advanced insights, and exclusive community features. Bet on yourself
+for the ultimate return.
 
 Join thousands using Top Performer to build better mental
 health habits. Your journey to wellness starts now.
@@ -376,7 +377,7 @@ Phone: +1 (555) 123-4567
 ```
 
 **Account Features:**
-- All features unlocked (free + premium)
+- All features unlocked (free + Elite)
 - Pre-loaded with 30 days of sample mood data
 - Sample journal entries
 - Several achievements unlocked
@@ -427,10 +428,10 @@ Phone: +1 (555) 123-4567
 - Basic journaling
 - Onboarding & tutorial
 
-### Premium Subscription
-- **Price:** $4.99/month or $44.99/year
+### Elite Subscription
+- **Price:** $19.99/month or $199.99/year
 - **Billing:** Via App Store In-App Purchase
-- **Auto-renewal:** 7-day free trial
+- **Free Trial:** First month free (30-day trial)
 - **Cancellation:** Easy cancel in Settings
 - Features: Unlimited AI coaching, advanced insights, priority support
 

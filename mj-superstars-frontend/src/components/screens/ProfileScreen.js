@@ -547,7 +547,7 @@ function ProfileScreen() {
                 <span className="text-xl">✨</span>
               </div>
               <div className="flex-1">
-                <p className="text-white font-semibold">Premium Active</p>
+                <p className="text-white font-semibold">Elite Active</p>
                 <p className="text-slate-400 text-xs">
                   {isOnTrial
                     ? `Free trial • ${daysRemaining || '?'} days remaining`
@@ -572,7 +572,7 @@ function ProfileScreen() {
               onClick={() => { haptics.buttonPress(); setShowPaywall(true); }}
               className="w-full bg-gradient-to-r from-sky-500 to-purple-500 hover:from-sky-400 hover:to-purple-400 text-white font-semibold rounded-xl px-4 py-3 text-sm transition-colors flex items-center justify-center gap-2"
             >
-              <span>✨</span> Upgrade to Premium
+              <span>✨</span> Go Elite — First Month Free
             </button>
           </div>
         )}

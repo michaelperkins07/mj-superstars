@@ -418,7 +418,7 @@ function ChatScreen() {
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Daily Limit Reached</h3>
               <p className="text-slate-400">
-                You've used all {messageLimit} free messages today. Upgrade to Premium for unlimited conversations with MJ.
+                You've used all {messageLimit} free messages today. Go Elite for unlimited conversations — first month free.
               </p>
             </div>
             <button
@@ -429,7 +429,7 @@ function ChatScreen() {
               }}
               className="w-full bg-gradient-to-r from-sky-500 to-purple-500 text-white font-semibold py-4 rounded-xl mb-3"
             >
-              Upgrade to Premium
+              Go Elite
             </button>
             <button onClick={() => setShowUpgradePrompt(false)} className="w-full text-slate-400 py-2 text-sm">
               Maybe Tomorrow

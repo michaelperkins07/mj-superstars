@@ -110,7 +110,7 @@ function PrivacyPolicy() {
 
             <h3 className="text-lg font-semibold text-sky-300 mt-4 mb-2">Apple In-App Purchase</h3>
             <p className="leading-relaxed">
-              Handles premium subscriptions securely. Apple may process subscription and payment information.
+              Handles Elite subscriptions securely. Apple may process subscription and payment information.
             </p>
 
             <h3 className="text-lg font-semibold text-sky-300 mt-4 mb-2">Authentication Providers</h3>

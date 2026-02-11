@@ -25,21 +25,21 @@ export const PRODUCTS = {
 export const PRODUCT_DETAILS = {
   [PRODUCTS.MONTHLY]: {
     id: PRODUCTS.MONTHLY,
-    name: 'Premium Monthly',
-    price: '$9.99',
-    priceValue: 9.99,
+    name: 'Elite Monthly',
+    price: '$19.99',
+    priceValue: 19.99,
     period: 'month',
-    trialDays: 7,
+    trialDays: 30,
     features: ['Unlimited AI conversations', 'Advanced insights', 'Priority support']
   },
   [PRODUCTS.YEARLY]: {
     id: PRODUCTS.YEARLY,
-    name: 'Premium Yearly',
-    price: '$79.99',
-    priceValue: 79.99,
+    name: 'Elite Yearly',
+    price: '$199.99',
+    priceValue: 199.99,
     period: 'year',
-    trialDays: 14,
-    savings: '33%',
+    trialDays: 30,
+    savings: '2 months free',
     features: ['Everything in Monthly', '2 months free', 'Exclusive content']
   }
 };
