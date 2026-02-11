@@ -583,6 +583,44 @@ function ProfileScreen() {
         </button>
       </SectionCard>
 
+      {/* ---- PERSONALIZATION TOOLS ---- */}
+      <SectionCard title="Personalization" icon="🔄">
+        <div className="space-y-2">
+          <button
+            onClick={() => {
+              haptics.buttonPress();
+              if (window.confirm('This will restart the onboarding questionnaire so you can update your preferences. Continue?')) {
+                const updatedProfile = { ...profile, onboarding_completed: false, onboardingComplete: false };
+                setProfile(updatedProfile);
+                localStorage.setItem('mj_user_profile', JSON.stringify(updatedProfile));
+                if (!isGuest) {
+                  UserAPI.updateProfile({ onboarding_completed: false }).catch(() => {});
+                }
+              }
+            }}
+            className="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-xl px-4 py-3 text-sm font-semibold transition-colors flex items-center justify-between"
+          >
+            <span>🔁 Restart Onboarding</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+          <button
+            onClick={() => {
+              haptics.buttonPress();
+              localStorage.removeItem('mj_feature_tour_seen');
+              window.dispatchEvent(new CustomEvent('mj-show-tour'));
+            }}
+            className="w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-xl px-4 py-3 text-sm font-semibold transition-colors flex items-center justify-between"
+          >
+            <span>📖 Replay Feature Tour</span>
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+      </SectionCard>
+
       {/* ---- LEGAL ---- */}
       <SectionCard title="Legal" icon="📋">
         <div className="space-y-2">

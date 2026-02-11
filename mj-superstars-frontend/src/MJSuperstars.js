@@ -2,7 +2,7 @@
 // MJ's Superstars - Main App Component
 // Handles navigation between Auth, Onboarding, and Main App
 // ==========================================================
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useAuth } from './contexts/AuthContext';
 import { lazyWithPreload, LoadingFallback } from './utils/performance';
 import AuthScreen from './components/AuthScreen';
@@ -12,6 +12,8 @@ import Icons from './components/shared/Icons';
 import { init as initErrorTracking, SentryErrorBoundary } from './services/errorTracking';
 import { initSubscription } from './services/subscription';
 import { ToastProvider } from './components/shared/Toast';
+import { NotificationPermissionModal } from './components/NotificationPermission';
+import FeatureTour from './components/FeatureTour';
 
 // Lazy-loaded screens (not needed on initial render)
 const MoodScreen = lazyWithPreload(() => import('./components/screens/MoodScreen'));
@@ -30,6 +32,11 @@ function MJSuperstars() {
   const { isAuthenticated, profile, loading, user, setProfile, completeOnboarding } = useAuth();
   const [activeTab, setActiveTab] = useState('chat');
 
+  // First-run flow state: notification prompt → feature tour
+  const [showNotifPrompt, setShowNotifPrompt] = useState(false);
+  const [showFeatureTour, setShowFeatureTour] = useState(false);
+  const justOnboardedRef = useRef(false);
+
   useEffect(() => {
     initErrorTracking();
     initSubscription();
@@ -37,7 +44,15 @@ function MJSuperstars() {
     // Listen for cross-screen navigation events (e.g., from ChatScreen upgrade prompt)
     const handleNavigate = (e) => setActiveTab(e.detail);
     window.addEventListener('mj-navigate', handleNavigate);
-    return () => window.removeEventListener('mj-navigate', handleNavigate);
+
+    // Listen for feature tour replay from ProfileScreen
+    const handleShowTour = () => setShowFeatureTour(true);
+    window.addEventListener('mj-show-tour', handleShowTour);
+
+    return () => {
+      window.removeEventListener('mj-navigate', handleNavigate);
+      window.removeEventListener('mj-show-tour', handleShowTour);
+    };
   }, []);
 
   // Handler for "Continue without account" - creates a guest profile
@@ -61,10 +76,29 @@ function MJSuperstars() {
   const handleOnboardingComplete = async (onboardingData) => {
     try {
       await completeOnboarding(onboardingData);
+      justOnboardedRef.current = true;
     } catch (err) {
       console.error('Onboarding sync error:', err);
     }
   };
+
+  // Trigger first-run flow after onboarding completes
+  useEffect(() => {
+    if (justOnboardedRef.current && (profile?.onboarding_completed || profile?.onboardingComplete || user?.onboarding_completed)) {
+      justOnboardedRef.current = false;
+      // Short delay so the main app renders first
+      const timer = setTimeout(() => {
+        const alreadyPrompted = localStorage.getItem('mj_notification_prompted');
+        if (!alreadyPrompted) {
+          setShowNotifPrompt(true);
+        } else {
+          const tourSeen = localStorage.getItem('mj_feature_tour_seen');
+          if (!tourSeen) setShowFeatureTour(true);
+        }
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, [profile, user]);
 
   // Show loading spinner while checking auth state
   if (loading) {
@@ -158,6 +192,23 @@ function MJSuperstars() {
           })}
         </div>
       </div>
+
+      {/* First-run flow: Notification Permission → Feature Tour */}
+      {showNotifPrompt && (
+        <NotificationPermissionModal
+          onClose={() => {
+            setShowNotifPrompt(false);
+            const tourSeen = localStorage.getItem('mj_feature_tour_seen');
+            if (!tourSeen) {
+              setTimeout(() => setShowFeatureTour(true), 400);
+            }
+          }}
+        />
+      )}
+
+      {showFeatureTour && (
+        <FeatureTour onComplete={() => setShowFeatureTour(false)} />
+      )}
     </div>
     </ToastProvider>
     </SentryErrorBoundary>
