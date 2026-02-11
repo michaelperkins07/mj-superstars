@@ -71,8 +71,8 @@ router.get('/',
     }
 
     const result = await query(
-      `SELECT id, mood_score, energy_level, anxiety_level, note, activities,
-              triggers, source, time_of_day, created_at
+      `SELECT id, mood_score, energy_level, anxiety_level, confidence_level, morals_score,
+              note, reflection, activities, triggers, source, time_of_day, created_at
        FROM mood_entries
        WHERE ${whereClause}
        ORDER BY created_at DESC
@@ -86,6 +86,8 @@ router.get('/',
          AVG(mood_score)::NUMERIC(3,2) as avg_mood,
          AVG(energy_level)::NUMERIC(3,2) as avg_energy,
          AVG(anxiety_level)::NUMERIC(3,2) as avg_anxiety,
+         AVG(confidence_level)::NUMERIC(3,2) as avg_confidence,
+         AVG(morals_score)::NUMERIC(3,2) as avg_morals,
          COUNT(*) as total_entries
        FROM mood_entries
        WHERE ${whereClause}`,
@@ -109,10 +111,13 @@ router.post('/',
     body('mood_score').isInt({ min: 1, max: 5 }),
     body('energy_level').optional().isInt({ min: 1, max: 5 }),
     body('anxiety_level').optional().isInt({ min: 1, max: 5 }),
+    body('confidence_level').optional().isInt({ min: 1, max: 5 }),
+    body('morals_score').optional().isInt({ min: 1, max: 5 }),
     body('note').optional().trim().isLength({ max: 1000 }),
+    body('reflection').optional().trim().isLength({ max: 2000 }),
     body('activities').optional().isArray(),
     body('triggers').optional().isArray(),
-    body('source').optional().isIn(['manual', 'check_in', 'conversation', 'widget'])
+    body('source').optional().isIn(['manual', 'check_in', 'conversation', 'widget', 'tracker'])
   ],
   validate,
   asyncHandler(async (req, res) => {
@@ -120,7 +125,10 @@ router.post('/',
       mood_score,
       energy_level,
       anxiety_level,
+      confidence_level,
+      morals_score,
       note,
+      reflection,
       activities = [],
       triggers = [],
       source = 'manual',
@@ -137,15 +145,18 @@ router.post('/',
 
     const result = await query(
       `INSERT INTO mood_entries
-       (user_id, mood_score, energy_level, anxiety_level, note, activities, triggers, source, conversation_id, time_of_day, day_of_week)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, EXTRACT(DOW FROM NOW()))
+       (user_id, mood_score, energy_level, anxiety_level, confidence_level, morals_score, note, reflection, activities, triggers, source, conversation_id, time_of_day, day_of_week)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, EXTRACT(DOW FROM NOW()))
        RETURNING *`,
       [
         req.user.id,
         mood_score,
         energy_level || null,
         anxiety_level || null,
+        confidence_level || null,
+        morals_score || null,
         note || null,
+        reflection || null,
         JSON.stringify(activities),
         JSON.stringify(triggers),
         source,
@@ -186,6 +197,8 @@ router.get('/trends',
          AVG(mood_score)::NUMERIC(3,2) as avg_mood,
          AVG(energy_level)::NUMERIC(3,2) as avg_energy,
          AVG(anxiety_level)::NUMERIC(3,2) as avg_anxiety,
+         AVG(confidence_level)::NUMERIC(3,2) as avg_confidence,
+         AVG(morals_score)::NUMERIC(3,2) as avg_morals,
          COUNT(*) as entry_count
        FROM mood_entries
        WHERE user_id = $1 AND created_at >= NOW() - INTERVAL '${interval}'
@@ -268,7 +281,8 @@ router.get('/trends',
 router.get('/today',
   asyncHandler(async (req, res) => {
     const result = await query(
-      `SELECT id, mood_score, energy_level, anxiety_level, note, time_of_day, created_at
+      `SELECT id, mood_score, energy_level, anxiety_level, confidence_level, morals_score,
+              note, reflection, time_of_day, created_at
        FROM mood_entries
        WHERE user_id = $1 AND DATE(created_at) = CURRENT_DATE
        ORDER BY created_at DESC`,

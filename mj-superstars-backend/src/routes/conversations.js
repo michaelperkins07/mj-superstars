@@ -305,9 +305,10 @@ async function getUserContext(userId) {
     [userId]
   );
 
-  // Get recent moods
+  // Get recent moods (including tracker data)
   const recentMoods = await query(
-    `SELECT mood_score, note, created_at FROM mood_entries
+    `SELECT mood_score, energy_level, confidence_level, morals_score, note, reflection, created_at
+     FROM mood_entries
      WHERE user_id = $1 ORDER BY created_at DESC LIMIT 5`,
     [userId]
   );

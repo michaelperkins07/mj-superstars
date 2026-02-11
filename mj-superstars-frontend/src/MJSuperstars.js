@@ -26,6 +26,7 @@ const RitualsScreen = lazyWithPreload(() => import('./components/screens/Rituals
 const ProfileScreen = lazyWithPreload(() => import('./components/screens/ProfileScreen'));
 const GamificationScreen = lazyWithPreload(() => import('./components/screens/GamificationScreen'));
 const CommitmentsScreen = lazyWithPreload(() => import('./components/screens/CommitmentsScreen'));
+const TrackerScreen = lazyWithPreload(() => import('./components/screens/TrackerScreen'));
 
 // ==========================================================
 // MAIN APP COMPONENT
@@ -145,7 +146,7 @@ function MJSuperstars() {
   const tabs = [
     { id: 'chat', label: 'Chat', icon: Icons.Chat },
     { id: 'commitments', label: '3 Pillars', icon: Icons.Pillars },
-    { id: 'mood', label: 'Mood', icon: Icons.Mood },
+    { id: 'tracker', label: 'Check-In', icon: Icons.Tracker },
     { id: 'explore', label: 'Explore', icon: Icons.Explore },
     { id: 'journal', label: 'Journal', icon: Icons.Journal },
     { id: 'insights', label: 'Insights', icon: Icons.Insights },
@@ -156,6 +157,7 @@ function MJSuperstars() {
     switch (activeTab) {
       case 'chat': return <ChatScreen />;
       case 'commitments': return <CommitmentsScreen />;
+      case 'tracker': return <TrackerScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'mood': return <MoodScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'rituals': return <RitualsScreen onNavigateTo={(tab) => setActiveTab(tab)} />;
       case 'explore': return <ExploreScreen onNavigateTo={(tab) => setActiveTab(tab)} />;

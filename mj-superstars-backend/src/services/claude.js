@@ -541,12 +541,51 @@ COMMUNICATION STYLE:`;
     }
   }
 
-  // Recent mood context
+  // Recent mood & tracker context
   if (recentMoods?.length > 0) {
     const avgMood = recentMoods.reduce((sum, m) => sum + m.mood_score, 0) / recentMoods.length;
     systemPrompt += `\n\nRECENT MOOD PATTERN:
 - Average mood: ${avgMood.toFixed(1)}/5
-- Latest mood: ${recentMoods[0].mood_score}/5${recentMoods[0].note ? ` - "${recentMoods[0].note}"` : ''}`;
+- Latest mood: ${recentMoods[0].mood_score}/5${recentMoods[0].note ? ` - "${sanitize(recentMoods[0].note)}"` : ''}`;
+
+    // Confidence tracker context
+    const confidenceEntries = recentMoods.filter(m => m.confidence_level);
+    if (confidenceEntries.length > 0) {
+      const avgConf = confidenceEntries.reduce((sum, m) => sum + m.confidence_level, 0) / confidenceEntries.length;
+      systemPrompt += `\n- Confidence level: ${avgConf.toFixed(1)}/5 (latest: ${confidenceEntries[0].confidence_level}/5)`;
+      if (avgConf <= 2) {
+        systemPrompt += `\n  → COACHING NOTE: Confidence is LOW. Build them up — remind them of recent wins. Don't push too hard. Focus on small achievable goals to rebuild self-belief. "You've done hard things before — remember when you..."`;
+      } else if (avgConf >= 4) {
+        systemPrompt += `\n  → COACHING NOTE: Confidence is HIGH. Channel it — be confident but not cocky. Help them set ambitious goals while staying grounded. "That confidence is earned. Now let's aim higher — what's the next level look like?"`;
+      }
+    }
+
+    // Energy tracker context
+    const energyEntries = recentMoods.filter(m => m.energy_level);
+    if (energyEntries.length > 0) {
+      const avgEnergy = energyEntries.reduce((sum, m) => sum + m.energy_level, 0) / energyEntries.length;
+      systemPrompt += `\n- Energy level: ${avgEnergy.toFixed(1)}/5 (latest: ${energyEntries[0].energy_level}/5)`;
+      if (avgEnergy <= 2) {
+        systemPrompt += `\n  → COACHING NOTE: Energy is LOW. Suggest they slow down and take a deep breath. Be urgent but pay close attention to detail — don't overwhelm. Offer a quick reset: breathing exercise, walk, cold water. "Your energy is your currency — let's invest it wisely today. What's ONE thing that would move the needle?"`;
+      } else if (avgEnergy >= 4) {
+        systemPrompt += `\n  → COACHING NOTE: Energy is HIGH. Ride the wave but stay focused — "Love the energy! Let's channel it. What's the highest-impact thing we can tackle right now?" Be urgent but detail-oriented.`;
+      }
+    }
+
+    // Morals tracker context
+    const moralsEntries = recentMoods.filter(m => m.morals_score);
+    if (moralsEntries.length > 0) {
+      const avgMorals = moralsEntries.reduce((sum, m) => sum + m.morals_score, 0) / moralsEntries.length;
+      systemPrompt += `\n- Morals/values alignment: ${avgMorals.toFixed(1)}/5 (latest: ${moralsEntries[0].morals_score}/5)`;
+      if (moralsEntries[0].reflection) {
+        systemPrompt += `\n  → Their reflection: "${sanitize(moralsEntries[0].reflection)}"`;
+      }
+      if (avgMorals <= 2) {
+        systemPrompt += `\n  → COACHING NOTE: They're struggling with judgments, comparisons, or self-criticism. PRIORITY: Help them stop judging others, comparing themselves, or hating themselves. Prompt in a POSITIVE manner only. Inquire about certain triggers to help them realize later when it's happening. "What triggered that feeling? Sometimes naming the moment helps us catch it next time." Focus on self-compassion: "The fact that you noticed this about yourself shows growth. Most people don't even get that far." Redirect negative self-talk: "Would you say that to your best friend? Then don't say it to yourself."`;
+      } else if (avgMorals >= 4) {
+        systemPrompt += `\n  → COACHING NOTE: Strong values alignment. Reinforce it: "You're walking the walk — that integrity is what sets top performers apart." Help them be a positive influence on others.`;
+      }
+    }
   }
 
   // Today's context
