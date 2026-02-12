@@ -1,4 +1,4 @@
-# White Mike — Launch Checklist
+# Top Performer — Launch Checklist
 
 Everything you need to do to go live. Run these commands from your Mac terminal in the project directory.
 
@@ -93,13 +93,13 @@ cd ~/Desktop/"Project MJ"
 fastlane ios upload_metadata
 ```
 
-This uploads the "White Mike" name, description, screenshots, and all metadata to App Store Connect. It won't submit for review yet.
+This uploads the "Top Performer" name, description, screenshots, and all metadata to App Store Connect. It won't submit for review yet.
 
 **Verify in App Store Connect:**
 1. Go to https://appstoreconnect.apple.com
-2. Open "White Mike" (was "MJ's Superstars")
+2. Open "Top Performer" (was "MJ's Superstars")
 3. Check that all metadata, screenshots, and descriptions look correct
-4. Verify the name shows "White Mike"
+4. Verify the name shows "Top Performer"
 
 ---
 

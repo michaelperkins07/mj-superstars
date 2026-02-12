@@ -1,20 +1,20 @@
-# White Mike — Origin Story & Philosophy
+# Top Performer — Origin Story & Philosophy
 ## By Michael Perkins
 ### Jacksonville, FL — About to be 41
 
 ---
 
-### Why It's Called "White Mike"
+### The Nickname Behind the Brand
 
-That's what all my good friends called me. White Mike. It's personal — it's got a story. If something happens to me, I want to keep helping the world. I want people to continuously be better, to help and love one another. White Mike is how I do that.
+That's what all my good friends called me. White Mike. It's personal — it's got a story. If something happens to me, I want to keep helping the world. I want people to continuously be better, to help and love one another. That energy is what became Top Performer.
 
 But the heart of it is my mom. Consuelo Perkins. She's the one who created the discipline in my life. She worked two jobs — one of them at McDonald's, where she'd bring home a frozen bag of fries or nuggets for me and Cheryl. Mom wasn't perfect, but she was always there to make sure we lived our best lives.
 
-That's the energy behind White Mike. You don't have to be perfect. You just have to show up. Every day. For the people you love. Mom showed up when it was hard, when it was exhausting, when nobody was watching. That's the standard.
+That's the energy behind Top Performer. You don't have to be perfect. You just have to show up. Every day. For the people you love. Mom showed up when it was hard, when it was exhausting, when nobody was watching. That's the standard.
 
 ---
 
-### The Resume That Built White Mike
+### The Resume That Built Top Performer
 
 Babies R Us. Taco Bell. Adam's Mark Hotel. Barron's Wholesale Tire. Merrill Lynch. Citi. Every single job, Mike became the best. Not because of talent — because of REPS. Because he treated every role like a championship game. The same strategic thinking he used selling tires is the same thinking that powers this app.
 
@@ -82,7 +82,7 @@ That's life. That's every hard conversation, every career change, every moment o
 
 "My ideas, process, and solutions in my brain are IP and I've been giving out free game this whole time."
 
-Mike spent years giving away his strategic thinking for free — coaching teammates, mentoring new hires, building processes that made everyone better. The moment he realized that was intellectual property was the moment White Mike was born. Now that same free game goes in everyone's pocket through an app.
+Mike spent years giving away his strategic thinking for free — coaching teammates, mentoring new hires, building processes that made everyone better. The moment he realized that was intellectual property was the moment Top Performer was born. Now that same free game goes in everyone's pocket through an app.
 
 It's how refined AI can be — two wrongs in yesterday's world can be right when you put them together with the right framework. This is yesterday's brain dump turned into tomorrow's breakthrough.
 
@@ -100,7 +100,7 @@ The difference? Learners change their BEHAVIOR. Studiers just change their books
 
 Every person is on one of two paths — superhero or villain. Both paths start from the same pain. The superhero processes it, turns it into armor, uses it to help others. The villain lets it rot, turns it into bitterness, uses it to tear others down.
 
-Mike chose superhero. White Mike exists to help everyone else make the same choice.
+Mike chose superhero. Top Performer exists to help everyone else make the same choice.
 
 ---
 
@@ -110,19 +110,19 @@ Mike chose superhero. White Mike exists to help everyone else make the same choi
 
 Like Nipsey Hussle said — Hustle and Motivate. The marathon of life is a constant journey. There's no finish line, just checkpoints. Running a marathon sucks at mile 18. Your body screams stop. But the people who finish carry that "I refused to quit" energy into everything. That's the separator in life — not talent, not luck, not connections. Just the refusal to quit.
 
-White Mike is here to help people gain the energy and strength to generate FRICTION — because friction is how you create change. We're in this together and if you have an excuse, let's talk about it and see how we can get through it together.
+Top Performer is here to help people gain the energy and strength to generate FRICTION — because friction is how you create change. We're in this together and if you have an excuse, let's talk about it and see how we can get through it together.
 
 ---
 
 ### The Health Connection
 
-Unprocessed emotions don't just stay in your head. Cortisol spikes. Inflammation. Physical deterioration. Every emotion you swallow instead of process is compounding against you like bad debt. That's why White Mike starts with emotional awareness — because mental health IS physical health.
+Unprocessed emotions don't just stay in your head. Cortisol spikes. Inflammation. Physical deterioration. Every emotion you swallow instead of process is compounding against you like bad debt. That's why Top Performer starts with emotional awareness — because mental health IS physical health.
 
 ---
 
 ### The Father's Lesson
 
-Losing a father and not knowing how to show emotion — or even what the right emotions were. That kind of loss doesn't come with instructions. The war wasn't with the world — it was with his own head. And winning that war is what White Mike teaches.
+Losing a father and not knowing how to show emotion — or even what the right emotions were. That kind of loss doesn't come with instructions. The war wasn't with the world — it was with his own head. And winning that war is what Top Performer teaches.
 
 ---
 
@@ -146,7 +146,7 @@ Prepare at least 1 thing the night before. Put the pre-workout in the cup. Set t
 
 ### The Value Proposition
 
-The first time someone uses White Mike and their partner says "that was the best conversation we've ever had" — that's the moment. That's the product. We're making people's relationships better for FREE. This isn't just an app — it's communication training for life.
+The first time someone uses Top Performer and their partner says "that was the best conversation we've ever had" — that's the moment. That's the product. We're making people's relationships better for FREE. This isn't just an app — it's communication training for life.
 
 ---
 
@@ -178,11 +178,11 @@ We're about to take out McKinsey dawg. I knew they were useless because I'm mast
 
 ---
 
-### Why White Mike Exists
+### Why Top Performer Exists
 
 This app exists because most people don't have a framework for challenging their own minds. They don't have a system for processing their thoughts, tracking their moods, journaling their breakthroughs, or having honest conversations with themselves.
 
-White Mike is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
+Top Performer is that system. It's AI-powered coaching for people who want to grow — who refuse to hit their ceiling. It's for the 1% who are willing to do the work, and for the 99% who haven't started yet but might, if someone gives them the right tool.
 
 We're about to take out McKinsey dawg. Everyone pays consultants to tell them what they already know. Mike puts that same strategic thinking power in everyone's pocket — for free. No $500K engagement. No 6-month timeline. Just tell it what you want and get a strategy right now.
 

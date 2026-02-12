@@ -1,4 +1,4 @@
-# MJ Superstars (White Mike) — Project Progress & Status
+# MJ Superstars (Top Performer) — Project Progress & Status
 
 **Last Updated:** February 10, 2026
 **App Store Status:** Build 27 — "1.0 Waiting for Review" (submitted Feb 10, 2026)
@@ -193,7 +193,7 @@ b63b75e Remove unused SentryErrorBoundary import in App.js
 
 If starting a new Cowork chat, provide this context:
 
-1. **Project:** MJ Superstars mental health AI coaching app ("White Mike" in App Store)
+1. **Project:** MJ Superstars mental health AI coaching app ("Top Performer" in App Store)
 2. **Tech stack:** React frontend + Express/Node.js backend + PostgreSQL on Render
 3. **GitHub:** https://github.com/michaelperkins07/mj-superstars
 4. **Render API Token:** `rnd_bS4W4SiRzJNxIWUt845qTOHyKU1h`
