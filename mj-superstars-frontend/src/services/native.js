@@ -552,6 +552,41 @@ export const InAppPurchaseService = {
 };
 
 // ============================================================
+// SIGN IN WITH APPLE SERVICE
+// ============================================================
+
+const SignInWithApplePlugin = getCapPlugin('SignInWithApple');
+
+/**
+ * Sign in with Apple service for native iOS
+ * Uses ASAuthorizationController via Capacitor plugin
+ */
+export const SignInWithAppleService = {
+  /**
+   * Check if Sign in with Apple is available (native iOS only)
+   */
+  isAvailable() {
+    return !!SignInWithApplePlugin;
+  },
+
+  /**
+   * Trigger native Sign in with Apple flow
+   * @returns {Promise<Object>} Credential response with identityToken, authorizationCode, user, email, fullName
+   */
+  async authorize() {
+    if (!SignInWithApplePlugin) {
+      throw new Error('Sign in with Apple not available');
+    }
+    try {
+      return await SignInWithApplePlugin.authorize();
+    } catch (e) {
+      console.error('[SignInWithApple] Authorize failed:', e);
+      throw e;
+    }
+  }
+};
+
+// ============================================================
 // SAFE AREA
 // ============================================================
 
@@ -589,5 +624,6 @@ export default {
   LocalNotificationService,
   AppService,
   InAppPurchaseService,
+  SignInWithAppleService,
   getSafeAreaInsets,
 };

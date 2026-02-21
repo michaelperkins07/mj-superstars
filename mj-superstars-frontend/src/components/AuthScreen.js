@@ -6,6 +6,7 @@
 import React, { useState, useCallback } from 'react';
 import { useLogin, useRegister, useSocialAuth } from '../hooks/useAuth';
 import { AuthAPI } from '../services/api';
+import { SignInWithAppleService, isNative } from '../services/native';
 
 // Simple input component
 function Input({ label, type = 'text', value, onChange, placeholder, error }) {
@@ -90,13 +91,9 @@ function SocialSignInButtons({ onSuccess }) {
   const handleAppleSignIn = useCallback(async () => {
     setActiveProvider('apple');
     try {
-      // Apple Sign In via native bridge (Capacitor) or web fallback
-      if (window.Capacitor?.isNativePlatform?.() && window.SignInWithApple) {
-        const result = await window.SignInWithApple.authorize({
-          clientId: 'com.topperformer.app',
-          redirectURI: window.location.origin,
-          scopes: 'email name'
-        });
+      // Apple Sign In via native Capacitor plugin
+      if (isNative && SignInWithAppleService.isAvailable()) {
+        const result = await SignInWithAppleService.authorize();
         const response = await signInWithApple(result.response);
         if (response && onSuccess) onSuccess();
       } else {
@@ -115,7 +112,7 @@ function SocialSignInButtons({ onSuccess }) {
         }
       }
     } catch (err) {
-      if (err.code !== 'ERR_CANCELED') {
+      if (err.code !== 'CANCELED' && err.code !== 'ERR_CANCELED') {
         console.error('Apple sign-in error:', err);
       }
     } finally {

@@ -1,0 +1,30 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": [
+          "FAAWCBHB9C.com.topperformer.app"
+        ],
+        "components": [
+          { "/": "/mood/*", "comment": "Open mood tracking" },
+          { "/": "/chat/*", "comment": "Open chat screen" },
+          { "/": "/journal/*", "comment": "Open journal" },
+          { "/": "/tasks/*", "comment": "Open tasks" },
+          { "/": "/explore/*", "comment": "Open explore/tools" },
+          { "/": "/insights/*", "comment": "Open insights" },
+          { "/": "/profile/*", "comment": "Open profile" },
+          { "/": "/breathing/*", "comment": "Open breathing exercise" },
+          { "/": "/share/*", "comment": "Shared content" },
+          { "/": "/invite/*", "comment": "Referral invite" },
+          { "/": "/reset-password", "comment": "Password reset" }
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": [
+      "FAAWCBHB9C.com.topperformer.app"
+    ]
+  }
+}
