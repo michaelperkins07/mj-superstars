@@ -53,5 +53,13 @@
 	<string>Top Performer needs permission to save photos to your library</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>WKAppBoundDomains</key>
+	<array>
+		<string>mj-superstars.onrender.com</string>
+		<string>topperformer.ai</string>
+		<string>ioxidarwheoohkaglbkw.supabase.co</string>
+		<string>appleid.apple.com</string>
+		<string>appleid.cdn-apple.com</string>
+	</array>
 </dict>
 </plist>

@@ -346,6 +346,6 @@ public class InAppPurchasePlugin: CAPPlugin {
             data["expirationDate"] = Self.dateFormatter.string(from: expirationDate)
         }
 
-        notifyListeners("transactionUpdate", data)
+        notifyListeners("transactionUpdate", data: data)
     }
 }
