@@ -1,0 +1,46 @@
+require_relative '../node_modules/@capacitor/ios/scripts/pods_helpers'
+
+platform :ios, '13.0'
+use_frameworks!
+
+# Workaround to avoid Xcode caching of Pods that requires
+# Product -> Clean Build Folder after new Cordova plugins installed
+# Requires CocoaPods 1.6 or newer
+install! 'cocoapods', :disable_input_output_paths => true
+
+def capacitor_pods
+  pod 'Capacitor', :path => '../node_modules/@capacitor/ios'
+  pod 'CapacitorCordova', :path => '../node_modules/@capacitor/ios'
+  pod 'CapacitorApp', :path => '../node_modules/@capacitor/app'
+  pod 'CapacitorHaptics', :path => '../node_modules/@capacitor/haptics'
+  pod 'CapacitorKeyboard', :path => '../node_modules/@capacitor/keyboard'
+  pod 'CapacitorStatusBar', :path => '../node_modules/@capacitor/status-bar'
+end
+
+target 'App' do
+  capacitor_pods
+  
+  # ============================================================
+  # FIREBASE & AUTHENTICATION PODS
+  # ============================================================
+  
+  # Firebase Core (required for Firebase initialization)
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Analytics'
+  
+  # Google Sign In
+  pod 'GoogleSignIn', '~> 7.0'
+  
+  # Apple Sign In is built into iOS SDK (AuthenticationServices framework)
+  # No pod needed for Apple Sign In
+  
+  # ============================================================
+  # Add your other pods here
+  # ============================================================
+  
+end
+
+post_install do |installer|
+  assertDeploymentTarget(installer)
+end
