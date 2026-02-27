@@ -20,15 +20,43 @@ public class SignInWithApplePlugin: CAPPlugin, ASAuthorizationControllerDelegate
         authorizationController.delegate = self
         authorizationController.presentationContextProvider = self
 
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
             authorizationController.performRequests()
+
+            // Safety timeout: if no delegate callback fires within 30 seconds,
+            // reject the call so the JS side doesn't hang forever (iPad edge case)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
+                guard let self = self, let pending = self.pendingCall, pending.callbackId == call.callbackId else { return }
+                pending.reject("Sign in with Apple timed out. Please try again.", "TIMEOUT")
+                self.pendingCall = nil
+            }
         }
     }
 
     // MARK: - Presentation Context
 
     public func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
-        return self.bridge?.webView?.window ?? UIWindow()
+        // First try the bridge's webView window (most reliable)
+        if let window = self.bridge?.webView?.window {
+            return window
+        }
+
+        // Fallback: find the active window through UIScene API (required on iPad)
+        if #available(iOS 15.0, *) {
+            if let windowScene = UIApplication.shared.connectedScenes
+                .compactMap({ $0 as? UIWindowScene })
+                .first(where: { $0.activationState == .foregroundActive }),
+               let window = windowScene.windows.first(where: { $0.isKeyWindow }) ?? windowScene.windows.first {
+                return window
+            }
+        }
+
+        // Last resort: try deprecated but functional approach
+        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) {
+            return window
+        }
+
+        return UIWindow()
     }
 
     // MARK: - ASAuthorizationControllerDelegate

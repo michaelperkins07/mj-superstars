@@ -91,11 +91,26 @@ function SocialSignInButtons({ onSuccess }) {
   const handleAppleSignIn = useCallback(async () => {
     setActiveProvider('apple');
     try {
+      // Detect native Capacitor environment
+      const capacitorNative = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+
       // Apple Sign In via native Capacitor plugin
-      if (isNative && SignInWithAppleService.isAvailable()) {
+      if (capacitorNative && SignInWithAppleService.isAvailable()) {
         const result = await SignInWithAppleService.authorize();
         const response = await signInWithApple(result.response);
         if (response && onSuccess) onSuccess();
+      } else if (capacitorNative) {
+        // We're in a native app but plugin isn't loaded — retry once after brief delay
+        console.warn('[SIWA] Native detected but plugin not available, retrying...');
+        await new Promise(resolve => setTimeout(resolve, 500));
+        if (SignInWithAppleService.isAvailable()) {
+          const result = await SignInWithAppleService.authorize();
+          const response = await signInWithApple(result.response);
+          if (response && onSuccess) onSuccess();
+        } else {
+          console.error('[SIWA] Plugin still not available after retry');
+          alert('Sign in with Apple is temporarily unavailable. Please try again or use email sign-in.');
+        }
       } else {
         // Web fallback — Apple JS SDK
         if (window.AppleID) {
@@ -108,12 +123,15 @@ function SocialSignInButtons({ onSuccess }) {
           });
           if (response && onSuccess) onSuccess();
         } else {
-          alert('Apple Sign In is available on iOS devices. Please use the app to sign in with Apple.');
+          alert('Apple Sign In is not available in this browser. Please use the iOS app or try another sign-in method.');
         }
       }
     } catch (err) {
       if (err.code !== 'CANCELED' && err.code !== 'ERR_CANCELED') {
-        console.error('Apple sign-in error:', err);
+        console.error('[SIWA] Apple sign-in error:', err);
+        if (err.code === 'TIMEOUT' || (err.message && err.message.includes('timed out'))) {
+          alert('Sign in with Apple timed out. Please try again.');
+        }
       }
     } finally {
       setActiveProvider(null);

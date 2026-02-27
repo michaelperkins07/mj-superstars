@@ -566,7 +566,13 @@ export const SignInWithAppleService = {
    * Check if Sign in with Apple is available (native iOS only)
    */
   isAvailable() {
-    return !!SignInWithApplePlugin;
+    // Try cached plugin reference first
+    if (SignInWithApplePlugin) return true;
+    // Retry lookup in case plugin registered late (iPad edge case)
+    const freshLookup = getCapPlugin('SignInWithApple');
+    if (freshLookup) return true;
+    console.warn('[SignInWithApple] Plugin not available. Capacitor:', !!window.Capacitor, 'Plugins:', Object.keys(window.Capacitor?.Plugins || {}));
+    return false;
   },
 
   /**
@@ -574,11 +580,13 @@ export const SignInWithAppleService = {
    * @returns {Promise<Object>} Credential response with identityToken, authorizationCode, user, email, fullName
    */
   async authorize() {
-    if (!SignInWithApplePlugin) {
+    // Use cached or fresh plugin reference
+    const plugin = SignInWithApplePlugin || getCapPlugin('SignInWithApple');
+    if (!plugin) {
       throw new Error('Sign in with Apple not available');
     }
     try {
-      return await SignInWithApplePlugin.authorize();
+      return await plugin.authorize();
     } catch (e) {
       console.error('[SignInWithApple] Authorize failed:', e);
       throw e;
