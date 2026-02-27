@@ -1,6 +1,7 @@
 import UIKit
 import Capacitor
 import UserNotifications
+import GoogleSignIn
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -29,7 +30,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey: Any] = [:]) -> Bool {
-        return ApplicationDelegateProxy.shared.application(app, open: url, options: options)
+        // Handle Google Sign In
+        var handled = GIDSignIn.sharedInstance.handle(url)
+        
+        // If Google didn't handle it, pass to Capacitor
+        if !handled {
+            handled = ApplicationDelegateProxy.shared.application(app, open: url, options: options)
+        }
+        
+        return handled
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {

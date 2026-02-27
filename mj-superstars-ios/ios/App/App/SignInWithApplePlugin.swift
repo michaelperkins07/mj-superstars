@@ -20,16 +20,8 @@ public class SignInWithApplePlugin: CAPPlugin, ASAuthorizationControllerDelegate
         authorizationController.delegate = self
         authorizationController.presentationContextProvider = self
 
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async {
             authorizationController.performRequests()
-
-            // Safety timeout: if no delegate callback fires within 30 seconds,
-            // reject the call so the JS side doesn't hang forever (iPad edge case)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 30) {
-                guard let self = self, let pending = self.pendingCall, pending.callbackId == call.callbackId else { return }
-                pending.reject("Sign in with Apple timed out. Please try again.", "TIMEOUT")
-                self.pendingCall = nil
-            }
         }
     }
 

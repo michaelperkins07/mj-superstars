@@ -7,4 +7,43 @@
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:GoogleSignInPlugin.swift">
+   </FileRef>
+   <FileRef
+      location = "group:SignInWithApplePlugin.m">
+   </FileRef>
+   <FileRef
+      location = "group:GoogleSignInPlugin.m">
+   </FileRef>
+   <FileRef
+      location = "group:AUTH_SETUP_GUIDE.md">
+   </FileRef>
+   <FileRef
+      location = "group:Podfile 2">
+   </FileRef>
+   <FileRef
+      location = "group:Info.plist">
+   </FileRef>
+   <FileRef
+      location = "group:setup-auth.sh">
+   </FileRef>
+   <FileRef
+      location = "group:auth-plugins.ts">
+   </FileRef>
+   <FileRef
+      location = "group:CONFIGURATION_CHECKLIST.md">
+   </FileRef>
+   <FileRef
+      location = "group:QUICK_CONFIG_REFERENCE.md">
+   </FileRef>
+   <FileRef
+      location = "group:sample-auth-component.ts">
+   </FileRef>
+   <FileRef
+      location = "group:INSTALLATION_COMPLETE.md">
+   </FileRef>
+   <FileRef
+      location = "group:validate-config.sh">
+   </FileRef>
 </Workspace>
