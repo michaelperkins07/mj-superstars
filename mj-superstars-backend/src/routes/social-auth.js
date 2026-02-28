@@ -39,16 +39,36 @@ async function verifyAppleToken(idToken) {
     throw new APIError('Invalid Apple ID token format', 401, 'INVALID_TOKEN');
   }
 
+  // Log token details for debugging
+  const tokenPayload = decoded.payload || {};
+  logger.info('Apple token details:', {
+    kid: decoded.header.kid,
+    aud: tokenPayload.aud,
+    iss: tokenPayload.iss,
+    exp: tokenPayload.exp,
+    expDate: tokenPayload.exp ? new Date(tokenPayload.exp * 1000).toISOString() : 'N/A',
+    now: new Date().toISOString(),
+  });
+
   // 2. Fetch the signing key from Apple's JWKS endpoint
   const key = await appleJwksClient.getSigningKey(decoded.header.kid);
   const signingKey = key.getPublicKey();
 
-  // 3. Verify signature, issuer, and expiry
+  // 3. Build list of accepted audiences
+  //    iOS native SIWA uses the bundle ID, web SIWA uses the Services ID
+  const bundleId = 'com.topperformer.app';
+  const audiences = new Set([bundleId]);
+  if (process.env.APPLE_CLIENT_ID) audiences.add(process.env.APPLE_CLIENT_ID);
+  if (process.env.APNS_BUNDLE_ID) audiences.add(process.env.APNS_BUNDLE_ID);
+  const audienceList = [...audiences];
+
+  logger.info('Apple token audience check:', { expected: audienceList, received: tokenPayload.aud });
+
+  // 4. Verify signature, issuer, and expiry
   const payload = jwt.verify(idToken, signingKey, {
     algorithms: ['RS256'],
     issuer: 'https://appleid.apple.com',
-    // audience is your app's bundle ID (or Services ID for web)
-    audience: process.env.APPLE_CLIENT_ID || process.env.APNS_BUNDLE_ID || 'com.topperformer.app',
+    audience: audienceList,
   });
 
   return payload;
@@ -241,7 +261,18 @@ router.post('/apple',
     try {
       decoded = await verifyAppleToken(id_token);
     } catch (verifyError) {
-      logger.warn('Apple token verification failed:', { error: verifyError.message });
+      logger.warn('Apple token verification failed:', {
+        error: verifyError.message,
+        code: verifyError.code,
+        name: verifyError.name,
+      });
+      // Provide more specific error messages
+      if (verifyError.message?.includes('expired')) {
+        throw new APIError('Apple ID token has expired. Please try again.', 401, 'TOKEN_EXPIRED');
+      }
+      if (verifyError.message?.includes('audience')) {
+        throw new APIError('Apple ID token audience mismatch. Check APPLE_CLIENT_ID config.', 401, 'AUDIENCE_MISMATCH');
+      }
       throw new APIError('Invalid or expired Apple ID token', 401, 'INVALID_TOKEN');
     }
 
