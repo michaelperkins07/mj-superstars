@@ -30,3 +30,9 @@ end
 post_install do |installer|
   assertDeploymentTarget(installer)
 end
+
+  # Firebase & Google Sign In
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
+  pod 'Firebase/Analytics'
+  pod 'GoogleSignIn', '~> 7.0'

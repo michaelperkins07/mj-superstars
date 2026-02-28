@@ -61,5 +61,7 @@
 		<string>appleid.apple.com</string>
 		<string>appleid.cdn-apple.com</string>
 	</array>
+    <key>GIDClientID</key>
+    <string>660828480387-6hhaesgtr3agn78cens12sbd16ia6la7.apps.googleusercontent.com</string>
 </dict>
 </plist>
