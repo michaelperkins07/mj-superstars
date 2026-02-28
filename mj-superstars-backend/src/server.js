@@ -79,18 +79,26 @@ app.set('trust proxy', 1);
 
 // Parse allowed origins from env (comma-separated for multiple frontends)
 const getAllowedOrigins = () => {
+  // Always allow Capacitor/Ionic origins for native iOS/Android apps
+  const nativeOrigins = [
+    'capacitor://localhost',
+    'ionic://localhost',
+    'http://localhost',
+    'http://localhost:3000'
+  ];
+
   const clientUrl = process.env.CLIENT_URL;
   if (!clientUrl) {
     if (process.env.NODE_ENV === 'production') {
-      logger.warn('⚠️  CLIENT_URL not set in production — CORS restricted to same-origin only');
-      return false; // Deny all cross-origin requests
+      logger.warn('⚠️  CLIENT_URL not set in production — allowing native app origins only');
+      return nativeOrigins;
     }
     return '*'; // Allow all in development only
   }
 
-  // Support comma-separated origins
+  // Support comma-separated origins + always include native app origins
   const origins = clientUrl.split(',').map(o => o.trim());
-  return origins.length === 1 ? origins[0] : origins;
+  return [...new Set([...origins, ...nativeOrigins])];
 };
 
 // Socket.IO setup with Render-compatible config
