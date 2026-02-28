@@ -260,7 +260,11 @@ function NameStep({ name, setName }) {
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Your name"
-          autoFocus
+          autoComplete="off"
+          autoCorrect="off"
+          autoCapitalize="words"
+          data-form-type="other"
+          data-lpignore="true"
           className="w-full bg-slate-800 border border-slate-600 rounded-2xl px-5 py-4 text-white text-center text-lg placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition-all"
         />
       </motion.div>
@@ -637,9 +641,9 @@ export function Onboarding({ onComplete }) {
         <ProgressBar step={step} total={TOTAL_STEPS} />
       </div>
 
-      {/* Step content + button — all scrollable together */}
+      {/* Step content — scrollable area */}
       <div className="flex-1 overflow-y-auto px-4 keyboard-scroll-fix">
-        <div className="flex flex-col items-center justify-center min-h-full py-8">
+        <div className="flex flex-col items-center justify-center min-h-full py-6">
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
@@ -653,22 +657,22 @@ export function Onboarding({ onComplete }) {
             </motion.div>
           </AnimatePresence>
         </div>
+      </div>
 
-        {/* Button inside scroll area so it's reachable when keyboard is open */}
-        <div className="px-2 pb-8 pt-4 max-w-md mx-auto w-full">
-          <motion.button
-            whileTap={{ scale: 0.97 }}
-            onClick={handleNext}
-            disabled={!canProceed()}
-            className={`w-full py-4 rounded-2xl text-lg font-semibold transition-all shadow-lg ${
-              canProceed()
-                ? 'bg-sky-500 hover:bg-sky-400 text-white shadow-sky-500/30'
-                : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'
-            }`}
-          >
-            {getButtonLabel()}
-          </motion.button>
-        </div>
+      {/* Button — fixed at bottom, outside scroll area */}
+      <div className="flex-shrink-0 px-6 pb-8 pt-3">
+        <motion.button
+          whileTap={{ scale: 0.97 }}
+          onClick={handleNext}
+          disabled={!canProceed()}
+          className={`w-full max-w-md mx-auto block py-4 rounded-2xl text-lg font-semibold transition-all shadow-lg ${
+            canProceed()
+              ? 'bg-sky-500 hover:bg-sky-400 text-white shadow-sky-500/30'
+              : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'
+          }`}
+        >
+          {getButtonLabel()}
+        </motion.button>
       </div>
     </div>
   );
