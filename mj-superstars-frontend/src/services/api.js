@@ -7,6 +7,23 @@ import { isQueueable, enqueue, initOfflineSync } from './offlineQueue';
 const rawApiUrl = process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api';
 const API_BASE_URL = rawApiUrl.endsWith('/api') ? rawApiUrl : rawApiUrl + '/api';
 
+// Warm up the backend on page load (Render cold-start recovery)
+let backendReady = false;
+const warmupBackend = () => {
+  const baseUrl = API_BASE_URL.replace(/\/api$/, '');
+  fetch(`${baseUrl}/health`, { method: 'GET', mode: 'cors' })
+    .then(() => { backendReady = true; })
+    .catch(() => {
+      // Retry once after 3s
+      setTimeout(() => {
+        fetch(`${baseUrl}/health`, { method: 'GET', mode: 'cors' })
+          .then(() => { backendReady = true; })
+          .catch(() => { console.warn('Backend warmup failed'); });
+      }, 3000);
+    });
+};
+warmupBackend();
+
 // ============================================================
 // TOKEN MANAGEMENT
 // ============================================================
@@ -55,10 +72,10 @@ export const TokenManager = {
 // Prevent concurrent token refresh race condition
 let refreshPromise = null;
 
-// Default timeout: 20 seconds (allows for Render cold start)
-const REQUEST_TIMEOUT_MS = 20000;
+// Default timeout: 30 seconds (allows for Render cold start)
+const REQUEST_TIMEOUT_MS = 30000;
 // Retry config for cold-start recovery
-const MAX_RETRIES = 2;
+const MAX_RETRIES = 3;
 const RETRY_DELAY_MS = 3000;
 
 async function request(endpoint, options = {}, retryCount = 0) {
