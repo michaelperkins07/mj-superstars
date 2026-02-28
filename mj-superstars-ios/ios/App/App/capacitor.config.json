@@ -1,0 +1,70 @@
+{
+	"appId": "com.topperformer.app",
+	"appName": "Top Performer",
+	"webDir": "www",
+	"bundledWebRuntime": false,
+	"server": {
+		"androidScheme": "https",
+		"iosScheme": "capacitor"
+	},
+	"ios": {
+		"contentInset": "automatic",
+		"scrollEnabled": true,
+		"backgroundColor": "#0f172a",
+		"preferredContentMode": "mobile",
+		"scheme": "topperformer",
+		"limitsNavigationsToAppBoundDomains": true
+	},
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 2000,
+			"launchAutoHide": true,
+			"backgroundColor": "#0f172a",
+			"androidSplashResourceName": "splash",
+			"androidScaleType": "CENTER_CROP",
+			"showSpinner": true,
+			"spinnerStyle": "small",
+			"spinnerColor": "#38bdf8",
+			"splashFullScreen": true,
+			"splashImmersive": true
+		},
+		"StatusBar": {
+			"style": "DARK",
+			"backgroundColor": "#0f172a"
+		},
+		"Keyboard": {
+			"resize": "body",
+			"style": "DARK",
+			"resizeOnFullScreen": true
+		},
+		"PushNotifications": {
+			"presentationOptions": [
+				"badge",
+				"sound",
+				"alert"
+			]
+		},
+		"LocalNotifications": {
+			"smallIcon": "ic_stat_icon_config_sample",
+			"iconColor": "#38bdf8",
+			"sound": "gentle_chime.wav"
+		},
+		"Haptics": {},
+		"Preferences": {
+			"group": "group.com.topperformer.app"
+		}
+	},
+	"packageClassList": [
+		"AppPlugin",
+		"HapticsPlugin",
+		"KeyboardPlugin",
+		"LocalNotificationsPlugin",
+		"PreferencesPlugin",
+		"PushNotificationsPlugin",
+		"SharePlugin",
+		"SplashScreenPlugin",
+		"StatusBarPlugin",
+		"SignInWithApplePlugin",
+		"InAppPurchasePlugin"
+	]
+}
