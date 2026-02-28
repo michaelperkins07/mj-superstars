@@ -1,9 +1,9 @@
 // ============================================================
-// Top Performer - Service Worker (Cache-first for static, network-first for API)
+// Top Performer - Service Worker (Network-first for everything)
 // ============================================================
 
-const CACHE_NAME = 'top-performer-v2';
-const STATIC_CACHE = 'tp-static-v2';
+const CACHE_NAME = 'top-performer-v3';
+const STATIC_CACHE = 'tp-static-v3';
 
 // Static assets to pre-cache on install
 const PRECACHE_URLS = [
@@ -12,7 +12,7 @@ const PRECACHE_URLS = [
   '/manifest.json'
 ];
 
-// Install: pre-cache essential assets
+// Install: pre-cache essential assets and immediately activate
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(STATIC_CACHE)
@@ -21,7 +21,7 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activate: clean up old caches
+// Activate: clean up ALL old caches and take control immediately
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -34,7 +34,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch: network-first for API, cache-first for static
+// Fetch: NETWORK-FIRST for everything (fall back to cache only when offline)
 self.addEventListener('fetch', (event) => {
   const { request } = event;
   const url = new URL(request.url);
@@ -47,37 +47,19 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // API requests: network-first with fallback
-  if (url.pathname.startsWith('/api/')) {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Cache successful GET responses
-          if (response.ok) {
-            const clone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, clone));
-          }
-          return response;
-        })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  // Static assets: cache-first
+  // Network-first for ALL requests (API + static assets)
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) return cached;
-
-      return fetch(request).then((response) => {
-        // Cache successful responses for static assets
-        if (response.ok && (url.pathname.endsWith('.js') || url.pathname.endsWith('.css') || url.pathname.endsWith('.html'))) {
+    fetch(request)
+      .then((response) => {
+        // Cache successful GET responses for offline fallback
+        if (response.ok) {
           const clone = response.clone();
-          caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
+          const cacheName = url.pathname.startsWith('/api/') ? CACHE_NAME : STATIC_CACHE;
+          caches.open(cacheName).then((cache) => cache.put(request, clone));
         }
         return response;
-      });
-    })
+      })
+      .catch(() => caches.match(request))
   );
 });
 
