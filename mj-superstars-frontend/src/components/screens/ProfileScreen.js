@@ -682,9 +682,17 @@ function ProfileScreen() {
         </div>
       </SectionCard>
 
-      {/* ---- LEGAL ---- */}
-      <SectionCard title="Legal" icon="📋">
+      {/* ---- ACCOUNT ---- */}
+      <SectionCard title="Account" icon="👤">
         <div className="space-y-2">
+          {!isGuest && (
+            <div className="flex items-center gap-3 bg-slate-700/40 rounded-xl p-3 mb-2">
+              <span className="text-slate-400 text-xs">Signed in as</span>
+              <span className="text-white text-xs font-medium flex-1 text-right truncate">
+                {user?.email || profile?.email || '—'}
+              </span>
+            </div>
+          )}
           <a href="/privacy-policy" target="_blank" rel="noopener noreferrer"
             className="block w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center">
             Privacy Policy
@@ -693,19 +701,17 @@ function ProfileScreen() {
             className="block w-full bg-slate-700/50 hover:bg-slate-700 text-slate-300 rounded-lg px-4 py-3 text-sm font-medium transition-colors text-center">
             Terms of Service
           </a>
+          {!isGuest && (
+            <button
+              onClick={logout}
+              className="w-full bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 rounded-xl px-4 py-3.5 flex items-center justify-center gap-2 transition-colors mt-2"
+            >
+              <Logout />
+              <span className="text-sm font-semibold">Sign Out</span>
+            </button>
+          )}
         </div>
       </SectionCard>
-
-      {/* ---- SIGN OUT ---- */}
-      {!isGuest && (
-        <button
-          onClick={logout}
-          className="w-full bg-slate-800 hover:bg-slate-700 text-red-400 rounded-xl px-4 py-3 flex items-center gap-3 transition-colors mb-4"
-        >
-          <Logout />
-          <span className="text-sm font-medium">Sign Out</span>
-        </button>
-      )}
 
       <p className="text-center text-slate-600 text-xs mt-4 mb-8">Top Performer v2.0.0</p>
 

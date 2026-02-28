@@ -42,7 +42,9 @@ function MJSuperstars() {
 
   useEffect(() => {
     initErrorTracking();
-    initSubscription();
+    // NOTE: initSubscription() is deferred until after authentication
+    // to prevent iOS from showing "Sign in to Apple Account" dialog on launch.
+    // StoreKit's getCurrentEntitlements() requires Apple credentials.
 
     // Listen for cross-screen navigation events (e.g., from ChatScreen upgrade prompt)
     const handleNavigate = (e) => setActiveTab(e.detail);
@@ -102,6 +104,14 @@ function MJSuperstars() {
       return () => clearTimeout(timer);
     }
   }, [profile, user]);
+
+  // Initialize subscriptions ONLY after user is authenticated
+  // This prevents StoreKit from showing "Sign in to Apple Account" on launch
+  useEffect(() => {
+    if (isAuthenticated) {
+      initSubscription();
+    }
+  }, [isAuthenticated]);
 
   // Apply any pending deep link navigation on first render
   useEffect(() => {
