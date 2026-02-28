@@ -613,9 +613,9 @@ export function Onboarding({ onComplete }) {
   };
 
   return (
-    <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 flex flex-col" style={{ height: '100dvh', height: '100vh' }}>
+    <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950" style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', flexDirection: 'column' }}>
       {/* Top bar: progress + skip — fixed at top */}
-      <div className="flex-shrink-0 px-6 pt-6 pb-2">
+      <div style={{ flexShrink: 0, padding: '1.5rem 1.5rem 0.5rem 1.5rem', paddingTop: 'max(1.5rem, env(safe-area-inset-top))' }}>
         <div className="flex items-center justify-between mb-3">
           {step > 0 ? (
             <motion.button
@@ -642,8 +642,8 @@ export function Onboarding({ onComplete }) {
       </div>
 
       {/* Step content — scrollable area */}
-      <div className="flex-1 overflow-y-auto px-4 keyboard-scroll-fix">
-        <div className="flex flex-col items-center justify-center min-h-full py-6">
+      <div style={{ flex: 1, overflowY: 'auto', WebkitOverflowScrolling: 'touch', padding: '0 1rem' }} className="keyboard-scroll-fix">
+        <div className="flex flex-col items-center justify-center py-6" style={{ minHeight: '100%' }}>
           <AnimatePresence mode="wait">
             <motion.div
               key={step}
@@ -657,10 +657,21 @@ export function Onboarding({ onComplete }) {
             </motion.div>
           </AnimatePresence>
         </div>
+        {/* Spacer so content doesn't hide behind fixed button */}
+        <div style={{ height: '5rem' }} />
       </div>
 
-      {/* Button — fixed at bottom, outside scroll area */}
-      <div className="flex-shrink-0 px-6 pb-8 pt-3">
+      {/* Button — absolutely fixed at bottom with safe area */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        padding: '0.75rem 1.5rem',
+        paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))',
+        background: 'linear-gradient(to top, rgb(2,6,23) 60%, transparent)',
+        zIndex: 50
+      }}>
         <motion.button
           whileTap={{ scale: 0.97 }}
           onClick={handleNext}

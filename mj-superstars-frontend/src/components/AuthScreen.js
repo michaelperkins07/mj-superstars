@@ -8,7 +8,7 @@ import { useLogin, useRegister, useSocialAuth } from '../hooks/useAuth';
 import { AuthAPI } from '../services/api';
 import { SignInWithAppleService, isNative } from '../services/native';
 
-// Simple input component
+// Simple input component — autoComplete="off" prevents iOS Keychain credential prompt on launch
 function Input({ label, type = 'text', value, onChange, placeholder, error }) {
   return (
     <div className="mb-4">
@@ -22,6 +22,10 @@ function Input({ label, type = 'text', value, onChange, placeholder, error }) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        autoComplete="off"
+        autoCorrect="off"
+        data-form-type="other"
+        data-lpignore="true"
         className={`w-full px-4 py-3 bg-slate-800 border rounded-xl text-white placeholder-slate-500 focus:outline-none focus:ring-2 transition-all ${
           error
             ? 'border-red-500 focus:ring-red-500'
@@ -236,7 +240,7 @@ function LoginForm({ onSuccess, onSwitchToRegister, onForgotPassword }) {
 
       <Divider text="or sign in with email" />
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4" autoComplete="off" data-form-type="other">
         {error && (
           <div className="bg-red-900/30 border border-red-500/50 text-red-300 px-4 py-3 rounded-xl text-sm">
             {error}
@@ -324,7 +328,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
 
       <Divider text="or sign up with email" />
 
-      <form onSubmit={onSubmit} className="space-y-4">
+      <form onSubmit={onSubmit} className="space-y-4" autoComplete="off" data-form-type="other">
         {error && (
           <div className="bg-red-900/30 border border-red-500/50 text-red-300 px-4 py-3 rounded-xl text-sm">
             {error}
@@ -369,6 +373,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
             id="tos-checkbox"
             checked={tosAccepted}
             onChange={(e) => setTosAccepted(e.target.checked)}
+            autoComplete="off"
             className="w-5 h-5 mt-0.5 bg-slate-700 border border-slate-600 rounded-md accent-sky-500 cursor-pointer"
           />
           <label htmlFor="tos-checkbox" className="flex-1 text-sm text-slate-300 cursor-pointer">
@@ -462,7 +467,7 @@ function ForgotPasswordForm({ onBack }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off" data-form-type="other">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">Reset Password</h2>
         <p className="text-slate-400">Enter your email to receive reset instructions</p>
@@ -552,7 +557,7 @@ function ResetPasswordForm({ token, onSuccess, onBack }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off" data-form-type="other">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">Set New Password</h2>
         <p className="text-slate-400">Choose a strong password for your account</p>
