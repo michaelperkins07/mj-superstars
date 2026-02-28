@@ -248,10 +248,13 @@ export function DataProvider({ children }) {
       try {
         const response = await ConversationAPI.create(initialMood);
 
-        // Join socket room
-        socketService.joinConversation(response.conversation.id);
+        // Response may be flat object { id, title, ... } or nested { conversation: { ... } }
+        const convData = response.conversation || response;
 
-        const syncedConversation = { ...response.conversation, synced: true };
+        // Join socket room
+        socketService.joinConversation(convData.id);
+
+        const syncedConversation = { ...convData, synced: true };
         const synced = updatedConversations.map(c =>
           c.id === conversation.id ? syncedConversation : c
         );
@@ -305,7 +308,7 @@ export function DataProvider({ children }) {
     if (isOnline && TokenManager.isAuthenticated()) {
       try {
         const response = await ConversationAPI.get(conversationId);
-        setActiveConversation(response.conversation);
+        setActiveConversation(response.conversation || response);
 
         // Join socket room
         socketService.joinConversation(conversationId);

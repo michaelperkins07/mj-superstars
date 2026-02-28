@@ -147,16 +147,23 @@ async function request(endpoint, options = {}, retryCount = 0) {
 initOfflineSync(request);
 
 async function handleResponse(response) {
-  const data = await response.json();
+  const json = await response.json();
 
   if (!response.ok) {
-    const error = new Error(data.error || 'Request failed');
-    error.code = data.code;
+    // Handle errors from both wrapped and unwrapped responses
+    const error = new Error(json.error || json.data?.error || 'Request failed');
+    error.code = json.code || json.data?.code;
     error.status = response.status;
     throw error;
   }
 
-  return data;
+  // Auto-unwrap { success: true, data: {...} } wrapper from successResponse()
+  // This ensures frontend gets consistent data regardless of backend response format
+  if (json.success === true && json.data !== undefined) {
+    return json.data;
+  }
+
+  return json;
 }
 
 async function refreshAccessToken() {
