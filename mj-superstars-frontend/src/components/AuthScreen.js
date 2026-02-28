@@ -629,8 +629,8 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
   };
 
   return (
-    <div className="bg-slate-900 overflow-y-auto keyboard-scroll-fix" style={{ height: '100dvh', height: '100vh' }}>
-      <div className="min-h-full flex items-center justify-center p-4">
+    <div className="bg-slate-900 overflow-y-auto" style={{ height: '100dvh', height: '100vh', WebkitOverflowScrolling: 'touch' }}>
+      <div className="min-h-full flex items-center justify-center p-4 pb-16">
         <div className="w-full max-w-md py-8">
           {/* Logo / Brand */}
           <div className="text-center mb-8">

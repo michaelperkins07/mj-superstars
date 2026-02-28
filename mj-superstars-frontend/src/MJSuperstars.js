@@ -40,6 +40,26 @@ function MJSuperstars() {
   const [showFeatureTour, setShowFeatureTour] = useState(false);
   const justOnboardedRef = useRef(false);
 
+  // Global iOS keyboard fix — scroll focused inputs into view
+  useEffect(() => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (!isIOS) return;
+
+    const handleFocus = (e) => {
+      const el = e.target;
+      if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT') {
+        // Delay to let keyboard finish animating
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 350);
+      }
+    };
+
+    document.addEventListener('focusin', handleFocus);
+    return () => document.removeEventListener('focusin', handleFocus);
+  }, []);
+
   useEffect(() => {
     initErrorTracking();
     // NOTE: initSubscription() is deferred until after authentication
