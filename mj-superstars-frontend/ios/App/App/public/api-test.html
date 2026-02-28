@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>API Diagnostic Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: monospace; padding: 20px; background: #111; color: #0f0; }
+    .result { margin: 10px 0; padding: 10px; border: 1px solid #333; border-radius: 4px; }
+    .pass { border-color: #0f0; }
+    .fail { border-color: #f00; color: #f88; }
+    .info { border-color: #ff0; color: #ff0; }
+    button { padding: 10px 20px; font-size: 16px; margin: 5px; cursor: pointer; }
+    pre { white-space: pre-wrap; word-break: break-all; }
+    h1 { color: #fff; }
+  </style>
+</head>
+<body>
+  <h1>🔧 API Diagnostic Test</h1>
+  <div id="log"></div>
+  <button onclick="runAllTests()">Run All Tests</button>
+  <button onclick="testLogin()">Test Login Only</button>
+
+  <script>
+    const API = 'https://mj-superstars.onrender.com';
+    const log = document.getElementById('log');
+
+    function addLog(msg, type = 'info') {
+      const div = document.createElement('div');
+      div.className = `result ${type}`;
+      div.innerHTML = `<pre>${new Date().toISOString()}\n${msg}</pre>`;
+      log.appendChild(div);
+      window.scrollTo(0, document.body.scrollHeight);
+    }
+
+    async function testHealth() {
+      addLog('TEST 1: GET /health (no CORS headers)...');
+      try {
+        const start = Date.now();
+        const res = await fetch(`${API}/health`);
+        const ms = Date.now() - start;
+        const data = await res.json();
+        addLog(`✅ Health check passed in ${ms}ms\nStatus: ${res.status}\nResponse: ${JSON.stringify(data)}`, 'pass');
+        return true;
+      } catch (err) {
+        addLog(`❌ Health check FAILED\nError: ${err.name}: ${err.message}\nStack: ${err.stack}`, 'fail');
+        return false;
+      }
+    }
+
+    async function testHealthCORS() {
+      addLog('TEST 2: GET /health (with CORS mode)...');
+      try {
+        const start = Date.now();
+        const res = await fetch(`${API}/health`, {
+          method: 'GET',
+          mode: 'cors',
+          headers: { 'Accept': 'application/json' }
+        });
+        const ms = Date.now() - start;
+        const data = await res.json();
+        addLog(`✅ Health CORS check passed in ${ms}ms\nStatus: ${res.status}\nHeaders: ${[...res.headers.entries()].map(([k,v]) => k+': '+v).join('\\n')}`, 'pass');
+        return true;
+      } catch (err) {
+        addLog(`❌ Health CORS check FAILED\nError: ${err.name}: ${err.message}`, 'fail');
+        return false;
+      }
+    }
+
+    async function testPreflight() {
+      addLog('TEST 3: OPTIONS /api/auth/login (preflight)...');
+      try {
+        const start = Date.now();
+        const res = await fetch(`${API}/api/auth/login`, {
+          method: 'OPTIONS',
+          mode: 'cors',
+          headers: {
+            'Access-Control-Request-Method': 'POST',
+            'Access-Control-Request-Headers': 'content-type'
+          }
+        });
+        const ms = Date.now() - start;
+        addLog(`✅ Preflight passed in ${ms}ms\nStatus: ${res.status}\nACAO: ${res.headers.get('access-control-allow-origin')}\nACAM: ${res.headers.get('access-control-allow-methods')}`, 'pass');
+        return true;
+      } catch (err) {
+        addLog(`❌ Preflight FAILED\nError: ${err.name}: ${err.message}`, 'fail');
+        return false;
+      }
+    }
+
+    async function testLogin() {
+      addLog('TEST 4: POST /api/auth/login (actual login)...');
+      try {
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 30000);
+        const start = Date.now();
+
+        const res = await fetch(`${API}/api/auth/login`, {
+          method: 'POST',
+          mode: 'cors',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            email: 'test@topperformer.ai',
+            password: 'TestDemo2026'
+          }),
+          signal: controller.signal
+        });
+
+        clearTimeout(timeout);
+        const ms = Date.now() - start;
+        const text = await res.text();
+
+        let parsed;
+        try { parsed = JSON.parse(text); } catch(e) { parsed = text; }
+
+        if (res.ok) {
+          addLog(`✅ LOGIN SUCCESS in ${ms}ms\nStatus: ${res.status}\nUser: ${parsed?.user?.email}\nPremium: ${parsed?.user?.is_premium}\nToken: ${parsed?.tokens?.access_token?.substring(0, 20)}...`, 'pass');
+        } else {
+          addLog(`⚠️ LOGIN returned ${res.status} in ${ms}ms\nResponse: ${JSON.stringify(parsed, null, 2)}`, 'fail');
+        }
+        return res.ok;
+      } catch (err) {
+        addLog(`❌ LOGIN FAILED\nError name: ${err.name}\nError message: ${err.message}\nError code: ${err.code}\nStack: ${err.stack}\n\nnavigator.onLine: ${navigator.onLine}\nCurrent origin: ${window.location.origin}\nTarget: ${API}/api/auth/login`, 'fail');
+        return false;
+      }
+    }
+
+    async function testXHR() {
+      addLog('TEST 5: XHR POST /api/auth/login (XMLHttpRequest fallback)...');
+      return new Promise((resolve) => {
+        const xhr = new XMLHttpRequest();
+        const start = Date.now();
+        xhr.open('POST', `${API}/api/auth/login`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.timeout = 30000;
+
+        xhr.onload = function() {
+          const ms = Date.now() - start;
+          addLog(`✅ XHR LOGIN completed in ${ms}ms\nStatus: ${xhr.status}\nResponse: ${xhr.responseText.substring(0, 200)}...`, xhr.status === 200 ? 'pass' : 'fail');
+          resolve(xhr.status === 200);
+        };
+        xhr.onerror = function() {
+          addLog(`❌ XHR LOGIN network error\nStatus: ${xhr.status}\nReadyState: ${xhr.readyState}`, 'fail');
+          resolve(false);
+        };
+        xhr.ontimeout = function() {
+          addLog(`❌ XHR LOGIN timeout after 30s`, 'fail');
+          resolve(false);
+        };
+
+        xhr.send(JSON.stringify({ email: 'test@topperformer.ai', password: 'TestDemo2026' }));
+      });
+    }
+
+    async function runAllTests() {
+      log.innerHTML = '';
+      addLog(`Browser: ${navigator.userAgent}\nOnline: ${navigator.onLine}\nOrigin: ${window.location.origin}\nTarget API: ${API}\nService Workers: checking...`);
+
+      // Check service workers
+      if ('serviceWorker' in navigator) {
+        const regs = await navigator.serviceWorker.getRegistrations();
+        addLog(`Service Workers registered: ${regs.length}${regs.length > 0 ? '\n' + regs.map(r => r.scope).join('\n') : ' (none - good!)'}`, regs.length === 0 ? 'pass' : 'info');
+      }
+
+      await testHealth();
+      await testHealthCORS();
+      await testPreflight();
+      await testLogin();
+      await testXHR();
+
+      addLog('=== ALL TESTS COMPLETE ===');
+    }
+
+    // Auto-run on load
+    window.onload = () => setTimeout(runAllTests, 500);
+  </script>
+</body>
+</html>
