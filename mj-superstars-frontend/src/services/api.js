@@ -58,8 +58,8 @@ let refreshPromise = null;
 // Default timeout: 20 seconds (allows for Render cold start)
 const REQUEST_TIMEOUT_MS = 20000;
 // Retry config for cold-start recovery
-const MAX_RETRIES = 1;
-const RETRY_DELAY_MS = 2000;
+const MAX_RETRIES = 2;
+const RETRY_DELAY_MS = 3000;
 
 async function request(endpoint, options = {}, retryCount = 0) {
   const url = `${API_BASE_URL}${endpoint}`;
@@ -112,31 +112,31 @@ async function request(endpoint, options = {}, retryCount = 0) {
   } catch (error) {
     clearTimeout(timeoutId);
 
-    // Handle timeout (AbortError) — auto-retry once for cold start
-    if (error.name === 'AbortError') {
-      if (retryCount < MAX_RETRIES) {
-        console.log(`Request to ${endpoint} timed out, retrying (${retryCount + 1}/${MAX_RETRIES})...`);
-        await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
-        return request(endpoint, options, retryCount + 1);
-      }
-      const timeoutError = new Error('The server is taking too long to respond. Please check your connection and try again.');
-      timeoutError.code = 'TIMEOUT';
-      timeoutError.status = 0;
-      throw timeoutError;
-    }
-
-    // Detect offline vs server errors
-    if (!navigator.onLine || error.message === 'Failed to fetch' || error.name === 'TypeError') {
-      // Queue mutation requests for replay when back online
+    // Detect truly offline first
+    if (!navigator.onLine) {
       if (isQueueable(endpoint, options.method)) {
         enqueue(endpoint, options);
       }
-
-      const offlineError = new Error('You\'re offline. This will sync when you reconnect.');
+      const offlineError = new Error('You\'re offline. Changes will sync when you reconnect.');
       offlineError.code = 'OFFLINE';
       offlineError.status = 0;
       offlineError.isOffline = true;
       throw offlineError;
+    }
+
+    // Handle timeout OR connection failure — auto-retry for cold start
+    const isRetryable = error.name === 'AbortError' || error.message === 'Failed to fetch' || error.name === 'TypeError';
+    if (isRetryable && retryCount < MAX_RETRIES) {
+      console.log(`Request to ${endpoint} failed (${error.message}), retrying (${retryCount + 1}/${MAX_RETRIES})...`);
+      await new Promise(resolve => setTimeout(resolve, RETRY_DELAY_MS));
+      return request(endpoint, options, retryCount + 1);
+    }
+
+    if (isRetryable) {
+      const serverError = new Error('Unable to reach the server. Please try again in a moment.');
+      serverError.code = 'SERVER_UNREACHABLE';
+      serverError.status = 0;
+      throw serverError;
     }
     console.error('API request failed:', error);
     throw error;
