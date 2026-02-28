@@ -76,7 +76,10 @@ export function init() {
 
   if (BrowserTracing) {
     integrations.push(new BrowserTracing({
-      tracingOrigins: ['localhost', 'mj-superstars.onrender.com', /^\//],
+      // Don't add sentry-trace/baggage headers to outgoing requests
+      // These non-standard headers cause CORS preflight failures
+      tracingOrigins: [],
+      tracePropagationTargets: [],
     }));
   }
 
