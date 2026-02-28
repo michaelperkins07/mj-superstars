@@ -143,15 +143,17 @@ export async function initSubscription() {
   }
 
   try {
-    // Initialize StoreKit
-    await storeKit.initialize();
+    // NOTE: We intentionally skip storeKit.initialize() here because it calls
+    // AppStore.sync() which triggers the iOS "Sign in to Apple Account" dialog.
+    // Products and entitlements can be fetched without sync.
+    // AppStore.sync() is only needed for Restore Purchases (called separately).
 
-    // Load products
+    // Load products (does NOT require Apple credentials)
     const products = await storeKit.getProducts({
       productIds: Object.values(PRODUCTS)
     });
 
-    // Check current entitlements
+    // Check current entitlements (local check, does NOT require Apple credentials)
     const entitlements = await storeKit.getCurrentEntitlements();
     const activeSubscription = entitlements.find(e =>
       e.productId.includes('premium') && e.isActive

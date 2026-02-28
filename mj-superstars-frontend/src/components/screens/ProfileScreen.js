@@ -193,7 +193,8 @@ function ProfileScreen() {
   const [editMode, setEditMode] = useState('perk');
   const [saving, setSaving] = useState(false);
 
-  const isGuest = !TokenManager.isAuthenticated();
+  // Use auth context to determine guest status (more reliable than TokenManager token check)
+  const isGuest = profile?.isGuest === true && !user?.email;
 
   // Derived profile data
   const displayName = profile?.preferred_name || profile?.name || user?.display_name || user?.email?.split('@')[0] || 'User';
@@ -370,7 +371,7 @@ function ProfileScreen() {
   }
 
   return (
-    <div className="h-full overflow-y-auto bg-slate-900 px-4 py-6">
+    <div className="h-full overflow-y-auto bg-slate-900 px-4 pt-6 pb-24">
       {/* ---- HEADER ---- */}
       <div className="flex items-center gap-4 mb-6">
         <div className="w-16 h-16 rounded-full bg-gradient-to-br from-sky-400 to-violet-500 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-sky-500/20">
