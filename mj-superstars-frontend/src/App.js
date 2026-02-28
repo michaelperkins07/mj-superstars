@@ -20,6 +20,9 @@ import { initNotificationHandlers, cleanupNotificationHandlers } from './service
 // Analytics initialization
 import { initAnalytics } from './services/analytics';
 
+// iOS keyboard fix for input visibility
+import { initKeyboardFix } from './utils/keyboardFix';
+
 // Environment configuration
 const config = {
   apiUrl: process.env.REACT_APP_API_URL || 'https://mj-superstars.onrender.com/api',
@@ -149,6 +152,16 @@ function NotificationInitializer() {
   return null;
 }
 
+// iOS Keyboard Fix initializer
+function KeyboardFixInitializer() {
+  React.useEffect(() => {
+    const cleanup = initKeyboardFix();
+    return cleanup;
+  }, []);
+
+  return null;
+}
+
 // Initialize Mixpanel analytics on app startup
 function AnalyticsInitializer() {
   React.useEffect(() => {
@@ -176,6 +189,7 @@ function App() {
           <NetworkIndicator />
           <NotificationInitializer />
           <AnalyticsInitializer />
+          <KeyboardFixInitializer />
           <MJSuperstars />
         </DataProvider>
       </AuthProvider>

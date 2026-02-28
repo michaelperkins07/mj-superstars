@@ -624,60 +624,62 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo / Brand */}
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-violet-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
-            <span className="text-3xl">🌟</span>
+    <div className="bg-slate-900 overflow-y-auto keyboard-scroll-fix" style={{ height: '100dvh', height: '100vh' }}>
+      <div className="min-h-full flex items-center justify-center p-4">
+        <div className="w-full max-w-md py-8">
+          {/* Logo / Brand */}
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-violet-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
+              <span className="text-3xl">🌟</span>
+            </div>
+            <h1 className="text-3xl font-bold text-white">Top Performer</h1>
+            <p className="text-slate-400 mt-2">AI + EI — Become the 1%</p>
           </div>
-          <h1 className="text-3xl font-bold text-white">Top Performer</h1>
-          <p className="text-slate-400 mt-2">AI + EI — Become the 1%</p>
-        </div>
 
-        {/* Auth Card */}
-        <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-xl">
-          {mode === 'login' && (
-            <LoginForm
-              onSuccess={onSuccess}
-              onSwitchToRegister={() => setMode('register')}
-              onForgotPassword={() => setMode('forgot')}
-            />
-          )}
-          {mode === 'register' && (
-            <RegisterForm
-              onSuccess={onSuccess}
-              onSwitchToLogin={() => setMode('login')}
-            />
-          )}
-          {mode === 'forgot' && (
-            <ForgotPasswordForm
-              onBack={() => setMode('login')}
-            />
-          )}
-          {mode === 'reset' && (
-            <ResetPasswordForm
-              token={resetToken}
-              onSuccess={() => setMode('login')}
-              onBack={handleBackToLogin}
-            />
-          )}
-        </div>
-
-        {/* Skip Option */}
-        {showSkip && mode !== 'reset' && (
-          <div className="text-center mt-6">
-            <button
-              onClick={onSkip}
-              className="text-slate-500 hover:text-slate-400 text-sm"
-            >
-              Continue without account →
-            </button>
-            <p className="text-slate-600 text-xs mt-2">
-              Your data will be stored locally
-            </p>
+          {/* Auth Card */}
+          <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-6 shadow-xl">
+            {mode === 'login' && (
+              <LoginForm
+                onSuccess={onSuccess}
+                onSwitchToRegister={() => setMode('register')}
+                onForgotPassword={() => setMode('forgot')}
+              />
+            )}
+            {mode === 'register' && (
+              <RegisterForm
+                onSuccess={onSuccess}
+                onSwitchToLogin={() => setMode('login')}
+              />
+            )}
+            {mode === 'forgot' && (
+              <ForgotPasswordForm
+                onBack={() => setMode('login')}
+              />
+            )}
+            {mode === 'reset' && (
+              <ResetPasswordForm
+                token={resetToken}
+                onSuccess={() => setMode('login')}
+                onBack={handleBackToLogin}
+              />
+            )}
           </div>
-        )}
+
+          {/* Skip Option */}
+          {showSkip && mode !== 'reset' && (
+            <div className="text-center mt-6 pb-4">
+              <button
+                onClick={onSkip}
+                className="text-slate-500 hover:text-slate-400 text-sm"
+              >
+                Continue without account →
+              </button>
+              <p className="text-slate-600 text-xs mt-2">
+                Your data will be stored locally
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

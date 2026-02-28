@@ -609,9 +609,9 @@ export function Onboarding({ onComplete }) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 flex flex-col" style={{ height: '100dvh' }}>
-      {/* Top bar: progress + skip */}
-      <div className="px-6 pt-6 pb-2">
+    <div className="bg-gradient-to-b from-slate-900 via-slate-900 to-slate-950 flex flex-col" style={{ height: '100dvh', height: '100vh' }}>
+      {/* Top bar: progress + skip — fixed at top */}
+      <div className="flex-shrink-0 px-6 pt-6 pb-2">
         <div className="flex items-center justify-between mb-3">
           {step > 0 ? (
             <motion.button
@@ -637,8 +637,8 @@ export function Onboarding({ onComplete }) {
         <ProgressBar step={step} total={TOTAL_STEPS} />
       </div>
 
-      {/* Step content - scrollable */}
-      <div className="flex-1 overflow-y-auto px-4">
+      {/* Step content + button — all scrollable together */}
+      <div className="flex-1 overflow-y-auto px-4 keyboard-scroll-fix">
         <div className="flex flex-col items-center justify-center min-h-full py-8">
           <AnimatePresence mode="wait">
             <motion.div
@@ -653,22 +653,22 @@ export function Onboarding({ onComplete }) {
             </motion.div>
           </AnimatePresence>
         </div>
-      </div>
 
-      {/* Bottom button */}
-      <div className="px-6 pb-8 pt-4">
-        <motion.button
-          whileTap={{ scale: 0.97 }}
-          onClick={handleNext}
-          disabled={!canProceed()}
-          className={`w-full py-4 rounded-2xl text-lg font-semibold transition-all shadow-lg ${
-            canProceed()
-              ? 'bg-sky-500 hover:bg-sky-400 text-white shadow-sky-500/30'
-              : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'
-          }`}
-        >
-          {getButtonLabel()}
-        </motion.button>
+        {/* Button inside scroll area so it's reachable when keyboard is open */}
+        <div className="px-2 pb-8 pt-4 max-w-md mx-auto w-full">
+          <motion.button
+            whileTap={{ scale: 0.97 }}
+            onClick={handleNext}
+            disabled={!canProceed()}
+            className={`w-full py-4 rounded-2xl text-lg font-semibold transition-all shadow-lg ${
+              canProceed()
+                ? 'bg-sky-500 hover:bg-sky-400 text-white shadow-sky-500/30'
+                : 'bg-slate-700 text-slate-500 cursor-not-allowed shadow-none'
+            }`}
+          >
+            {getButtonLabel()}
+          </motion.button>
+        </div>
       </div>
     </div>
   );
