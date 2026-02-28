@@ -60,9 +60,10 @@ const config: CapacitorConfig = {
       backgroundColor: '#0f172a'
     },
 
-    // Keyboard
+    // Keyboard — 'native' lets iOS handle keyboard avoidance naturally
+    // so focused inputs scroll into view without layout thrashing
     Keyboard: {
-      resize: 'body',
+      resize: 'native',
       style: 'DARK',
       resizeOnFullScreen: true
     },
