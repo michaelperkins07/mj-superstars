@@ -579,52 +579,7 @@ function ProfileScreen() {
         )}
       </SectionCard>
 
-      {/* ---- EMAIL PREFERENCES (authenticated only) ---- */}
-      {!isGuest && (
-        <SectionCard title="Email Preferences" icon="✉️">
-          {emailPrefsError && (
-            <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-3 mb-4 text-red-300 text-sm">{emailPrefsError}</div>
-          )}
-          {emailPrefsLoading ? (
-            <p className="text-slate-400 text-sm">Loading preferences...</p>
-          ) : emailPrefs ? (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
-                <div>
-                  <p className="text-white text-sm font-semibold">Weekly Digest</p>
-                  <p className="text-slate-400 text-xs">Get a summary of your progress</p>
-                </div>
-                <Toggle value={emailPrefs.weekly_digest} onChange={v => handleEmailPrefsUpdate('weekly_digest', v)} disabled={emailPrefsSaving} />
-              </div>
-              <div className="flex items-center justify-between p-3 bg-slate-700/50 rounded-lg">
-                <div>
-                  <p className="text-white text-sm font-semibold">Coaching Nudges</p>
-                  <p className="text-slate-400 text-xs">Helpful reminders to stay consistent</p>
-                </div>
-                <Toggle value={emailPrefs.coaching_nudges} onChange={v => handleEmailPrefsUpdate('coaching_nudges', v)} disabled={emailPrefsSaving} />
-              </div>
-              <div className="p-3 bg-slate-700/50 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
-                  <div>
-                    <p className="text-white text-sm font-semibold">Buddy Sharing</p>
-                    <p className="text-slate-400 text-xs">Share updates with an accountability buddy</p>
-                  </div>
-                  <Toggle value={emailPrefs.buddy_sharing} onChange={v => handleEmailPrefsUpdate('buddy_sharing', v)} disabled={emailPrefsSaving} />
-                </div>
-                {emailPrefs.buddy_sharing && (
-                  <input type="email" placeholder="Buddy's email address" value={emailPrefs.buddy_email || ''}
-                    onChange={e => handleEmailPrefsUpdate('buddy_email', e.target.value)}
-                    className="w-full bg-slate-600 text-white rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-sky-500" />
-                )}
-              </div>
-              <button onClick={handleSendTestEmail}
-                className="w-full bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg py-2 text-sm font-semibold transition-colors">
-                Send Test Email
-              </button>
-            </div>
-          ) : null}
-        </SectionCard>
-      )}
+      {/* ---- EMAIL PREFERENCES — hidden until backend is fully wired ---- */}
 
       {/* ---- NOTIFICATION SETTINGS ---- */}
       <SectionCard title="Notifications" icon="🔔">
