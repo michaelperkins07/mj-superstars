@@ -14,6 +14,11 @@ import { successResponse, paginatedResponse } from '../utils/response.js';
 
 const router = Router();
 
+// Free tier daily limits (Model B: usage-capped)
+const FREE_TIER_LIMITS = {
+  AI_RESPONSES_PER_DAY: 4,  // 4 AI coaching responses/day for free users
+};
+
 // All routes require authentication
 router.use(authenticate);
 
@@ -155,6 +160,38 @@ router.post('/:id/messages',
       throw new APIError('Conversation not found', 404, 'NOT_FOUND');
     }
 
+    // ── Free tier daily rate limit ──────────────────────────────
+    // Premium users get unlimited AI coaching responses.
+    // Free users are capped at FREE_TIER_LIMITS.AI_RESPONSES_PER_DAY per day.
+    if (!req.user.is_premium) {
+      const usageResult = await query(
+        `SELECT COUNT(*) AS count FROM messages
+         WHERE user_id = $1
+           AND role = 'assistant'
+           AND created_at >= CURRENT_DATE`,
+        [req.user.id]
+      );
+      const todayCount = parseInt(usageResult.rows[0].count, 10);
+
+      if (todayCount >= FREE_TIER_LIMITS.AI_RESPONSES_PER_DAY) {
+        return res.status(429).json({
+          success: false,
+          error: {
+            code: 'FREE_TIER_LIMIT_REACHED',
+            message: `You've used all ${FREE_TIER_LIMITS.AI_RESPONSES_PER_DAY} free coaching responses for today. Upgrade to Premium for unlimited access.`,
+            limit: FREE_TIER_LIMITS.AI_RESPONSES_PER_DAY,
+            used: todayCount,
+            resetsAt: new Date(new Date().setUTCHours(24, 0, 0, 0)).toISOString(),
+            upgrade: true,
+          },
+        });
+      }
+
+      // Attach remaining count to response later
+      req.freeUsageRemaining = FREE_TIER_LIMITS.AI_RESPONSES_PER_DAY - todayCount - 1; // -1 for this request
+    }
+    // ────────────────────────────────────────────────────────────
+
     // Get user context for Claude
     const userContext = await getUserContext(req.user.id);
 
@@ -222,7 +259,7 @@ router.post('/:id/messages',
       });
     }
 
-    return successResponse(res, {
+    const responseData = {
       user_message: {
         id: userMsgResult.rows[0].id,
         role: 'user',
@@ -231,7 +268,18 @@ router.post('/:id/messages',
       },
       mj_response: mjMsgResult.rows[0],
       suggestions: claudeResponse.suggestions || []
-    });
+    };
+
+    // Include free tier usage info so frontend can show remaining count
+    if (!req.user.is_premium && req.freeUsageRemaining !== undefined) {
+      responseData.free_tier = {
+        remaining: Math.max(0, req.freeUsageRemaining),
+        limit: FREE_TIER_LIMITS.AI_RESPONSES_PER_DAY,
+        resetsAt: new Date(new Date().setUTCHours(24, 0, 0, 0)).toISOString(),
+      };
+    }
+
+    return successResponse(res, responseData);
   })
 );
 

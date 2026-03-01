@@ -56,7 +56,7 @@ async function verifyAppleToken(idToken) {
 
   // 3. Build list of accepted audiences
   //    iOS native SIWA uses the bundle ID, web SIWA uses the Services ID
-  const bundleId = 'com.topperformer.app';
+  const bundleId = process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app';
   const audiences = new Set([bundleId]);
   if (process.env.APPLE_CLIENT_ID) audiences.add(process.env.APPLE_CLIENT_ID);
   if (process.env.APNS_BUNDLE_ID) audiences.add(process.env.APNS_BUNDLE_ID);
