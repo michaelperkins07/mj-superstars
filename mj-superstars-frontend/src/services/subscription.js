@@ -49,9 +49,9 @@ export const PRODUCT_DETAILS = {
 // ============================================================
 
 export const FREE_LIMITS = {
-  MESSAGES_PER_DAY: 10,
-  MOOD_LOGS_PER_DAY: 3,
-  JOURNAL_ENTRIES_PER_WEEK: 3,
+  MESSAGES_PER_DAY: 4, // 4 AI coaching responses/day free (Model B)
+  MOOD_LOGS_PER_DAY: Infinity, // Unlimited mood tracking in free tier
+  JOURNAL_ENTRIES_PER_WEEK: Infinity, // Unlimited journaling in free tier
   COPING_TOOLS: ['breathing'], // Only basic breathing in free tier
   INSIGHTS_DAYS: 7, // Only 7-day insights
   WATCH_APP: false,
