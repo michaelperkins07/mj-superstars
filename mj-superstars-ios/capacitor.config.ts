@@ -2,7 +2,7 @@ import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
   appId: 'com.mjsuperstars.app',
-  appName: "MJ's Superstars",
+  appName: "Top Performer",
   webDir: 'www',
   bundledWebRuntime: false,
 
@@ -32,7 +32,7 @@ const config: CapacitorConfig = {
     preferredContentMode: 'mobile',
 
     // Scheme for custom URL handling
-    scheme: 'mjsuperstars',
+    scheme: 'topperformer',
 
     // Handle external links
     limitsNavigationsToAppBoundDomains: true

@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.topperformer.app',
+  appId: 'com.mjsuperstars.app',
   appName: "Top Performer",
   webDir: 'build',
   server: {
