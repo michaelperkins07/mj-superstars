@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Native Platform Detection & Services
+// Top Performer - Native Platform Detection & Services
 // Detects Capacitor native environment and provides
 // platform-specific APIs with web fallbacks
 // ============================================================

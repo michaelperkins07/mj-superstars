@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - System Status & Monitoring Routes
+// Top Performer - System Status & Monitoring Routes
 // Admin-accessible status dashboard API
 // ============================================================
 

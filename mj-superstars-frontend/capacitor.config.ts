@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.mjsuperstars.app',
-  appName: "MJ's Superstars",
+  appId: 'com.topperformer.app',
+  appName: "Top Performer",
   webDir: 'build',
   server: {
     // In production, the app loads the built web assets.
@@ -13,7 +13,7 @@ const config: CapacitorConfig = {
   ios: {
     contentInset: 'automatic',
     preferredContentMode: 'mobile',
-    scheme: 'mjsuperstars',
+    scheme: 'topperformer',
   },
   plugins: {
     PushNotifications: {

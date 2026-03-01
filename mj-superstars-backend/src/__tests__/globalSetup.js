@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars Backend - Jest Global Setup
+// Top Performer Backend - Jest Global Setup
 // ============================================================
 
 module.exports = async () => {

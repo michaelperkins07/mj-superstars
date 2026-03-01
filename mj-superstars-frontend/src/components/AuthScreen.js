@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Authentication Screen Component
+// Top Performer - Authentication Screen Component
 // Login/Register UI that can be integrated into onboarding
 // ============================================================
 
@@ -321,7 +321,7 @@ function RegisterForm({ onSuccess, onSwitchToLogin }) {
     <div className="space-y-4">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-white mb-2">Create account</h2>
-        <p className="text-slate-400">Start your MJ's Superstars journey</p>
+        <p className="text-slate-400">Start your Top Performer journey</p>
       </div>
 
       <SocialSignInButtons onSuccess={onSuccess} />
@@ -637,7 +637,7 @@ export default function AuthScreen({ onSuccess, onSkip, showSkip = true }) {
             <div className="w-16 h-16 bg-gradient-to-br from-sky-500 to-violet-500 rounded-2xl mx-auto mb-4 flex items-center justify-center">
               <span className="text-3xl">🌟</span>
             </div>
-            <h1 className="text-3xl font-bold text-white">MJ's Superstars</h1>
+            <h1 className="text-3xl font-bold text-white">Top Performer</h1>
             <p className="text-slate-400 mt-2">AI + EI — Become the 1%</p>
           </div>
 

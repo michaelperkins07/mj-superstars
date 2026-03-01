@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Notification Settings Screen
+// Top Performer - Notification Settings Screen
 // Customize notification preferences and schedules
 // ============================================================
 

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Notification Handler Service
+// Top Performer - Notification Handler Service
 // Handles notification actions and deep linking
 // ============================================================
 
@@ -180,14 +180,14 @@ export function cleanupNotificationHandlers() {
 }
 
 /**
- * Handle deep links (mjsuperstars://action/...)
+ * Handle deep links (topperformer://action/...)
  */
 export function handleDeepLink(url) {
   try {
     const parsed = new URL(url);
 
-    // Handle mjsuperstars:// scheme
-    if (parsed.protocol === 'mjsuperstars:') {
+    // Handle topperformer:// scheme
+    if (parsed.protocol === 'topperformer:') {
       const action = parsed.hostname || parsed.pathname.replace('/', '');
       const params = Object.fromEntries(parsed.searchParams);
 
@@ -195,8 +195,8 @@ export function handleDeepLink(url) {
       return true;
     }
 
-    // Handle https://mjsuperstars.app/... universal links
-    if (parsed.hostname === 'mjsuperstars.app') {
+    // Handle https://topperformer.app/... universal links
+    if (parsed.hostname === 'topperformer.app') {
       const pathParts = parsed.pathname.split('/').filter(Boolean);
       const action = pathParts[0];
       const params = Object.fromEntries(parsed.searchParams);

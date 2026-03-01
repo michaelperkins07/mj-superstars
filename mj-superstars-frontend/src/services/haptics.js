@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Haptic Feedback Service
+// Top Performer - Haptic Feedback Service
 // Provides consistent haptic patterns throughout the app
 // ============================================================
 

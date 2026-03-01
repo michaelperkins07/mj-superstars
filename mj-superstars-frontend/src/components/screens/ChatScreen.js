@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Chat Screen
+// Top Performer - Chat Screen
 // AI conversation with MJ wellness companion
 // ============================================================
 import React, { useState, useEffect, useRef } from 'react';

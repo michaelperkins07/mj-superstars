@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Background Job Queue Service
+// Top Performer - Background Job Queue Service
 // Redis-backed job processing with Bull
 // Gracefully handles missing bull/Redis dependencies
 // ============================================================

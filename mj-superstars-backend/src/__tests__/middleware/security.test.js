@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Security Middleware Tests
+// Top Performer - Security Middleware Tests
 // ============================================================
 
 import {

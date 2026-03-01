@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Frontend Feature Flags Service
+// Top Performer - Frontend Feature Flags Service
 // Client-side feature flag management with caching
 // ============================================================
 

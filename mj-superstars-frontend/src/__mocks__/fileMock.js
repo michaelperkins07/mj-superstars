@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - File Mock for Jest
+// Top Performer - File Mock for Jest
 // ============================================================
 
 module.exports = 'test-file-stub';

@@ -657,8 +657,8 @@ router.post('/posts/:id/share-external', async (req, res) => {
     const post = postResult.rows[0];
 
     // Generate share text
-    const shareText = `${post.display_name} just shared a ${post.post_type.replace(/_/g, ' ')} on MJ's Superstars! ${post.content ? `"${post.content}"` : ''}`;
-    const appLink = `https://mjsuperstars.app/post/${id}`;
+    const shareText = `${post.display_name} just shared a ${post.post_type.replace(/_/g, ' ')} on Top Performer! ${post.content ? `"${post.content}"` : ''}`;
+    const appLink = `https://topperformer.app/post/${id}`;
     const encodedText = encodeURIComponent(shareText);
     const encodedLink = encodeURIComponent(appLink);
 

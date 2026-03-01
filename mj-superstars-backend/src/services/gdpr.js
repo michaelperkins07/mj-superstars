@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - GDPR Compliance Service
+// Top Performer - GDPR Compliance Service
 // Data export, deletion, and consent management
 // ============================================================
 

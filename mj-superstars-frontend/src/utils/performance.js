@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Performance Optimization Utilities
+// Top Performer - Performance Optimization Utilities
 // Lazy loading, memoization, and performance monitoring
 // ============================================================
 

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Job Processor Worker
+// Top Performer - Job Processor Worker
 // Processes background jobs from queues
 // ============================================================
 

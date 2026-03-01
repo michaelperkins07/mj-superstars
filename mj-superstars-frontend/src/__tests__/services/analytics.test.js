@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Analytics Service Tests
+// Top Performer - Analytics Service Tests
 // ============================================================
 
 // Mock mixpanel before importing

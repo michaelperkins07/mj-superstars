@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Elite Subscription Paywall
+// Top Performer - Elite Subscription Paywall
 // Beautiful paywall with plan selection and purchase flow
 // TODO: Wire up payment processor (RevenueCat/StoreKit2) before enabling
 // TODO: Not currently in navigation — add when IAP is fully integrated

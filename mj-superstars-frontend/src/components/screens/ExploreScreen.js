@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Explore Hub Screen
+// Top Performer - Explore Hub Screen
 // ============================================================
 // Discovery hub: Quick Coping Tools, Daily Content, Gamification,
 // Social, Photos, Rituals. Designed to work for both guests and
@@ -683,7 +683,7 @@ function ExploreScreen({ onNavigateTo }) {
                       </button>
                       <ShareButton
                         variant="icon"
-                        text={post.content || "Check out this post on MJ's Superstars!"}
+                        text={post.content || "Check out this post on Top Performer!"}
                         shareType="post"
                         contentId={post.id}
                       />

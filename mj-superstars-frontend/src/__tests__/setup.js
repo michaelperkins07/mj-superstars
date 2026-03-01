@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Test Setup & Utilities
+// Top Performer - Test Setup & Utilities
 // Jest configuration and testing utilities
 // ============================================================
 
@@ -105,7 +105,7 @@ window.Capacitor = {
     },
     App: {
       addListener: jest.fn(),
-      getInfo: jest.fn(() => Promise.resolve({ id: 'com.mjsuperstars.app', name: 'MJ\'s Superstars', version: '1.0.0', build: '7' }))
+      getInfo: jest.fn(() => Promise.resolve({ id: 'com.mjsuperstars.app', name: 'Top Performer', version: '1.0.0', build: '7' }))
     },
     StatusBar: {
       setStyle: jest.fn()

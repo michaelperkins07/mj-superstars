@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Like Brady - Top Performer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --black: #000; --gold: #C5962F; --dark-gold: #A67C1A; --light-gold: #F5ECD7; --red: #C41E3A; --white: #FFF; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: #333; overflow-x: hidden; }
+  .hero { background: linear-gradient(135deg, #000 0%, #111 40%, #1a1a1a 60%, #000 100%); color: white; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 20px; position: relative; overflow: hidden; }
+  .hero::before { content: '🏈'; position: absolute; font-size: 35vw; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.03; pointer-events: none; }
+  .hero-badge { background: var(--red); color: white; padding: 8px 24px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(3.5rem, 10vw, 8rem); font-weight: 900; line-height: 0.95; letter-spacing: -3px; margin-bottom: 16px; }
+  .hero h1 .gold { color: var(--gold); }
+  .hero-subtitle { font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: #999; max-width: 650px; margin-bottom: 20px; line-height: 1.4; }
+  .hero-quote { font-size: clamp(1.2rem, 3vw, 1.8rem); color: var(--gold); font-style: italic; font-weight: 600; max-width: 700px; margin: 0 auto 40px; line-height: 1.4; }
+  .hero-quote::before, .hero-quote::after { content: '"'; }
+  .stats-bar { background: var(--gold); padding: 40px 20px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-number { font-size: 2.8rem; font-weight: 900; color: var(--black); }
+  .stat-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(0,0,0,0.6); }
+  .story { background: var(--black); color: white; padding: 100px 20px; }
+  .story-inner { max-width: 800px; margin: 0 auto; }
+  .story-label { color: var(--gold); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px; }
+  .story h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 32px; line-height: 1.1; }
+  .story p { font-size: 1.15rem; line-height: 1.8; color: #bbb; margin-bottom: 24px; }
+  .story .highlight { color: var(--gold); font-weight: 700; }
+  .story .red { color: var(--red); font-weight: 700; }
+  .noise { background: #0a0a0a; padding: 100px 20px; text-align: center; position: relative; overflow: hidden; }
+  .noise::before { content: 'NOISE NOISE NOISE NOISE'; position: absolute; font-size: 8vw; font-weight: 900; color: rgba(196,30,58,0.05); top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-5deg); white-space: nowrap; pointer-events: none; }
+  .noise h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; color: white; margin-bottom: 48px; }
+  .noise h2 .crossed { text-decoration: line-through; color: #444; text-decoration-color: var(--red); text-decoration-thickness: 4px; }
+  .noise-items { max-width: 700px; margin: 0 auto; text-align: left; }
+  .noise-item { display: flex; gap: 20px; align-items: flex-start; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .noise-x { color: var(--red); font-size: 1.5rem; font-weight: 900; min-width: 30px; }
+  .noise-text { color: #888; font-size: 1.05rem; line-height: 1.6; }
+  .noise-text strong { color: white; }
+  .pillars { background: white; padding: 100px 20px; }
+  .pillars-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .pillars h2 { font-size: 2.5rem; font-weight: 900; color: var(--black); margin-bottom: 16px; }
+  .pillars-subtitle { color: #666; font-size: 1.1rem; margin-bottom: 64px; }
+  .pillar-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; text-align: left; }
+  .pillar-card { background: #fafafa; border-radius: 16px; padding: 32px; border-left: 4px solid var(--gold); transition: transform 0.3s; }
+  .pillar-card:hover { transform: translateY(-4px); }
+  .pillar-num { color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .pillar-title { font-size: 1.2rem; font-weight: 900; color: var(--black); margin-bottom: 8px; }
+  .pillar-desc { color: #666; font-size: 0.95rem; line-height: 1.6; }
+  .cta-section { background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%); padding: 120px 20px; text-align: center; }
+  .cta-section h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: white; margin-bottom: 24px; line-height: 1.05; }
+  .cta-section h2 .gold { color: var(--gold); }
+  .cta-subtitle { color: #888; font-size: 1.2rem; max-width: 550px; margin: 0 auto 48px; line-height: 1.5; }
+  .btn-primary { background: var(--gold); color: var(--black); padding: 18px 48px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+  .btn-primary:hover { background: var(--dark-gold); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(197,150,47,0.4); }
+  .btn-secondary { background: transparent; color: white; padding: 18px 48px; border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .footer { background: #000; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(197,150,47,0.2); }
+  .footer-logo { color: var(--gold); font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 12px; }
+  .footer p { color: #555; font-size: 0.85rem; }
+  .footer a { color: var(--gold); text-decoration: none; }
+  @media (max-width: 768px) { .stats-bar { gap: 32px; } .cta-buttons { flex-direction: column; align-items: center; } }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-badge">🏈 The GOAT</div>
+  <h1>BE LIKE<br><span class="gold">BRADY</span></h1>
+  <p class="hero-subtitle">Pick 199. The last laugh lasted 23 years.</p>
+  <p class="hero-quote">It's not about being the best. It's about proving the doubters wrong through obsession with preparation.</p>
+  <a href="https://topperformer.ai" class="btn-primary">🏆 Start Your Journey →</a>
+</section>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-number">7x</div><div class="stat-label">Super Bowl Champion</div></div>
+  <div class="stat"><div class="stat-number">5x</div><div class="stat-label">Super Bowl MVP</div></div>
+  <div class="stat"><div class="stat-number">199</div><div class="stat-label">Draft Pick</div></div>
+  <div class="stat"><div class="stat-number">23</div><div class="stat-label">NFL Seasons</div></div>
+</div>
+
+<section class="story">
+  <div class="story-inner">
+    <div class="story-label">The Story They Don't Tell You</div>
+    <h2>From Pick 199 to <span style="color:var(--gold)">The GOAT</span></h2>
+    <p>In 2000, the NFL Draft happened. <span class="highlight">193 players were chosen before Tom Brady.</span> Six quarterbacks went before him. Teams passing on him year after year. His combine photo became a meme — too skinny, not athletic enough, can't throw. The establishment had made its decision.</p>
+    <p><span class="red">Nobody believed in him. That was his advantage.</span></p>
+    <p>While other QBs rode the wave of hype, Brady studied. He obsessed. He watched film until his eyes burned. He understood that <span class="highlight">preparation is the only thing you can control.</span> The TB12 method wasn't about being special. It was about being obsessive.</p>
+    <p>One Super Bowl. Two. Three. Four. Five. Six. Seven. <span class="highlight">He won championships at 23 and at 43.</span> He won with the Patriots when people said he needed Belichick. Then he won with Tampa Bay when people said he couldn't do it without Belichick. He silenced every narrative by being unstoppable.</p>
+    <p><span class="red">That's not luck. That's the mindset of a Top Performer.</span> Someone who answers doubt with obsession. Someone who proves that being underestimated is the ultimate superpower.</p>
+  </div>
+</section>
+
+<section class="noise">
+  <h2>The <span class="crossed">Noise</span> He Ignored</h2>
+  <div class="noise-items">
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's just a 6th round pick. Not good enough."</strong><br>He became the greatest QB in NFL history. 7 rings. 5 Super Bowl MVPs.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's not athletic enough. His combine was embarrassing."</strong><br>He dominated a sport for two decades. Athletic enough beat the 193 who went before him.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's a system quarterback. It's all Belichick."</strong><br>He won a Super Bowl at 43 with Tampa Bay. Different team. Different coach. Same excellence.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's too old. Father Time is coming for him."</strong><br>At 45, he threw 5,000+ yards. The only thing that stopped him was his decision to retire.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He can't win without Belichick. He'll fail immediately."</strong><br>One year with Tampa. One Super Bowl. He proved he was never the system. He was the standard.</div></div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="pillars-inner">
+    <h2>Brady's Top Performer Pillars</h2>
+    <p class="pillars-subtitle">The principles that took a late draft pick to the mountaintop — and kept him there for 23 years of excellence.</p>
+    <div class="pillar-cards">
+      <div class="pillar-card"><div class="pillar-num">Pillar I</div><div class="pillar-title">Prepare for the Fight</div><div class="pillar-desc">Brady's obsession with film study and preparation was legendary. He saw plays before they happened. Preparation wasn't part of his job — it was his competitive advantage.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar II</div><div class="pillar-title">Raise Your Floor</div><div class="pillar-desc">The TB12 Method. Strict diet. Cryotherapy. Sleep optimization. Brady invested obsessively in his body so that even bad days looked elite.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar III</div><div class="pillar-title">Dominate Today</div><div class="pillar-desc">Year 1 looked like Year 23 because Brady treated every single day as the most important day of his career. No coasting. No autopilot.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar IV</div><div class="pillar-title">Master Your Mind & Emotions</div><div class="pillar-desc">Down 28-3 in the Super Bowl. Facing critics. Battling injuries. Brady's mental toughness was unmatched. He turned pressure into clarity.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar V</div><div class="pillar-title">Get Uncomfortable Daily</div><div class="pillar-desc">At 43, in a new uniform, with a new team, in a new city — Brady stepped into massive discomfort. That's where growth happens.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar VI</div><div class="pillar-title">Alive Time Over Dead Time</div><div class="pillar-desc">Every practice counted. Every film session mattered. Brady never wasted a moment. He turned time into preparation. Time into championships.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Ready to Block Out<br><span class="gold">Your Noise?</span></h2>
+  <p class="cta-subtitle">Brady built his greatness one day at a time, for 23 seasons. He proved that preparation beats talent. That obsession beats doubt. Your journey starts with one decision. Make it now.</p>
+  <div class="cta-buttons">
+    <a href="https://topperformer.ai" class="btn-primary">🏆 Become a Top Performer →</a>
+    <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">📱 Download the App</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">TOP PERFORMER</div>
+  <p>Your Coach in Your Pocket • <a href="https://topperformer.ai">topperformer.ai</a></p>
+  <p style="margin-top:8px; color:#444;">This page is not affiliated with Tom Brady or the NFL. Created for inspirational purposes.</p>
+</footer>
+
+</body>
+</html>

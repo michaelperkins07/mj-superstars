@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Like Steph - Top Performer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --black: #000; --gold: #C5962F; --dark-gold: #A67C1A; --light-gold: #F5ECD7; --red: #C41E3A; --white: #FFF; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: #333; overflow-x: hidden; }
+  .hero { background: linear-gradient(135deg, #000 0%, #111 40%, #1a1a1a 60%, #000 100%); color: white; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 20px; position: relative; overflow: hidden; }
+  .hero::before { content: '🎯'; position: absolute; font-size: 35vw; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.03; pointer-events: none; }
+  .hero-badge { background: var(--red); color: white; padding: 8px 24px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(3.5rem, 10vw, 8rem); font-weight: 900; line-height: 0.95; letter-spacing: -3px; margin-bottom: 16px; }
+  .hero h1 .gold { color: var(--gold); }
+  .hero-subtitle { font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: #999; max-width: 650px; margin-bottom: 20px; line-height: 1.4; }
+  .hero-quote { font-size: clamp(1.2rem, 3vw, 1.8rem); color: var(--gold); font-style: italic; font-weight: 600; max-width: 700px; margin: 0 auto 40px; line-height: 1.4; }
+  .hero-quote::before, .hero-quote::after { content: '"'; }
+  .stats-bar { background: var(--gold); padding: 40px 20px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-number { font-size: 2.8rem; font-weight: 900; color: var(--black); }
+  .stat-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(0,0,0,0.6); }
+  .story { background: var(--black); color: white; padding: 100px 20px; }
+  .story-inner { max-width: 800px; margin: 0 auto; }
+  .story-label { color: var(--gold); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px; }
+  .story h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 32px; line-height: 1.1; }
+  .story p { font-size: 1.15rem; line-height: 1.8; color: #bbb; margin-bottom: 24px; }
+  .story .highlight { color: var(--gold); font-weight: 700; }
+  .story .red { color: var(--red); font-weight: 700; }
+  .noise { background: #0a0a0a; padding: 100px 20px; text-align: center; position: relative; overflow: hidden; }
+  .noise::before { content: 'NOISE NOISE NOISE NOISE'; position: absolute; font-size: 8vw; font-weight: 900; color: rgba(196,30,58,0.05); top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-5deg); white-space: nowrap; pointer-events: none; }
+  .noise h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; color: white; margin-bottom: 48px; }
+  .noise h2 .crossed { text-decoration: line-through; color: #444; text-decoration-color: var(--red); text-decoration-thickness: 4px; }
+  .noise-items { max-width: 700px; margin: 0 auto; text-align: left; }
+  .noise-item { display: flex; gap: 20px; align-items: flex-start; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .noise-x { color: var(--red); font-size: 1.5rem; font-weight: 900; min-width: 30px; }
+  .noise-text { color: #888; font-size: 1.05rem; line-height: 1.6; }
+  .noise-text strong { color: white; }
+  .pillars { background: white; padding: 100px 20px; }
+  .pillars-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .pillars h2 { font-size: 2.5rem; font-weight: 900; color: var(--black); margin-bottom: 16px; }
+  .pillars-subtitle { color: #666; font-size: 1.1rem; margin-bottom: 64px; }
+  .pillar-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; text-align: left; }
+  .pillar-card { background: #fafafa; border-radius: 16px; padding: 32px; border-left: 4px solid var(--gold); transition: transform 0.3s; }
+  .pillar-card:hover { transform: translateY(-4px); }
+  .pillar-num { color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .pillar-title { font-size: 1.2rem; font-weight: 900; color: var(--black); margin-bottom: 8px; }
+  .pillar-desc { color: #666; font-size: 0.95rem; line-height: 1.6; }
+  .cta-section { background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%); padding: 120px 20px; text-align: center; }
+  .cta-section h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: white; margin-bottom: 24px; line-height: 1.05; }
+  .cta-section h2 .gold { color: var(--gold); }
+  .cta-subtitle { color: #888; font-size: 1.2rem; max-width: 550px; margin: 0 auto 48px; line-height: 1.5; }
+  .btn-primary { background: var(--gold); color: var(--black); padding: 18px 48px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+  .btn-primary:hover { background: var(--dark-gold); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(197,150,47,0.4); }
+  .btn-secondary { background: transparent; color: white; padding: 18px 48px; border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .footer { background: #000; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(197,150,47,0.2); }
+  .footer-logo { color: var(--gold); font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 12px; }
+  .footer p { color: #555; font-size: 0.85rem; }
+  .footer a { color: var(--gold); text-decoration: none; }
+  @media (max-width: 768px) { .stats-bar { gap: 32px; } .cta-buttons { flex-direction: column; align-items: center; } }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-badge">🏀 The Baby-Faced Assassin</div>
+  <h1>BE LIKE<br><span class="gold">STEPH</span></h1>
+  <p class="hero-subtitle">Too small. Too skinny. Couldn't get a Division I scholarship. Changed the entire sport of basketball forever.</p>
+  <p class="hero-quote">I've never been afraid of big moments. I get butterflies. I get nervous and anxious, but I think those are all positive signs that I'm ready for the moment.</p>
+  <a href="https://topperformer.ai" class="btn-primary">🏆 Start Your Journey →</a>
+</section>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-number">4x</div><div class="stat-label">NBA Champion</div></div>
+  <div class="stat"><div class="stat-number">2x</div><div class="stat-label">League MVP</div></div>
+  <div class="stat"><div class="stat-number">3,700+</div><div class="stat-label">Three-Pointers (All-Time Record)</div></div>
+  <div class="stat"><div class="stat-number">1</div><div class="stat-label">Revolution (Changed Basketball)</div></div>
+</div>
+
+<section class="story">
+  <div class="story-inner">
+    <div class="story-label">The Story They Don't Tell You</div>
+    <h2>From Davidson to <span style="color:var(--gold)">Dynasty</span></h2>
+    <p>Stephen Curry was the son of NBA sharpshooter Dell Curry. You'd think that opened doors. <span class="highlight">It didn't.</span> Every major Division I program passed on him. Too small. Too skinny. Too slow. Virginia Tech — his dad's alma mater — wouldn't even offer him a scholarship.</p>
+    <p>So Steph went to Davidson College. A tiny school nobody expected to compete. <span class="red">And he set the entire NCAA tournament on fire.</span> He carried Davidson to the Elite Eight as a sophomore, hitting shots from another zip code while the world watched in disbelief.</p>
+    <p>The NBA wasn't convinced either. He was drafted 7th — two spots after the Minnesota Timberwolves took two point guards ahead of him. Then came the ankle injuries. Season after season, his ankles kept giving out. <span class="highlight">Analysts called him injury-prone. Teams considered trading him. His career was on life support.</span></p>
+    <p>Steph didn't just come back. He reinvented the game. He moved the three-point line from a specialty shot to the most important weapon in basketball. He won back-to-back MVPs — the second one <span class="highlight">unanimously</span>, something that had never happened in NBA history. He led the Warriors to a 73-9 record. He won four championships.</p>
+    <p>The kid nobody wanted became the greatest shooter who ever lived. <span class="red">That's not genetics. That's the mindset of a Top Performer.</span></p>
+  </div>
+</section>
+
+<section class="noise">
+  <h2>The <span class="crossed">Noise</span> He Blocked</h2>
+  <div class="noise-items">
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's too small for the NBA."</strong><br>At 6'3" and 185 pounds, he revolutionized the entire sport. Size was never the variable — skill and will were.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's injury-prone. Those ankles will end his career."</strong><br>He restructured his movement, rebuilt his body, and won 4 NBA championships on those same ankles.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"Davidson? He can't compete at the highest level."</strong><br>He became the first unanimous MVP in NBA history. The highest level adapted to him.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"The Warriors dynasty is over."</strong><br>After Kevin Durant left and Klay tore his ACL, Steph came back and won another ring — proving it was always his team.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He'll never be like his dad."</strong><br>Dell Curry was a great shooter. Steph became the greatest shooter who ever lived. He didn't follow a path — he built a new one.</div></div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="pillars-inner">
+    <h2>Steph's Top Performer Pillars</h2>
+    <p class="pillars-subtitle">The principles that turned a kid nobody recruited into the man who changed basketball.</p>
+    <div class="pillar-cards">
+      <div class="pillar-card"><div class="pillar-num">Pillar I</div><div class="pillar-title">Get Uncomfortable Daily</div><div class="pillar-desc">Steph shoots hundreds of threes before every game — from spots most players wouldn't dare attempt in a game. He trains beyond what's required so the game feels easy.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar II</div><div class="pillar-title">Raise Your Floor</div><div class="pillar-desc">After the ankle injuries, Steph rebuilt his body from the ground up. He didn't just rehab — he raised his physical baseline so high that injuries couldn't touch him again.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar III</div><div class="pillar-title">Prepare for the Fight</div><div class="pillar-desc">His pregame routine is legendary — dribbling drills, shooting from impossible angles, tunnel shots that break the internet. When the game starts, he's already won.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar IV</div><div class="pillar-title">Light Up the Scoreboard</div><div class="pillar-desc">3,700+ three-pointers. The all-time record by a mile. Steph doesn't argue about who's the best shooter. The scoreboard speaks for itself.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar V</div><div class="pillar-title">Dominate Today</div><div class="pillar-desc">Year 15 looks like Year 1 because Steph treats every practice, every game, every rep like it's the most important one. No coasting. No autopilot.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar VI</div><div class="pillar-title">Master Your Mind & Emotions</div><div class="pillar-desc">Shimmy after a three. Mouth guard chewing on the bench. Steph plays with joy — but underneath that smile is ice-cold composure when the pressure peaks.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Ready to Block Out<br><span class="gold">Your Noise?</span></h2>
+  <p class="cta-subtitle">Steph wasn't supposed to be here. But he put in the work, blocked out the doubters, and changed the game. Your turn.</p>
+  <div class="cta-buttons">
+    <a href="https://topperformer.ai" class="btn-primary">🏆 Become a Top Performer →</a>
+    <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">📱 Download the App</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">TOP PERFORMER</div>
+  <p>Your Coach in Your Pocket &bull; <a href="https://topperformer.ai">topperformer.ai</a></p>
+  <p style="margin-top:8px; color:#444;">This page is not affiliated with Stephen Curry or the NBA. Created for inspirational purposes.</p>
+</footer>
+
+</body>
+</html>

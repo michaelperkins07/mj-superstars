@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Photos Routes Tests (ESM)
+// Top Performer - Photos Routes Tests (ESM)
 // ============================================================
 
 import { jest, describe, test, expect, beforeEach, afterAll } from '@jest/globals';

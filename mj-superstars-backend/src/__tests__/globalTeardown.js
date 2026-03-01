@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars Backend - Jest Global Teardown
+// Top Performer Backend - Jest Global Teardown
 // ============================================================
 
 module.exports = async () => {

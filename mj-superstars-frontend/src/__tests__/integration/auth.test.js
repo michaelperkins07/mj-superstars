@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Auth Integration Tests
+// Top Performer - Auth Integration Tests
 // ============================================================
 
 import React from 'react';

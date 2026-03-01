@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BE LIKE JOCKO - Discipline Equals Freedom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000;
+            --gold: #C5962F;
+            --dark-gold: #A67C1A;
+            --light-gold: #F5ECD7;
+            --red: #C41E3A;
+            --white: #FFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--black);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "⚔️";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 300px;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(197, 150, 47, 0.2);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .hero h1 .gold {
+            color: var(--gold);
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #ccc;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .hero-quote {
+            position: relative;
+            z-index: 1;
+            font-size: 24px;
+            font-weight: 600;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .hero-quote::before {
+            content: '"';
+            margin-right: 5px;
+        }
+
+        .hero-quote::after {
+            content: '"';
+            margin-left: 5px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: var(--gold);
+            color: var(--black);
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--black);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--black);
+        }
+
+        /* Story Section */
+        .story {
+            background: var(--white);
+            padding: 80px 20px;
+        }
+
+        .story-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .story-label {
+            color: var(--gold);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .story h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .story p {
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+        .story .highlight {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .story .red {
+            color: var(--red);
+            font-weight: 700;
+        }
+
+        /* Noise Section */
+        .noise {
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .noise::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                repeating-linear-gradient(
+                    0deg,
+                    rgba(0,0,0,0.03),
+                    rgba(0,0,0,0.03) 1px,
+                    transparent 1px,
+                    transparent 2px
+                );
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .noise h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 60px;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            line-height: 1.2;
+        }
+
+        .noise h2 .crossed {
+            text-decoration: line-through;
+            color: #666;
+        }
+
+        .noise-items {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .noise-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: rgba(197, 150, 47, 0.1);
+            border-left: 3px solid var(--gold);
+            border-radius: 4px;
+        }
+
+        .noise-x {
+            color: var(--red);
+            font-size: 28px;
+            font-weight: 900;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .noise-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Pillars Section */
+        .pillars {
+            background: var(--white);
+            padding: 80px 20px;
+        }
+
+        .pillars-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pillars-inner > h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 60px;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .pillar-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pillar-card {
+            background: var(--white);
+            border: 1px solid #e0e0e0;
+            border-left: 5px solid var(--gold);
+            padding: 30px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .pillar-num {
+            font-size: 48px;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+
+        .pillar-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--black);
+        }
+
+        .pillar-desc {
+            font-size: 14px;
+            line-height: 1.7;
+            color: #666;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+
+        .cta-section h2 .gold {
+            color: var(--gold);
+        }
+
+        .cta-subtitle {
+            font-size: 16px;
+            color: #ccc;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            background: var(--gold);
+            color: var(--black);
+            padding: 16px 40px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: var(--dark-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(197, 150, 47, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--gold);
+            padding: 16px 40px;
+            border: 2px solid var(--gold);
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--black);
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            border-top: 1px solid var(--gold);
+        }
+
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+
+        .footer p {
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .hero-quote {
+                font-size: 18px;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 30px 20px;
+                gap: 20px;
+            }
+
+            .stat-number {
+                font-size: 28px;
+            }
+
+            .stat-label {
+                font-size: 12px;
+            }
+
+            .story {
+                padding: 60px 20px;
+            }
+
+            .story h2 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            .story p {
+                font-size: 15px;
+                margin-bottom: 20px;
+            }
+
+            .noise {
+                padding: 60px 20px;
+            }
+
+            .noise h2 {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+
+            .noise-item {
+                margin-bottom: 25px;
+                padding: 15px;
+            }
+
+            .noise-x {
+                font-size: 24px;
+                margin-right: 15px;
+            }
+
+            .noise-text {
+                font-size: 14px;
+            }
+
+            .pillars {
+                padding: 60px 20px;
+            }
+
+            .pillars-inner > h2 {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+
+            .pillar-cards {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .cta-section {
+                padding: 60px 20px;
+            }
+
+            .cta-section h2 {
+                font-size: 36px;
+                margin-bottom: 20px;
+            }
+
+            .cta-buttons {
+                max-width: 100%;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 14px 30px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">⚔️ The Discipline Machine</div>
+        <h1>BE LIKE<br><span class="gold">JOCKO</span></h1>
+        <p class="hero-subtitle">Navy SEAL commander. Leadership legend. Wakes up at 4:30 AM every day. Discipline equals freedom.</p>
+        <div class="hero-quote">Discipline equals freedom</div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stat">
+            <div class="stat-number">20 Years</div>
+            <div class="stat-label">Navy SEAL Career</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">Task Unit Bruiser</div>
+            <div class="stat-label">Most Decorated Unit - Ramadi</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">#1</div>
+            <div class="stat-label">NYT Bestselling Author</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">4:30 AM</div>
+            <div class="stat-label">Every Single Day</div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story">
+        <div class="story-inner">
+            <div class="story-label">The Story They Don't Tell You</div>
+            <h2>From SEAL Team to Serving Millions</h2>
+            <p>Jocko Willink grew up in New England, enlisted in the Navy and became a SEAL. Rose to become commander of <span class="highlight">SEAL Team Three's Task Unit Bruiser in Ramadi, Iraq</span> — the most decorated special operations unit of the Iraq War. Served alongside legends like Chris Kyle and Marc Lee (first SEAL killed in Iraq).</p>
+            <p>After the Battle of Ramadi, Jocko had to take <span class="red">EXTREME OWNERSHIP of a friendly fire incident that nearly killed his own men</span>. That moment defined his leadership philosophy. After retiring, he co-wrote "Extreme Ownership" which became a leadership bible. His podcast became one of the most listened to in the world. His 4:30 AM wakeup photos became iconic.</p>
+            <p>He built <span class="highlight">Echelon Front</span> (leadership consulting), <span class="highlight">Origin</span> (American-made clothing and supplements), and became the voice of discipline for millions. His philosophy is simple: <span class="gold">don't make excuses, take ownership, get after it.</span></p>
+        </div>
+    </section>
+
+    <!-- Noise Section -->
+    <section class="noise">
+        <h2>Cut Through The <span class="crossed">Noise</span></h2>
+        <div class="noise-items">
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"Military leadership doesn't apply to business"</strong> → Fortune 500 companies pay millions for his frameworks</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"Waking up at 4:30 AM is extreme"</strong> → It's not extreme. It's discipline. And discipline equals freedom.</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"He's just another veteran with a podcast"</strong> → NYT bestselling author, leadership empire, clothing company, supplement brand</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"Extreme Ownership is just a buzzword"</strong> → It's a battlefield-tested principle that saved lives and now transforms organizations</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"He's too intense for regular people"</strong> → His message is for EVERYONE: own your mistakes, lead yourself first</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pillars Section -->
+    <section class="pillars">
+        <div class="pillars-inner">
+            <h2>Six Pillars of Jocko's Philosophy</h2>
+            <div class="pillar-cards">
+                <div class="pillar-card">
+                    <div class="pillar-num">01</div>
+                    <div class="pillar-title">Dominate Today</div>
+                    <div class="pillar-desc">Wake at 4:30 AM every single day. It's not about the time—it's about taking control of your day before anything else can. Discipline starts the moment you wake up.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">02</div>
+                    <div class="pillar-title">Prepare for the Fight</div>
+                    <div class="pillar-desc">SEAL training philosophy: plan meticulously, train relentlessly, adapt ruthlessly. Every challenge is a fight that demands preparation and mental toughness.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">03</div>
+                    <div class="pillar-title">Master Your Mind & Emotions</div>
+                    <div class="pillar-desc">Extreme Ownership under fire: take responsibility for everything. Don't blame circumstances, the team, or bad luck. Your mindset determines the outcome.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">04</div>
+                    <div class="pillar-title">Raise Your Floor</div>
+                    <div class="pillar-desc">Discipline isn't perfection—it's consistency. Raise your baseline. Do the hard things when nobody's watching. That's where real strength comes from.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">05</div>
+                    <div class="pillar-title">Get Uncomfortable Daily</div>
+                    <div class="pillar-desc">Growth lives at the edge of comfort. Cold plunges, hard workouts, difficult conversations—embrace discomfort as your best teacher.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">06</div>
+                    <div class="pillar-title">Let's Take It On Together</div>
+                    <div class="pillar-desc">Leadership is lifting others. Jocko's mission: help millions own their lives and their leadership. Strong teams win. Lead yourself first, then elevate your team.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Block Out<br>Your <span class="gold">Noise?</span></h2>
+        <p class="cta-subtitle">Start your discipline journey today. Get after it.</p>
+        <div class="cta-buttons">
+            <a href="https://topperformer.ai" class="btn-primary">Get Top Performer</a>
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">Download on iOS</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">TOP PERFORMER</div>
+        <p><a href="https://topperformer.ai">topperformer.ai</a></p>
+        <p>Not affiliated with Jocko Willink. This page is inspired by his philosophy and content.</p>
+    </footer>
+</body>
+</html>

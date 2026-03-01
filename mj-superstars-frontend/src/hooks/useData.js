@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Data Hooks
+// Top Performer - Data Hooks
 // React hooks for data operations
 // ============================================================
 

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Offline Request Queue
+// Top Performer - Offline Request Queue
 // Queues failed API mutations for replay when back online
 // ============================================================
 

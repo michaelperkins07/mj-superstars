@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Be Like Trevor - Top Performer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root { --black: #000; --gold: #C5962F; --dark-gold: #A67C1A; --light-gold: #F5ECD7; --red: #C41E3A; --white: #FFF; }
+  body { font-family: 'Inter', -apple-system, sans-serif; color: #333; overflow-x: hidden; }
+  .hero { background: linear-gradient(135deg, #000 0%, #111 40%, #1a1a1a 60%, #000 100%); color: white; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 20px; position: relative; overflow: hidden; }
+  .hero::before { content: '🏈'; position: absolute; font-size: 35vw; top: 50%; left: 50%; transform: translate(-50%,-50%); opacity: 0.03; pointer-events: none; }
+  .hero-badge { background: var(--red); color: white; padding: 8px 24px; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 24px; }
+  .hero h1 { font-size: clamp(3.5rem, 10vw, 8rem); font-weight: 900; line-height: 0.95; letter-spacing: -3px; margin-bottom: 16px; }
+  .hero h1 .gold { color: var(--gold); }
+  .hero-subtitle { font-size: clamp(1.1rem, 2.5vw, 1.5rem); color: #999; max-width: 650px; margin-bottom: 20px; line-height: 1.4; }
+  .hero-quote { font-size: clamp(1.2rem, 3vw, 1.8rem); color: var(--gold); font-style: italic; font-weight: 600; max-width: 700px; margin: 0 auto 40px; line-height: 1.4; }
+  .hero-quote::before, .hero-quote::after { content: '"'; }
+  .stats-bar { background: var(--gold); padding: 40px 20px; display: flex; justify-content: center; gap: 60px; flex-wrap: wrap; }
+  .stat { text-align: center; }
+  .stat-number { font-size: 2.8rem; font-weight: 900; color: var(--black); }
+  .stat-label { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; color: rgba(0,0,0,0.6); }
+  .story { background: var(--black); color: white; padding: 100px 20px; }
+  .story-inner { max-width: 800px; margin: 0 auto; }
+  .story-label { color: var(--gold); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; margin-bottom: 16px; }
+  .story h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; margin-bottom: 32px; line-height: 1.1; }
+  .story p { font-size: 1.15rem; line-height: 1.8; color: #bbb; margin-bottom: 24px; }
+  .story .highlight { color: var(--gold); font-weight: 700; }
+  .story .red { color: var(--red); font-weight: 700; }
+  .noise { background: #0a0a0a; padding: 100px 20px; text-align: center; position: relative; overflow: hidden; }
+  .noise::before { content: 'NOISE NOISE NOISE NOISE'; position: absolute; font-size: 8vw; font-weight: 900; color: rgba(196,30,58,0.05); top: 50%; left: 50%; transform: translate(-50%,-50%) rotate(-5deg); white-space: nowrap; pointer-events: none; }
+  .noise h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900; color: white; margin-bottom: 48px; }
+  .noise h2 .crossed { text-decoration: line-through; color: #444; text-decoration-color: var(--red); text-decoration-thickness: 4px; }
+  .noise-items { max-width: 700px; margin: 0 auto; text-align: left; }
+  .noise-item { display: flex; gap: 20px; align-items: flex-start; padding: 24px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .noise-x { color: var(--red); font-size: 1.5rem; font-weight: 900; min-width: 30px; }
+  .noise-text { color: #888; font-size: 1.05rem; line-height: 1.6; }
+  .noise-text strong { color: white; }
+  .pillars { background: white; padding: 100px 20px; }
+  .pillars-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+  .pillars h2 { font-size: 2.5rem; font-weight: 900; color: var(--black); margin-bottom: 16px; }
+  .pillars-subtitle { color: #666; font-size: 1.1rem; margin-bottom: 64px; }
+  .pillar-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; text-align: left; }
+  .pillar-card { background: #fafafa; border-radius: 16px; padding: 32px; border-left: 4px solid var(--gold); transition: transform 0.3s; }
+  .pillar-card:hover { transform: translateY(-4px); }
+  .pillar-num { color: var(--gold); font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 8px; }
+  .pillar-title { font-size: 1.2rem; font-weight: 900; color: var(--black); margin-bottom: 8px; }
+  .pillar-desc { color: #666; font-size: 0.95rem; line-height: 1.6; }
+  .cta-section { background: linear-gradient(135deg, #000 0%, #111 50%, #000 100%); padding: 120px 20px; text-align: center; }
+  .cta-section h2 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 900; color: white; margin-bottom: 24px; line-height: 1.05; }
+  .cta-section h2 .gold { color: var(--gold); }
+  .cta-subtitle { color: #888; font-size: 1.2rem; max-width: 550px; margin: 0 auto 48px; line-height: 1.5; }
+  .btn-primary { background: var(--gold); color: var(--black); padding: 18px 48px; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: all 0.3s; text-transform: uppercase; letter-spacing: 2px; }
+  .btn-primary:hover { background: var(--dark-gold); transform: translateY(-2px); box-shadow: 0 8px 30px rgba(197,150,47,0.4); }
+  .btn-secondary { background: transparent; color: white; padding: 18px 48px; border: 2px solid rgba(255,255,255,0.2); border-radius: 8px; font-size: 1.1rem; font-weight: 600; text-decoration: none; transition: all 0.3s; }
+  .btn-secondary:hover { border-color: var(--gold); color: var(--gold); }
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .footer { background: #000; padding: 40px 20px; text-align: center; border-top: 1px solid rgba(197,150,47,0.2); }
+  .footer-logo { color: var(--gold); font-weight: 900; font-size: 1.2rem; letter-spacing: 2px; margin-bottom: 12px; }
+  .footer p { color: #555; font-size: 0.85rem; }
+  .footer a { color: var(--gold); text-decoration: none; }
+  @media (max-width: 768px) { .stats-bar { gap: 32px; } .cta-buttons { flex-direction: column; align-items: center; } }
+</style>
+</head>
+<body>
+
+<section class="hero">
+  <div class="hero-badge">🏈 The Generational Talent</div>
+  <h1>BE LIKE<br><span class="gold">TREVOR</span></h1>
+  <p class="hero-subtitle">Called the best prospect in a generation. Drafted #1 overall. Then the real work began.</p>
+  <p class="hero-quote">I want to be the most dependable person on the field. When it matters most, I want my team to know I'll be there.</p>
+  <a href="https://topperformer.ai" class="btn-primary">🏆 Start Your Journey →</a>
+</section>
+
+<div class="stats-bar">
+  <div class="stat"><div class="stat-number">#1</div><div class="stat-label">Overall Pick</div></div>
+  <div class="stat"><div class="stat-number">2x</div><div class="stat-label">National Champion (Clemson)</div></div>
+  <div class="stat"><div class="stat-number">34-2</div><div class="stat-label">College Record</div></div>
+  <div class="stat"><div class="stat-number">∞</div><div class="stat-label">Potential Unleashed</div></div>
+</div>
+
+<section class="story">
+  <div class="story-inner">
+    <div class="story-label">The Story They Don't Tell You</div>
+    <h2>From Cartersville to <span style="color:var(--gold)">the Crucible</span></h2>
+    <p>Trevor Lawrence dominated from the moment he stepped on a football field. In Cartersville, Georgia, he was untouchable — a 6'6" quarterback with a cannon arm, elite poise, and the kind of talent that comes around once in a generation. <span class="highlight">By his junior year, everyone knew where he was headed.</span></p>
+    <p>At Clemson, he did something almost no one does: <span class="red">he won a national championship as a true freshman.</span> He went 34-2 as a starter. For three years, he was the consensus #1 pick in the NFL Draft. The hype was unlike anything football had ever seen.</p>
+    <p>Then Jacksonville happened. The worst team in the NFL. A dysfunctional franchise. Urban Meyer's disastrous coaching tenure — one of the most chaotic seasons in NFL history. Losing. Constant losing. <span class="highlight">The golden boy was suddenly in the mud.</span></p>
+    <p>The world was quick to write him off. "He's a bust." "Jacksonville ruined him." "He doesn't have that dog in him." But Trevor kept showing up. Kept working. Kept grinding through a situation that would have broken most people.</p>
+    <p>Here's the Top Performer lesson: <span class="highlight">your circumstances don't define your ceiling — your response to them does.</span> Trevor Lawrence's story isn't about a fall from grace. It's about a man who chose to <span class="red">embrace the friction</span> when he could have folded. The best chapters are still ahead. <span class="red">That's the mindset of a Top Performer.</span></p>
+  </div>
+</section>
+
+<section class="noise">
+  <h2>The <span class="crossed">Noise</span> He Blocked</h2>
+  <div class="noise-items">
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He was overhyped coming out of college."</strong><br>National champion as a true freshman. 34-2 record. The tape doesn't lie — he was every bit as good as advertised.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"Jacksonville will ruin him."</strong><br>He chose to embrace the hardest situation in football. That's not weakness — that's what separates contenders from pretenders.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He's a bust."</strong><br>He's shown flashes of elite play in the worst possible environment. Imagine what happens when the pieces come together.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He doesn't care enough about football."</strong><br>His calm demeanor isn't apathy — it's composure. The same composure that won national championships under pressure.</div></div>
+    <div class="noise-item"><div class="noise-x">✕</div><div class="noise-text"><strong>"He'll never live up to the hype."</strong><br>His story is still being written. The greatest comebacks always have a chapter where the hero is counted out. This is that chapter.</div></div>
+  </div>
+</section>
+
+<section class="pillars">
+  <div class="pillars-inner">
+    <h2>Trevor's Top Performer Pillars</h2>
+    <p class="pillars-subtitle">The principles that sustain greatness when the spotlight becomes a spotlight — and the world wants you to fail.</p>
+    <div class="pillar-cards">
+      <div class="pillar-card"><div class="pillar-num">Pillar I</div><div class="pillar-title">Embrace the Friction</div><div class="pillar-desc">Trevor didn't get the red carpet NFL experience. He got the crucible. And instead of running, he leaned in. Friction is where champions are forged.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar II</div><div class="pillar-title">Alive Time Over Dead Time</div><div class="pillar-desc">Losing seasons could be dead time. Trevor used them as alive time — studying film, refining mechanics, building leadership. Every day counted.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar III</div><div class="pillar-title">Master Your Mind & Emotions</div><div class="pillar-desc">When Urban Meyer's circus was burning around him, Trevor stayed locked in. Composure under chaos isn't passive — it's the hardest form of mental toughness.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar IV</div><div class="pillar-title">Raise Your Floor</div><div class="pillar-desc">Even in his hardest seasons, Trevor showed up prepared, poised, and professional. He raised the floor of his worst days so the foundation was always elite.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar V</div><div class="pillar-title">Prepare for the Fight</div><div class="pillar-desc">Film study. Footwork drills. Leadership meetings. Trevor prepared like a champion even when the wins weren't coming — because he knew the tide would turn.</div></div>
+      <div class="pillar-card"><div class="pillar-num">Pillar VI</div><div class="pillar-title">Dominate Today</div><div class="pillar-desc">Trevor doesn't chase narratives or argue with critics. He shows up every single day and competes. The scoreboard will catch up to the effort.</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <h2>Ready to Block Out<br><span class="gold">Your Noise?</span></h2>
+  <p class="cta-subtitle">Trevor's story proves that your circumstances don't write your ending — you do. Start writing yours today.</p>
+  <div class="cta-buttons">
+    <a href="https://topperformer.ai" class="btn-primary">🏆 Become a Top Performer →</a>
+    <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">📱 Download the App</a>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="footer-logo">TOP PERFORMER</div>
+  <p>Your Coach in Your Pocket &bull; <a href="https://topperformer.ai">topperformer.ai</a></p>
+  <p style="margin-top:8px; color:#444;">This page is not affiliated with Trevor Lawrence or the NFL. Created for inspirational purposes.</p>
+</footer>
+
+</body>
+</html>

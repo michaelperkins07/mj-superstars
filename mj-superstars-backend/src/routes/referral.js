@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Referral System Routes
+// Top Performer - Referral System Routes
 // Handles referral code generation, validation, tracking, and rewards
 // ============================================================
 import { Router } from 'express';

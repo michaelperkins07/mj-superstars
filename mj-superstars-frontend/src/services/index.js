@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Services Exports
+// Top Performer - Services Exports
 // ============================================================
 
 // API Client

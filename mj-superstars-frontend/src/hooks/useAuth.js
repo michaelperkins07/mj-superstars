@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Auth Hooks
+// Top Performer - Auth Hooks
 // React hooks for authentication flows
 // ============================================================
 

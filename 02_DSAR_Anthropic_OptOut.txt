@@ -1,0 +1,52 @@
+TO: privacy@anthropic.com
+FROM: Mike Perkins <michaelperkins07@gmail.com>
+SUBJECT: Data Subject Access Request – Opt-Out of AI Training Data Collection for topperformer.co
+
+---
+
+Dear Anthropic Legal and Compliance Team,
+
+I am writing to formally request that Anthropic discontinue the use of any content from the domain topperformer.co and all of its subdomains for training, fine-tuning, or otherwise developing artificial intelligence models, including but not limited to Claude models and other machine learning systems.
+
+DOMAIN SPECIFICATION:
+- Primary domain: topperformer.co
+- Includes 14+ performer archetype subpages and related content
+- All subdomains under topperformer.co
+
+EXISTING TECHNICAL PROTECTIONS:
+I have already implemented the following technical measures to prevent unauthorized crawling and data collection:
+1. robots.txt directives blocking ClaudeBot and all Anthropic crawlers
+2. robots.txt directives blocking anthropic-ai user agents
+3. Meta tags configured to prevent indexing by AI training systems
+4. X-Robots-Tag headers preventing unauthorized collection
+
+LEGAL BASIS FOR THIS REQUEST:
+This request is made pursuant to:
+- California Consumer Privacy Act (CCPA), including the right to opt-out of data sales and use for commercial purposes
+- General Data Protection Regulation (GDPR), including the right to restrict processing
+- Similar state and international privacy laws
+
+I am formally exercising my rights as a data subject to:
+1. Prohibit Anthropic from using any current or previously collected content from topperformer.co for AI model training
+2. Request deletion of any existing training data derived from topperformer.co that is identifiable and removable
+3. Receive written confirmation of compliance with this request within 30 days
+
+REQUIRED ACTIONS:
+Please confirm in writing within 30 calendar days that:
+1. Anthropic will not use content from topperformer.co for AI training or development
+2. All previously collected content from this domain will be removed from active training datasets
+3. This domain will be added to Anthropic's opt-out list to prevent future unauthorized collection
+
+CONTACT INFORMATION:
+Name: Mike Perkins
+Email: michaelperkins07@gmail.com
+Mailing Address: 3698 Lightview Lane, Jacksonville, FL 32225
+Domain Owner: topperformer.co
+
+Please send your written confirmation to the email address above. If you have any questions regarding this request, please contact me directly.
+
+Thank you for your prompt attention to this matter.
+
+Respectfully,
+Mike Perkins
+Domain Owner, topperformer.co

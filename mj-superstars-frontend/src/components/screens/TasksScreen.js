@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Tasks Screen
+// Top Performer - Tasks Screen
 // You don't have to do everything. Just the next thing.
 // ============================================================
 import React, { useState, useEffect } from 'react';

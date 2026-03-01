@@ -9,12 +9,12 @@ const router = Router();
 // Privacy Policy Content
 const PRIVACY_POLICY = `
 PRIVACY POLICY
-MJ's Superstars Mental Wellness Companion
+Top Performer Mental Wellness Companion
 
 Last Updated: ${new Date().toLocaleDateString()}
 
 1. INTRODUCTION
-MJ's Superstars ("we", "us", "our", or "App") is committed to protecting your privacy. This Privacy Policy explains our data practices for the MJ's Superstars mobile application.
+Top Performer ("we", "us", "our", or "App") is committed to protecting your privacy. This Privacy Policy explains our data practices for the Top Performer mobile application.
 
 App Owner: Michael Steven Perkins, Florida, USA
 Contact: michaelperkins07@gmail.com
@@ -103,19 +103,19 @@ Response time: within 30 days
 // Terms of Service Content
 const TERMS_OF_SERVICE = `
 TERMS OF SERVICE
-MJ's Superstars Mental Wellness Companion
+Top Performer Mental Wellness Companion
 
 Last Updated: ${new Date().toLocaleDateString()}
 
 1. AGREEMENT TO TERMS
-By accessing and using the MJ's Superstars mobile application ("App"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the App.
+By accessing and using the Top Performer mobile application ("App"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the App.
 
 Service Provider: Michael Steven Perkins
 Location: Florida, USA
 Contact: michaelperkins07@gmail.com
 
 2. SERVICE DESCRIPTION
-MJ's Superstars is a personal mental wellness application providing:
+Top Performer is a personal mental wellness application providing:
 - Daily mood tracking and emotional check-ins
 - AI-powered wellness coaching via Claude
 - Digital journaling for self-reflection
@@ -238,7 +238,7 @@ router.get('/privacy-policy-json', (req, res) => {
     title: 'Privacy Policy',
     content: PRIVACY_POLICY,
     lastUpdated: new Date().toISOString(),
-    appName: 'MJ's Superstars',
+    appName: 'Top Performer',
     owner: 'Michael Steven Perkins',
     contact: 'michaelperkins07@gmail.com'
   });
@@ -253,7 +253,7 @@ router.get('/terms-of-service-json', (req, res) => {
     title: 'Terms of Service',
     content: TERMS_OF_SERVICE,
     lastUpdated: new Date().toISOString(),
-    appName: 'MJ's Superstars',
+    appName: 'Top Performer',
     owner: 'Michael Steven Perkins',
     contact: 'michaelperkins07@gmail.com'
   });

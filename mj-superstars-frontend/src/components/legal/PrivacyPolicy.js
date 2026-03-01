@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Privacy Policy
+// Top Performer - Privacy Policy
 // ============================================================
 
 import React from 'react';
@@ -28,7 +28,7 @@ function PrivacyPolicy() {
           <section>
             <h2 className="text-2xl font-bold text-white mb-4">1. Introduction</h2>
             <p className="leading-relaxed">
-              MJ's Superstars ("we", "us", "our", or "App") is committed to protecting your privacy. This Privacy Policy explains our data practices for the MJ's Superstars mobile application.
+              Top Performer ("we", "us", "our", or "App") is committed to protecting your privacy. This Privacy Policy explains our data practices for the Top Performer mobile application.
             </p>
             <p className="leading-relaxed mt-3">
               <strong>App Owner:</strong> Michael Steven Perkins, Florida, USA<br />
@@ -192,7 +192,7 @@ function PrivacyPolicy() {
 
           {/* Footer */}
           <div className="text-center text-slate-500 text-sm pt-8">
-            <p>MJ's Superstars - Mental Wellness Companion</p>
+            <p>Top Performer - Mental Wellness Companion</p>
             <p>© 2024 Michael Steven Perkins. All rights reserved.</p>
           </div>
         </motion.div>

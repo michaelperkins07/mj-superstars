@@ -3,7 +3,7 @@ export const notificationTemplates = {
     {
       day: 0,
       title: "Let's go. Day 1.",
-      body: "You just joined MJ's Superstars. This is your accountability mirror—no excuses, no cap. We're building something real here."
+      body: "You just joined Top Performer. This is your accountability mirror—no excuses, no cap. We're building something real here."
     },
     {
       day: 1,

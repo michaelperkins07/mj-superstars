@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Jest Configuration
+// Top Performer - Jest Configuration
 // ============================================================
 
 module.exports = {

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Feature Flags Service
+// Top Performer - Feature Flags Service
 // Dynamic feature control, A/B testing, and gradual rollouts
 // ============================================================
 

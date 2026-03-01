@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - App Root with Provider Wrappers
+// Top Performer - App Root with Provider Wrappers
 // This file wraps the main app with Auth and Data contexts
 // ============================================================
 
@@ -58,7 +58,7 @@ class ErrorBoundary extends React.Component {
               Something went wrong
             </h1>
             <p className="text-slate-400 mb-6">
-              MJ's Superstars hit a bump. Let's try again.
+              Top Performer hit a bump. Let's try again.
             </p>
             <button
               onClick={() => window.location.reload()}

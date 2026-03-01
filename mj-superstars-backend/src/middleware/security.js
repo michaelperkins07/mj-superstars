@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Security Middleware & Utilities
+// Top Performer - Security Middleware & Utilities
 // Input validation, rate limiting, and security hardening
 // ============================================================
 
@@ -447,7 +447,7 @@ const corsOptions = {
   origin: (origin, callback) => {
     const allowedOrigins = [
       'http://localhost:3000',
-      'https://mjsuperstars.app',
+      'https://topperformer.app',
       'capacitor://localhost',
       'ionic://localhost'
     ];

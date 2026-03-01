@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Animation Library
+// Top Performer - Animation Library
 // Framer Motion animations for polished UI interactions
 // ============================================================
 

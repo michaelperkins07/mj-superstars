@@ -107,7 +107,7 @@ async function buildAPIClient() {
 
   try {
     // 4th param is bundleId (string like 'com.example.app'), NOT numeric App Apple ID
-    const bundleId = process.env.APP_BUNDLE_ID || process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app';
+    const bundleId = process.env.APP_BUNDLE_ID || process.env.APNS_BUNDLE_ID || 'com.topperformer.app';
     const client = new AppStoreServerAPIClient(
       keyContent,
       keyId,

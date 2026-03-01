@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - AI Memory & Personalization Service
+// Top Performer - AI Memory & Personalization Service
 // Long-term memory and context management for personalized AI
 // ============================================================
 

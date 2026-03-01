@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Like Sabrina Ionescu - The Record Breaker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000;
+            --gold: #C5962F;
+            --dark-gold: #A67C1A;
+            --light-gold: #F5ECD7;
+            --red: #C41E3A;
+            --white: #FFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--black);
+            background-color: var(--white);
+            line-height: 1.6;
+        }
+
+        /* HERO SECTION */
+        .hero {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-badge {
+            background-color: var(--gold);
+            color: var(--black);
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-title {
+            font-size: 72px;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            letter-spacing: -2px;
+        }
+
+        .hero-title .gold-text {
+            color: var(--gold);
+        }
+
+        .hero-subtitle {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 30px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            color: #d0d0d0;
+        }
+
+        .hero-quote {
+            font-size: 18px;
+            font-style: italic;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            color: var(--light-gold);
+            padding: 20px;
+            border-left: 3px solid var(--gold);
+        }
+
+        .hero-cta {
+            background-color: var(--gold);
+            color: var(--black);
+            padding: 16px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .hero-cta:hover {
+            background-color: var(--dark-gold);
+        }
+
+        /* STATS BAR */
+        .stats-bar {
+            background-color: var(--gold);
+            color: var(--black);
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .stat-item p {
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* STORY SECTION */
+        .story {
+            padding: 80px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .story h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--black);
+        }
+
+        .story p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        /* NOISE SECTION */
+        .noise {
+            background-color: #f5f5f5;
+            padding: 80px 20px;
+        }
+
+        .noise-container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .noise h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .noise-item {
+            background-color: var(--white);
+            border-left: 4px solid var(--gold);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .noise-item:hover {
+            transform: translateX(10px);
+        }
+
+        .noise-item::before {
+            content: "✕";
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 32px;
+            color: var(--red);
+            font-weight: bold;
+        }
+
+        .noise-item h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--black);
+        }
+
+        .noise-item p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* PILLARS SECTION */
+        .pillars {
+            padding: 80px 20px;
+            background-color: var(--white);
+        }
+
+        .pillars-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pillars h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pillar-card {
+            border-left: 5px solid var(--gold);
+            padding: 30px;
+            background-color: #fafafa;
+            border-radius: 4px;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .pillar-card h3 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--black);
+        }
+
+        .pillar-card p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .cta-button {
+            background-color: var(--gold);
+            color: var(--black);
+            padding: 16px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: var(--dark-gold);
+        }
+
+        .cta-button.secondary {
+            background-color: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+        }
+
+        .cta-button.secondary:hover {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+
+        /* FOOTER */
+        footer {
+            background-color: var(--black);
+            color: var(--gold);
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--light-gold);
+        }
+
+        footer p {
+            margin-bottom: 15px;
+        }
+
+        .disclaimer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #999;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 48px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .story h2,
+            .noise h2,
+            .pillars h2,
+            .cta-section h2 {
+                font-size: 36px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-button,
+            .hero-cta {
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-badge">🏀 The Record Breaker</div>
+        <h1 class="hero-title">BE LIKE <span class="gold-text">SABRINA</span></h1>
+        <p class="hero-subtitle">The woman who changed women's basketball forever, breaking records and shattering expectations</p>
+        <p class="hero-quote">"I never want to be known as just a basketball player. I want to be known as someone who made a difference in women's sports."</p>
+        <a href="https://topperformer.ai" class="hero-cta">Start Your Journey</a>
+    </section>
+
+    <!-- STATS BAR -->
+    <section class="stats-bar">
+        <div class="stat-item">
+            <h3>26</h3>
+            <p>Triple-Doubles<br>NCAA Record</p>
+        </div>
+        <div class="stat-item">
+            <h3>#1</h3>
+            <p>Pick 2020<br>WNBA Draft</p>
+        </div>
+        <div class="stat-item">
+            <h3>3-Point</h3>
+            <p>Queen vs Steph Curry<br>Elite Range</p>
+        </div>
+        <div class="stat-item">
+            <h3>Oregon</h3>
+            <p>Legend<br>College Dominance</p>
+        </div>
+    </section>
+
+    <!-- STORY SECTION -->
+    <section class="story">
+        <h2>From Walnut Creek to Wall-Breaker</h2>
+        <p>Sabrina Ionescu's story begins in Walnut Creek, California, where she was born to Romanian immigrant parents who instilled in her a relentless work ethic and an unwavering belief in her dreams. Growing up in a family that knew the value of perseverance, Sabrina learned early that excellence demanded sacrifice and dedication.</p>
+        <p>At the University of Oregon, Sabrina didn't just play basketball—she revolutionized it. With 26 triple-doubles, she shattered the NCAA record, becoming the first player in college basketball history (men's or women's) to achieve this milestone. But her dominance went beyond the statistics; she changed the narrative of women's basketball, proving that skill, athleticism, and competitiveness knew no gender boundaries.</p>
+        <p>The journey wasn't without pain. When Kobe Bryant, her mentor and inspiration, tragically passed away in 2020, Sabrina lost a guiding voice. Yet she channeled that grief into purpose. Later, a severe ankle injury threatened to derail her career before it truly began in the WNBA, but Sabrina's mind was stronger than any physical setback. She came back.</p>
+        <p>Then came the moment that proved her worth to the world: competing in the 3-point contest against Steph Curry, one of the greatest shooters of all time. Sabrina didn't just compete—she stood as an equal, silencing every doubter who believed women couldn't shine on basketball's brightest stages. She became the face of a WNBA revolution, proving that women's basketball was not just relevant—it was essential.</p>
+    </section>
+
+    <!-- NOISE SECTION -->
+    <section class="noise">
+        <div class="noise-container">
+            <h2>The Noise She Blocked Out</h2>
+            <div class="noise-item">
+                <h3>Doubt About Women's Basketball</h3>
+                <p>People said women's basketball wasn't worth watching. Sabrina proved that with the right talent and skill, women's basketball captivates the world and deserves the same respect as any sport.</p>
+            </div>
+            <div class="noise-item">
+                <h3>Questions About Her Shooting Ability</h3>
+                <p>Critics questioned if her range translated at the professional level. Sabrina answered with elite 3-point shooting and a 3-point contest that reminded the world why she's one of the greatest shooters alive.</p>
+            </div>
+            <div class="noise-item">
+                <h3>Skepticism About WNBA Relevance</h3>
+                <p>The doubters said the WNBA wasn't a platform for superstars. Sabrina became the face of a league that's now more relevant and watched than ever before, inspiring millions globally.</p>
+            </div>
+            <div class="noise-item">
+                <h3>Fear of Comeback After Injury</h3>
+                <p>A devastating ankle injury could have ended her career. Sabrina returned stronger, proving that mental toughness and proper preparation can overcome any physical setback.</p>
+            </div>
+            <div class="noise-item">
+                <h3>Dismissal as Only a College Star</h3>
+                <p>Some believed she was just dominant in college. Sabrina is proving night after night in the WNBA that greatness transcends any level and her prime is just beginning.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- PILLARS SECTION -->
+    <section class="pillars">
+        <div class="pillars-container">
+            <h2>The Six Pillars of Sabrina's Excellence</h2>
+            <div class="pillars-grid">
+                <div class="pillar-card">
+                    <h3>Master Your Mind & Emotions</h3>
+                    <p>Sabrina's greatest strength isn't her shooting—it's her mental fortitude. She masters her emotions under pressure, turning noise into motivation and doubt into determination.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Light Up the Scoreboard</h3>
+                    <p>Excellence means producing results that matter. Sabrina doesn't just play—she dominates. She understands that performance in high-pressure moments defines legends.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Get Uncomfortable Daily</h3>
+                    <p>Growth lives outside comfort zones. Sabrina constantly pushes her boundaries, trying new techniques, facing stronger opponents, and testing her limits every single day.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Embrace the Friction</h3>
+                    <p>Instead of avoiding challenges, Sabrina runs toward them. She knows that friction—resistance, difficulty, opposition—is the price of excellence and transformation.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Prepare for the Fight</h3>
+                    <p>She treats every practice like it's game seven of the Finals. Sabrina's preparation is meticulous, deliberate, and obsessive because she knows championships are won in preparation, not games.</p>
+                </div>
+                <div class="pillar-card">
+                    <h3>Let's Take It On Together</h3>
+                    <p>Despite her individual brilliance, Sabrina lifts her teammates and inspires her generation. True greatness multiplies—she's not just breaking records, she's opening doors for others.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA SECTION -->
+    <section class="cta-section">
+        <h2>Ready to Block Out Your Noise?</h2>
+        <p style="font-size: 20px; margin-bottom: 40px; color: #d0d0d0;">Join Sabrina and thousands of athletes who are becoming Top Performers</p>
+        <div class="cta-buttons">
+            <a href="https://topperformer.ai" class="cta-button">Visit Top Performer</a>
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="cta-button secondary">Download Coach App</a>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p><strong>TOP PERFORMER</strong></p>
+        <p><a href="https://topperformer.ai">topperformer.ai</a></p>
+        <p class="disclaimer">Disclaimer: This page is inspired by Sabrina Ionescu's achievements and is designed to inspire and educate. Top Performer is a platform dedicated to helping athletes reach their full potential through mental training, skill development, and performance coaching.</p>
+    </footer>
+</body>
+</html>

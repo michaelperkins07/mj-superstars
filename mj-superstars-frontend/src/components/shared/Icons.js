@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Inline SVG Icons (zero dependencies)
+// Top Performer - Inline SVG Icons (zero dependencies)
 // ============================================================
 
 import React from 'react';

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Analytics Service
+// Top Performer - Analytics Service
 // Event tracking and user analytics for product insights
 // ============================================================
 

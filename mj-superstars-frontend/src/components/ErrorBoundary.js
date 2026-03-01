@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Error Boundary & Crash Monitoring
+// Top Performer - Error Boundary & Crash Monitoring
 // Graceful error handling and crash reporting
 // ============================================================
 
@@ -209,7 +209,7 @@ export class ErrorBoundary extends Component {
 
   handleReport = () => {
     // Open feedback form or support
-    window.open('mailto:support@mjsuperstars.app?subject=Bug Report', '_blank');
+    window.open('mailto:support@topperformer.app?subject=Bug Report', '_blank');
   };
 
   render() {

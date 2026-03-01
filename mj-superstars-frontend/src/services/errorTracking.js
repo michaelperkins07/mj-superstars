@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Frontend Error Tracking (Sentry)
+// Top Performer - Frontend Error Tracking (Sentry)
 // React crash reporting and performance monitoring
 // Gracefully handles missing @sentry/react package
 // ============================================================

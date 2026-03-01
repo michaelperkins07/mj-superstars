@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Like Goggins - David Goggins Motivational Page</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --black: #000;
+            --gold: #C5962F;
+            --dark-gold: #A67C1A;
+            --light-gold: #F5ECD7;
+            --red: #C41E3A;
+            --white: #FFF;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--black);
+            line-height: 1.6;
+            background-color: var(--white);
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "💀";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 300px;
+            opacity: 0.05;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background-color: var(--red);
+            color: var(--white);
+            padding: 8px 16px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .hero h1 .gold {
+            color: var(--gold);
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            z-index: 1;
+            position: relative;
+            color: #d4d4d4;
+        }
+
+        .hero-quote {
+            font-size: 24px;
+            font-weight: 600;
+            max-width: 700px;
+            margin: 0 auto;
+            z-index: 1;
+            position: relative;
+            color: var(--gold);
+            font-style: italic;
+        }
+
+        .hero-quote::before {
+            content: '"';
+            margin-right: 8px;
+        }
+
+        .hero-quote::after {
+            content: '"';
+            margin-left: 8px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background-color: var(--gold);
+            color: var(--black);
+            padding: 40px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Story Section */
+        .story {
+            padding: 80px 20px;
+            background-color: var(--white);
+        }
+
+        .story-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .story-label {
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+
+        .story h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: var(--black);
+        }
+
+        .story p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .story .highlight {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .story .red {
+            color: var(--red);
+            font-weight: 600;
+        }
+
+        /* Noise Section */
+        .noise {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            padding: 80px 20px;
+        }
+
+        .noise h2 {
+            font-size: 48px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .noise h2 .crossed {
+            text-decoration: line-through;
+            color: #666;
+        }
+
+        .noise-items {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .noise-item {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-left: 4px solid var(--gold);
+            padding: 24px;
+            border-radius: 8px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .noise-x {
+            color: var(--red);
+            font-size: 28px;
+            font-weight: 700;
+            min-width: 30px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .noise-text {
+            flex: 1;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Pillars Section */
+        .pillars {
+            background-color: var(--white);
+            padding: 80px 20px;
+        }
+
+        .pillars-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pillars-inner h2 {
+            font-size: 48px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .pillar-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pillar-card {
+            background-color: #f9f9f9;
+            border-left: 5px solid var(--gold);
+            padding: 30px;
+            border-radius: 8px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .pillar-num {
+            color: var(--gold);
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .pillar-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--black);
+        }
+
+        .pillar-desc {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--white);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 48px;
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .cta-section h2 .gold {
+            color: var(--gold);
+        }
+
+        .cta-subtitle {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            color: #d4d4d4;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background-color: var(--gold);
+            color: var(--black);
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-gold);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--white);
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: 700;
+            border: 2px solid var(--white);
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s, color 0.3s, transform 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--white);
+            color: var(--black);
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: var(--black);
+            color: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            color: var(--gold);
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .footer p {
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer a:hover {
+            color: var(--light-gold);
+        }
+
+        .footer-disclaimer {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            border-top: 1px solid #333;
+            padding-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .hero-subtitle {
+                font-size: 18px;
+            }
+
+            .hero-quote {
+                font-size: 18px;
+            }
+
+            .story h2,
+            .noise h2,
+            .pillars-inner h2,
+            .cta-section h2 {
+                font-size: 32px;
+            }
+
+            .stat-number {
+                font-size: 36px;
+            }
+
+            .pillar-cards {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">💀 The Hardest Man Alive</div>
+        <h1>BE LIKE <span class="gold">GOGGINS</span></h1>
+        <p class="hero-subtitle">300 pounds and broken. Became a Navy SEAL, ultramarathon legend, and the living embodiment of mental toughness.</p>
+        <div class="hero-quote">Who's gonna carry the boats?</div>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stat">
+            <div class="stat-number">235</div>
+            <div class="stat-label">Navy SEAL (BUD/S Class)</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">60+</div>
+            <div class="stat-label">Ultra Marathons</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">4,030</div>
+            <div class="stat-label">Pull-ups in 17 Hours</div>
+        </div>
+        <div class="stat">
+            <div class="stat-number">1</div>
+            <div class="stat-label">Uncommon Amongst Uncommon</div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story">
+        <div class="story-inner">
+            <div class="story-label">The Story They Don't Tell You</div>
+            <h2>From 300 Pounds to Unbreakable</h2>
+            
+            <p>
+                Grew up with an <span class="red">abusive father</span>, poverty, and racism in small-town Indiana. While others dreamed, young David sprayed cockroaches for a living at <span class="highlight">300 pounds</span>—overweight, broken, and invisible.
+            </p>
+
+            <p>
+                Then he saw a <span class="highlight">Navy SEAL recruitment ad</span>. Something clicked. He decided to change his life. He <span class="highlight">lost 106 pounds in 3 months</span>—a transformation that would have killed most people. But that was just the beginning.
+            </p>
+
+            <p>
+                He <span class="red">failed BUD/S twice</span>. Most people would have quit. Goggins went through <span class="highlight">Hell Week THREE times</span>. Three. Times. The hardest military training on Earth. And he finished. He became a Navy SEAL. Then an Army Ranger. Then an Air Force Tactical Air Controller.
+            </p>
+
+            <p>
+                But the military wasn't enough. He <span class="highlight">ran ultramarathons with almost no training</span>. 100 miles. 200 miles. Distances that require years of preparation. He <span class="highlight">broke the world pull-up record attempt</span> with 4,030 pull-ups in 17 hours. He wrote <span class="highlight">"Can't Hurt Me,"</span> a book that became a phenomenon, touching millions of lives.
+            </p>
+
+            <p>
+                Goggins lives by the <span class="highlight">40% Rule</span>: when your mind says you're done, you're only 40% there. His entire philosophy is simple: <span class="red">embrace suffering as the path to growth</span>. Pain is information. Discomfort is where you grow. For over 20 years, every single day, he's proven this. And you can too.
+            </p>
+        </div>
+    </section>
+
+    <!-- Noise Section -->
+    <section class="noise">
+        <h2>Block Out Your <span class="crossed">Noise</span></h2>
+        <div class="noise-items">
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"He's too fat to be a SEAL"</strong> → Lost 106 pounds in 3 months and completed the hardest military training on Earth</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"He failed BUD/S, he should quit"</strong> → Went through Hell Week THREE times. Most people can't survive it once.</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"Ultramarathons require years of training"</strong> → He ran his first 100-miler with almost no running experience — and finished</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"He's just a motivational speaker"</strong> → He's a Navy SEAL, Army Ranger, and Air Force TACC who LIVES every word</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text"><strong>"Nobody can maintain that intensity"</strong> → He's been doing it for over 20 years. Every. Single. Day.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pillars Section -->
+    <section class="pillars">
+        <div class="pillars-inner">
+            <h2>The Six Pillars of Goggins' Philosophy</h2>
+            <div class="pillar-cards">
+                <div class="pillar-card">
+                    <div class="pillar-num">01</div>
+                    <div class="pillar-title">Get Uncomfortable Daily</div>
+                    <div class="pillar-desc">Goggins wakes up every morning to do what most avoid. Cold plunges, brutal workouts, denial of comfort. He doesn't wait for motivation—he creates it through deliberate discomfort. Your 40% is where real growth begins.</div>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">02</div>
+                    <div class="pillar-title">Embrace the Friction</div>
+                    <div class="pillar-desc">Pain, struggle, resistance—these are not obstacles. They're the path. Goggins transforms friction into fuel. Every failure, every setback, every "no" becomes ammunition for his next attempt. Friction is where champions are forged.</div>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">03</div>
+                    <div class="pillar-title">Raise Your Floor</div>
+                    <div class="pillar-desc">It's not about peak performance—it's about your baseline. Goggins constantly raises what he considers "normal." What was impossible becomes standard. What was hard becomes easy. Every day, you're either raising your floor or lowering it.</div>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">04</div>
+                    <div class="pillar-title">Master Your Mind & Emotions</div>
+                    <div class="pillar-desc">The body is secondary. Goggins mastered his mind first. He learned to control fear, panic, doubt, and pain through mental callouses. He treats his mind like a muscle—the more you stress it, the stronger it becomes.</div>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">05</div>
+                    <div class="pillar-title">Prepare for the Fight</div>
+                    <div class="pillar-desc">Goggins doesn't just show up—he's been training in the dark while others sleep. He out-prepares the competition. His reputation isn't built on natural talent; it's built on relentless preparation and willingness to suffer more than anyone else.</div>
+                </div>
+
+                <div class="pillar-card">
+                    <div class="pillar-num">06</div>
+                    <div class="pillar-title">Dominate Today</div>
+                    <div class="pillar-desc">Tomorrow doesn't exist. Goggins lives in the present moment with full intensity. He doesn't promise future change—he changes right now. You want to be like Goggins? Stop waiting. Start dominating today.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Block Out<br><span class="gold">Your Noise?</span></h2>
+        <p class="cta-subtitle">Start your journey to uncommon strength. The path is hard. The rewards are worth it.</p>
+        <div class="cta-buttons">
+            <a href="https://topperformer.ai" class="btn-primary">🏆 Become a Top Performer →</a>
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">📱 Download the App</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">TOP PERFORMER</div>
+        <p>Your Coach in Your Pocket • <a href="https://topperformer.ai">topperformer.ai</a></p>
+        <div class="footer-disclaimer">
+            This page is not affiliated with David Goggins. Created for inspirational purposes.
+        </div>
+    </footer>
+</body>
+</html>

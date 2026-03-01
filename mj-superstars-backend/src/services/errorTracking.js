@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Error Tracking Service (Sentry)
+// Top Performer - Error Tracking Service (Sentry)
 // Production crash reporting and performance monitoring
 // ============================================================
 

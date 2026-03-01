@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Data Context
+// Top Performer - Data Context
 // Syncs app data between local storage and backend API
 // Provides offline-first data management
 // ============================================================

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Gamification Routes Tests (ESM)
+// Top Performer - Gamification Routes Tests (ESM)
 // ============================================================
 
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';

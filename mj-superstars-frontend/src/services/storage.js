@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Enhanced Storage Service
+// Top Performer - Enhanced Storage Service
 // Wrapper around localStorage with API sync capability
 // Maintains backward compatibility with existing code
 // ============================================================

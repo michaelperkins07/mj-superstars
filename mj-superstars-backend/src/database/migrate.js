@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // ============================================================
-// MJ's Superstars - Database Migration Runner
+// Top Performer - Database Migration Runner
 // ============================================================
 
 import pg from 'pg';

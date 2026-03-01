@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Webhook Service
+// Top Performer - Webhook Service
 // Event-driven integrations with external systems
 // ============================================================
 

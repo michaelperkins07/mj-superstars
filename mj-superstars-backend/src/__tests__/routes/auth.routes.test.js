@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Auth Routes Tests (ESM)
+// Top Performer - Auth Routes Tests (ESM)
 // ============================================================
 
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';

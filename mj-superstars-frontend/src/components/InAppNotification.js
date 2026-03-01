@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - In-App Notification Banner
+// Top Performer - In-App Notification Banner
 // Shows notifications when app is in foreground
 // ============================================================
 

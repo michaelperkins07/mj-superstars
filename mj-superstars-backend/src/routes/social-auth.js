@@ -56,7 +56,7 @@ async function verifyAppleToken(idToken) {
 
   // 3. Build list of accepted audiences
   //    iOS native SIWA uses the bundle ID, web SIWA uses the Services ID
-  const bundleId = process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app';
+  const bundleId = process.env.APNS_BUNDLE_ID || 'com.topperformer.app';
   const audiences = new Set([bundleId]);
   if (process.env.APPLE_CLIENT_ID) audiences.add(process.env.APPLE_CLIENT_ID);
   if (process.env.APNS_BUNDLE_ID) audiences.add(process.env.APNS_BUNDLE_ID);
@@ -171,9 +171,9 @@ const findOrCreateSocialUser = async (provider, providerData) => {
          VALUES ($1, $2, $3, $4, $5)
          RETURNING id, email, display_name, is_premium`,
         [
-          email || `${provider}_${provider_user_id}@social.mjsuperstars.com`,
+          email || `${provider}_${provider_user_id}@social.topperformer.com`,
           crypto.randomBytes(32).toString('hex'), // Random password (social-only users)
-          name || 'Superstar',
+          name || 'Top Performer',
           avatar_url,
           provider
         ]

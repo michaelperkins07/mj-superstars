@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - ShareButton Component
+// Top Performer - ShareButton Component
 // Reusable share button with native Web Share API + fallback
 // ============================================================
 import React, { useState } from 'react';
@@ -15,8 +15,8 @@ const SHARE_URLS = {
 };
 
 export default function ShareButton({
-  title = "MJ's Superstars",
-  text = "Check out MJ's Superstars — where AI meets Emotional Intelligence!",
+  title = "Top Performer",
+  text = "Check out Top Performer — where AI meets Emotional Intelligence!",
   url,
   shareType = 'app_invite',
   contentId = null,
@@ -282,7 +282,7 @@ export function ReferralCard({ className = '' }) {
 
       {/* Share Button */}
       <ShareButton
-        text={`Join me on MJ's Superstars! Use my code ${referralData.code} for bonus points 🎁`}
+        text={`Join me on Top Performer! Use my code ${referralData.code} for bonus points 🎁`}
         url={referralData.shareUrl}
         shareType="referral_link"
         className="w-full justify-center"

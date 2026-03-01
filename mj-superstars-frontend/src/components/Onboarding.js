@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Onboarding Flow
+// Top Performer - Onboarding Flow
 // Conversational personalization that feeds MJ's coaching
 // ============================================================
 import React, { useState, useEffect, useCallback } from 'react';

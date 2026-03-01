@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Webhook API Routes
+// Top Performer - Webhook API Routes
 // Manage webhooks for external integrations + App Store notifications
 // ============================================================
 

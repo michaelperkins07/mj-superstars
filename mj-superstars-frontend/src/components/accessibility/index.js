@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Accessibility Components & Utilities
+// Top Performer - Accessibility Components & Utilities
 // WCAG 2.1 AA compliant components for inclusive design
 // ============================================================
 

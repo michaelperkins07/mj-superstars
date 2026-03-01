@@ -1,0 +1,574 @@
+================================================================================
+TOP PERFORMER — COMPLETE PROJECT REFERENCE & AI SESSION PROMPT
+================================================================================
+Last Updated: February 11, 2026
+Owner: Mike Perkins (michaelperkins07@gmail.com)
+================================================================================
+
+PURPOSE OF THIS FILE:
+Paste this into any new AI chat session so the assistant has full context about
+the Top Performer app. This eliminates repetitive questions and ensures
+consistent, high-quality work across sessions.
+
+================================================================================
+1. PROJECT OVERVIEW
+================================================================================
+
+App Name:       Top Performer (rebranded from "MJ Superstars")
+Tagline:        "Your AI Performance Coach"
+App Store Name: Top Performer
+Bundle ID:      com.topperformer.app
+Apple Team ID:  FAAWCBHB9C (Mike Perkins)
+App Store ID:   6743862814
+
+Description:
+Top Performer is an AI-powered personal coaching app built around Mike Perkins'
+real coaching philosophy. It combines conversational AI (Claude by Anthropic),
+mood/energy/confidence tracking, journaling, gamification, and social features
+into a single premium mobile experience. The app targets anyone seeking personal
+growth — athletes, executives, students, and everyday high-performers.
+
+Core Philosophy: "AI + EI" — Artificial Intelligence meets Emotional Intelligence.
+Not a "mental health app" (stigma). It's a PERFORMANCE tool for the top 1%.
+
+================================================================================
+2. TECH STACK & ARCHITECTURE
+================================================================================
+
+FRONTEND:
+  - React.js (Create React App) with Tailwind CSS
+  - Framer Motion for animations
+  - Capacitor v6 for iOS native wrapping
+  - Socket.IO client for real-time messaging
+  - React Router for navigation
+  - Directory: mj-superstars-frontend/
+
+BACKEND:
+  - Express.js (Node.js)
+  - PostgreSQL database (16 tables, 16 migrations)
+  - Redis for caching
+  - Anthropic Claude SDK v0.74.0 (model: claude-sonnet-4-20250514, max_tokens: 1024)
+  - Socket.IO for real-time
+  - SendGrid for email
+  - Sentry for error monitoring
+  - Mixpanel for analytics
+  - Directory: mj-superstars-backend/
+
+iOS:
+  - Capacitor v6.0.0 (NOT v8 — causes Render build failures)
+  - StoreKit 2 for subscriptions (NOT RevenueCat)
+  - Apple Push Notification Service (APNS)
+  - Xcode project in: mj-superstars-frontend/ios/
+
+HOSTING:
+  - Render.com (auto-deploy from GitHub main branch)
+  - Backend: https://mj-superstars.onrender.com
+  - Frontend: https://mj-superstars-app.onrender.com
+
+================================================================================
+3. REPOSITORY & DEPLOYMENT
+================================================================================
+
+GitHub Repo: https://github.com/michaelperkins07/mj-superstars
+
+Git Config:
+  user.name = "Mike Perkins"
+  user.email = "michaelperkins07@gmail.com"
+
+Backend Service ID: srv-d6244kkoud1c7399f7fg
+Frontend Service ID: srv-d62m27coud1c73d1cl1g
+
+Deploy Process:
+  1. Fresh clone to /tmp/tp-deploy (avoids pushing node_modules)
+  2. Copy only source files (frontend, backend, root configs)
+  3. git add, commit, push to main
+  4. Render auto-deploys from main
+  5. If Render fails, manually trigger via Render dashboard
+
+Standing Instruction: Push when complete. Do not ask for permission.
+
+================================================================================
+4. ENVIRONMENT VARIABLES (PRODUCTION)
+================================================================================
+
+NOTE: Production environment variables are stored securely in Render dashboard.
+Never commit sensitive credentials to the repository.
+
+Key environment variables (configured in Render):
+  - DATABASE_URL: PostgreSQL connection string
+  - JWT_SECRET: JWT signing key
+  - ADMIN_SECRET: Admin authentication secret
+  - ENCRYPTION_KEY: Data encryption key
+  - ANTHROPIC_API_KEY: Claude API credentials
+  - SENTRY_DSN: Error tracking configuration
+  - MIXPANEL_TOKEN: Analytics token
+  - VAPID keys: Push notification credentials
+  - NODE_ENV=production
+  - PORT=3001
+  - FRONTEND_URL: Production frontend URL
+  - REACT_APP_API_URL: Production API endpoint
+
+================================================================================
+5. DATABASE SCHEMA (16 MIGRATIONS)
+================================================================================
+
+Migration files in: mj-superstars-backend/src/database/migrations/
+
+001-009: Core tables (users, conversations, messages, moods, journal_entries,
+         social_posts, referrals, tasks, gamification, photos, vision_board,
+         notifications, gdpr, campaigns, webhooks, indexes)
+010: Missing indexes
+011: Subscriptions table
+012: Referral system
+013: Daily commitments
+014: Coach name preference
+015: Conversation mode (5-mode system)
+016: Emotional state trackers (confidence_logs, energy_logs, morals_logs)
+
+================================================================================
+6. FRONTEND STRUCTURE
+================================================================================
+
+Key Directories:
+  src/
+    App.js                    - Main app with routing
+    MJSuperstars.js           - Root component
+    components/
+      screens/
+        ChatScreen.js         - AI coaching chat (5 modes)
+        MoodScreen.js         - Mood tracking
+        JournalScreen.js      - Journaling
+        InsightsScreen.js     - Analytics/insights
+        ExploreScreen.js      - Content discovery
+        GamificationScreen.js - XP, levels, streaks
+        ProfileScreen.js      - User profile
+        TasksScreen.js        - Task management
+        CommitmentsScreen.js  - Daily commitments
+        RitualsScreen.js      - Morning/evening rituals
+        TrackerScreen.js      - Confidence/Energy/Morals trackers
+      Paywall.js              - Subscription paywall
+      AuthScreen.js           - Authentication
+      Onboarding.js           - New user onboarding
+      legal/
+        PrivacyPolicy.js       - Privacy Policy
+        TermsOfService.js      - Terms of Service
+
+Key Contexts:
+  AuthContext.js              - User authentication & session
+  DataContext.js              - Global app state (messages, moods, etc.)
+
+Key Services:
+  api.js                      - HTTP client with interceptors
+  socket.js                   - Real-time messaging via Socket.IO
+  storage.js                  - Local storage abstraction
+  deepLinkRouter.js           - App deep linking (topperformer:// scheme)
+  errorTracking.js            - Sentry integration
+  analytics.js                - Mixpanel events
+  featureFlags.js             - Feature flag evaluation
+  notificationHandler.js      - Push notification handling
+  subscription.js             - In-app purchase validation & subscription state
+
+================================================================================
+7. BACKEND STRUCTURE & ROUTES
+================================================================================
+
+Server entry point: src/server.js
+
+Core Routes:
+  POST   /api/auth/register          - User registration
+  POST   /api/auth/login             - User login
+  POST   /api/auth/logout            - User logout
+  GET    /api/auth/me                - Get current user
+  POST   /api/auth/refresh           - Refresh JWT token
+  POST   /api/auth/verify-signup     - Email verification
+
+  POST   /api/chat/message           - Send chat message (call Claude)
+  GET    /api/chat/history           - Get conversation history
+  POST   /api/chat/feedback          - User feedback on response
+
+  POST   /api/mood/log               - Log mood entry
+  GET    /api/mood/history           - Get mood history
+
+  POST   /api/journal/entry          - Create journal entry
+  GET    /api/journal/entries        - Get journal entries
+  PUT    /api/journal/entry/:id      - Update journal entry
+  DELETE /api/journal/entry/:id      - Delete journal entry
+
+  GET    /api/insights/summary       - Get user insights & analytics
+
+  POST   /api/social/post            - Create social post
+  GET    /api/social/feed            - Get social feed
+  POST   /api/social/like            - Like post
+  DELETE /api/social/post/:id        - Delete post
+
+  POST   /api/subscriptions/purchase - Validate receipt & create subscription
+  GET    /api/subscriptions/status   - Get subscription status
+  POST   /api/subscriptions/cancel   - Cancel subscription
+
+  POST   /api/tasks/create           - Create task
+  GET    /api/tasks/list             - Get user tasks
+  PUT    /api/tasks/:id              - Update task
+  DELETE /api/tasks/:id              - Delete task
+
+  GET    /api/legal/privacy          - Privacy Policy HTML
+  GET    /api/legal/terms            - Terms of Service HTML
+
+  POST   /api/webhooks/apple         - Apple subscription webhook
+  POST   /api/webhooks/stripe        - Stripe events (future)
+
+Key Services:
+  src/services/claude.js              - Claude API integration
+  src/services/email.js               - SendGrid integration
+  src/services/notifications.js       - Push notification queueing
+  src/services/apns.js                - APNS service for iOS
+  src/services/appStoreVerification.js - Apple receipt validation
+  src/services/errorTracking.js       - Sentry error tracking
+  src/services/analytics.js           - Analytics event logging
+  src/services/gdpr.js                - GDPR data export/deletion
+  src/services/jobQueue.js            - Job queue for async tasks
+  src/services/scheduler.js           - Cron jobs (habit reminders, etc.)
+  src/services/monitoring.js          - Health checks & monitoring
+  src/services/campaignScheduler.js   - Email campaign scheduling
+
+Middleware:
+  src/middleware/auth.js              - JWT verification & user context
+  src/middleware/security.js          - CORS, CSRF, security headers
+  src/middleware/errorHandler.js      - Global error handling
+  src/middleware/requestLogger.js     - Request logging
+  src/middleware/rateLimiter.js       - Rate limiting
+
+================================================================================
+8. KEY FEATURES & BUSINESS LOGIC
+================================================================================
+
+CHAT SYSTEM (Claude Integration):
+  - 5 conversation modes:
+    1. Performance Coach - Direct guidance on goals
+    2. Reflective Coach - Socratic questioning
+    3. Accountability Partner - Check-ins & progress
+    4. Motivational Coach - Inspiration & mindset
+    5. Wisdom Coach - Lessons from historical figures
+  - Real-time streaming responses via Socket.IO
+  - System prompt: TopPerformer coach identity
+  - Max tokens: 1024 per response
+  - Uses claude-sonnet-4-20250514 model
+
+MOOD TRACKING:
+  - Users log mood on 1-10 scale with optional notes
+  - Tracks emotional state: Happy, Sad, Anxious, Motivated, Tired, etc.
+  - History viewable as graphs/trends
+  - Integrated with journal entries
+
+GAMIFICATION:
+  - XP system (points for daily activities)
+  - Levels (1-100, with milestones at 10, 25, 50, 75, 100)
+  - Streaks (current streak tracked, longest streak recorded)
+  - Badges/achievements
+  - Leaderboard (opt-in, anonymous if disabled)
+
+JOURNALING:
+  - Free-form text entries with timestamps
+  - Optional mood tagging
+  - Private by default
+  - Searchable entries
+
+SOCIAL FEATURES:
+  - Users can post wins/reflections
+  - Privacy: Private, Friends Only, or Public
+  - Like/comment functionality
+  - Follower system
+
+SUBSCRIPTIONS:
+  - StoreKit 2 in-app purchases
+  - Tiers: Free, Premium ($9.99/mo), Professional ($29.99/mo)
+  - Recurring auto-renewal
+  - Apple handles billing
+
+NOTIFICATIONS:
+  - Daily reminder (customizable time)
+  - Push notifications for likes, comments, mentions
+  - APNS for iOS delivery
+  - Web/email fallback for web platform
+
+================================================================================
+9. AUTHENTICATION & SECURITY
+================================================================================
+
+JWT-based authentication:
+  - JWT_SECRET used for signing
+  - Tokens expire in 24 hours (refresh token available)
+  - Secure HTTP-only cookies for storage
+  - CORS configured for topperformer.com domain
+
+Password security:
+  - Passwords hashed with bcrypt (rounds: 12)
+  - No plaintext storage
+
+Email verification:
+  - New users receive verification link
+  - Required before full access
+
+Admin authentication:
+  - ADMIN_SECRET for admin-only endpoints
+  - Separate from user JWT
+
+Data encryption:
+  - Sensitive data encrypted with ENCRYPTION_KEY
+  - PII encrypted at rest
+
+================================================================================
+10. DEPLOYMENT & CI/CD
+================================================================================
+
+Git Flow:
+  - Main branch auto-deploys to Render
+  - No dev/staging environments currently
+
+Render Configuration:
+  - Auto-deploy on git push to main
+  - Environment variables in Render dashboard
+  - PostgreSQL and Redis provisioned via Render
+
+Local Development:
+  1. npm install in both frontend and backend
+  2. Create .env.local with test credentials
+  3. Start backend: npm start (port 3001)
+  4. Start frontend: npm start (port 3000)
+  5. For iOS: ionic build && ionic capacitor run ios
+
+Troubleshooting:
+  - Capacitor v8 causes build failures; use v6
+  - Ensure Node v18+ for compatibility
+  - Clear node_modules and reinstall if issues persist
+  - Check Render logs via dashboard
+
+================================================================================
+11. EMAIL CONFIGURATION
+================================================================================
+
+SendGrid integration (mj-superstars-backend/src/services/email.js):
+  - Sender: noreply@topperformer.app
+  - Dynamic templates for each email type
+  - Transactional and marketing emails supported
+
+Email Templates:
+  1. Welcome email (new user)
+  2. Verification email (email confirmation)
+  3. Password reset
+  4. Daily reminder
+  5. Weekly digest
+  6. Subscription confirmation
+  7. Cancelled subscription
+  8. Social notifications (likes, follows, etc.)
+
+================================================================================
+12. ANALYTICS & MONITORING
+================================================================================
+
+Mixpanel Events:
+  - user_signup
+  - user_login
+  - chat_message_sent
+  - mood_logged
+  - journal_entry_created
+  - social_post_created
+  - subscription_purchased
+  - subscription_cancelled
+  - feature_used (with feature_name property)
+
+Sentry Error Tracking:
+  - Captures all unhandled exceptions
+  - Backend and frontend errors tracked separately
+  - Sampling: 10% of errors captured
+  - Releases tagged with git commit SHA
+
+Health Checks:
+  - /api/status endpoint returns system health
+  - Database connectivity verified
+  - Redis connectivity verified
+  - Email service connectivity verified
+
+================================================================================
+13. GDPR & DATA PRIVACY
+================================================================================
+
+Data Subject Access Request (DSAR):
+  - POST /api/gdpr/export - User can export all their data (JSON)
+  - POST /api/gdpr/delete - User can request account deletion
+  - Both require email verification
+
+Data Deletion:
+  - Soft delete initially (flag deleted_at timestamp)
+  - Hard delete after 30 days
+  - Cascading delete of related data
+
+Data Retention:
+  - Conversations: Indefinite (unless deleted)
+  - Moods: Indefinite (unless deleted)
+  - Journal entries: Indefinite (unless deleted)
+  - Deleted accounts: Purged after 30 days
+  - Event logs: 90 days
+
+================================================================================
+14. KNOWN ISSUES & TECHNICAL DEBT
+================================================================================
+
+Current Limitations:
+  1. No staging environment (deploy directly to production)
+  2. No database backups automated (manual only)
+  3. Rate limiting not yet enforced
+  4. Analytics sampling may miss edge cases
+  5. Real-time sync can lag on poor connections
+  6. iOS build requires Xcode (no CI/CD for builds)
+
+Future Improvements:
+  1. Implement comprehensive logging
+  2. Add canary deployments
+  3. Set up automated backups
+  4. Implement feature flags for A/B testing
+  5. Add offline-first sync queue
+  6. Implement comprehensive test coverage
+
+================================================================================
+15. BRAND & MESSAGING
+================================================================================
+
+App Name: Top Performer
+Tagline: "Your AI Performance Coach"
+Website: topperformer.com
+Email Domain: topperformer.app
+Deep Link Scheme: topperformer:// (not http/https)
+
+Tone of Voice:
+  - Confident, motivational, direct
+  - Action-oriented, not therapy-speak
+  - Athlete/performance-centric language
+  - Avoid "mental health" terminology
+  - Focus on "performance," "growth," "excellence"
+
+Key Messages:
+  - AI-powered personal coaching
+  - Privacy-first (no data sold)
+  - Built for high-performers
+  - Scientifically-backed approaches
+  - Community for growth-minded people
+
+================================================================================
+16. SUPPORT & CONTACT
+================================================================================
+
+Owner: Mike Perkins
+Email: michaelperkins07@gmail.com
+GitHub: michaelperkins07
+App Store: Top Performer (Bundle ID: com.topperformer.app)
+
+Support Channels:
+  - In-app feedback form (routes to support email)
+  - Email support: support@topperformer.app
+  - Social media: @topperformer_app (Instagram, Twitter)
+
+Issue Reporting:
+  - Use GitHub issues for technical bugs
+  - Use in-app feedback for user-facing issues
+  - Document reproduction steps clearly
+
+================================================================================
+17. USEFUL COMMANDS
+================================================================================
+
+Backend Setup:
+  cd mj-superstars-backend
+  npm install
+  npm run migrate        # Run database migrations
+  npm start              # Start dev server (port 3001)
+  npm test               # Run tests
+  npm run seed           # Seed test data
+
+Frontend Setup:
+  cd mj-superstars-frontend
+  npm install
+  npm start              # Start dev server (port 3000)
+  npm test               # Run tests
+  npm run build          # Build for production
+
+iOS Development:
+  cd mj-superstars-frontend
+  ionic build
+  ionic capacitor run ios  # Run in Xcode simulator
+
+Database:
+  psql -U mj_superstars_user -h localhost -d mj_superstars
+  \dt                     # List tables
+  \d table_name           # Describe table
+
+Deployment:
+  git add .
+  git commit -m "message"
+  git push origin main    # Auto-deploys to Render
+
+================================================================================
+18. API AUTHENTICATION EXAMPLE
+================================================================================
+
+All authenticated endpoints require Authorization header:
+
+GET /api/auth/me
+Authorization: Bearer <JWT_TOKEN>
+
+Obtaining a JWT token:
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "user@example.com",
+  "password": "securepassword123"
+}
+
+Response:
+{
+  "user": {
+    "id": "uuid",
+    "email": "user@example.com",
+    "name": "User Name",
+    "created_at": "2025-01-15T10:00:00Z"
+  },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}
+
+================================================================================
+19. COMMON WORKFLOWS
+================================================================================
+
+Adding a New Feature:
+  1. Create feature branch: git checkout -b feature/feature-name
+  2. Implement feature (backend first, then frontend)
+  3. Write tests for feature logic
+  4. Test locally in browser and iOS
+  5. Commit: git add . && git commit -m "feat: description"
+  6. Push: git push origin feature/feature-name
+  7. Create PR on GitHub
+  8. After approval, merge to main
+  9. Render auto-deploys
+
+Fixing a Bug:
+  1. Create bug branch: git checkout -b fix/bug-name
+  2. Reproduce bug with minimal test case
+  3. Fix the issue
+  4. Write test to prevent regression
+  5. Commit: git add . && git commit -m "fix: description"
+  6. Push and create PR
+  7. Merge to main after approval
+
+Deploying to Production:
+  1. Ensure all tests pass: npm test
+  2. Ensure no console errors in browser/native
+  3. Manual testing on production-like environment
+  4. Commit final changes
+  5. Push to main: git push origin main
+  6. Monitor Render dashboard for deployment
+  7. Test on production URL once live
+
+================================================================================
+END OF REFERENCE DOCUMENT
+================================================================================

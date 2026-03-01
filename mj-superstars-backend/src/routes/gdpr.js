@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - GDPR Compliance API Routes
+// Top Performer - GDPR Compliance API Routes
 // Data export, deletion, and consent endpoints
 // ============================================================
 
@@ -369,8 +369,8 @@ router.get('/info', (req, res) => {
       consentLogs: '7 years for regulatory compliance',
     },
     contact: {
-      email: 'privacy@mjsuperstars.com',
-      dpo: 'dpo@mjsuperstars.com',
+      email: 'privacy@topperformer.com',
+      dpo: 'dpo@topperformer.com',
     },
   });
 });

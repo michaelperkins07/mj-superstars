@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Mood Tracker Component Tests
+// Top Performer - Mood Tracker Component Tests
 // ============================================================
 
 import React from 'react';

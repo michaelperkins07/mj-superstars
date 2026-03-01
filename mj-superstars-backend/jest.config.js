@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars Backend - Jest Configuration (ESM)
+// Top Performer Backend - Jest Configuration (ESM)
 // ============================================================
 
 export default {

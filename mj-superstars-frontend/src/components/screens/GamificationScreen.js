@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Gamification & Social Hub
+// Top Performer - Gamification & Social Hub
 // XP, levels, challenges, milestones, achievements, login bonus
 // ============================================================
 import React, { useState, useEffect, useCallback } from 'react';

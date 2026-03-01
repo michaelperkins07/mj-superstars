@@ -46,7 +46,7 @@ async function parseRSSFeed(feedUrl, timeout = 5000) {
 
     const response = await fetch(feedUrl, {
       signal: controller.signal,
-      headers: { 'User-Agent': 'MJSuperstars/1.0 (Mental Health App)' }
+      headers: { 'User-Agent': 'TopPerformer/1.0 (Mental Health App)' }
     });
     clearTimeout(timeoutId);
 

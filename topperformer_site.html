@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Performer Coach — Block Out the Noise. Dominate Today.</title>
+<meta name="description" content="Your mental performance coach in your pocket. Train your mind like Brady, Goggins, LeBron, and 13+ legends. 9 pillars of peak performance. Free app.">
+<meta name="robots" content="index, follow">
+<meta name="theme-color" content="#C5962F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-itunes-app" content="app-id=6759122798">
+<meta property="og:title" content="Top Performer Coach — Block Out the Noise. Dominate Today.">
+<meta property="og:description" content="The mental performance system inspired by Brady, Goggins, LeBron, and 13+ legendary performers. Train your mind like the greats. Free download.">
+<meta property="og:url" content="https://topperformer.ai">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Top Performer Coach">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Top Performer Coach — Block Out the Noise">
+<meta name="twitter:description" content="The mental performance system inspired by Brady, Goggins, LeBron & more. Train your mind like the greats. Free app.">
+<link rel="canonical" href="https://topperformer.ai">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  ::selection { background: #C5962F; color: #000; }
+
+  :root {
+    --black: #000;
+    --gold: #C5962F;
+    --dark-gold: #A67C1A;
+    --light-gold: #F5ECD7;
+    --red: #C41E3A;
+    --white: #FFF;
+    --off-white: #FAFAF8;
+    --gray-100: #F5F5F5;
+    --gray-200: #E8E8E8;
+    --gray-400: #999;
+    --gray-600: #666;
+    --gray-800: #222;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--black);
+    background: var(--white);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* ═══════════════════════════════════════════
+     NAV — Apple minimal + Supreme bold
+  ═══════════════════════════════════════════ */
+  .nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0 48px; height: 56px;
+    background: rgba(0,0,0,0.95); backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(197,150,47,0.15);
+  }
+  .nav-logo {
+    font-size: 0.7rem; font-weight: 900; letter-spacing: 6px;
+    text-transform: uppercase; color: var(--gold);
+  }
+  .nav-cta {
+    background: var(--gold); color: var(--black);
+    padding: 8px 20px; border-radius: 100px; font-size: 0.7rem;
+    font-weight: 700; text-decoration: none; letter-spacing: 2px;
+    text-transform: uppercase; transition: all 0.3s;
+  }
+  .nav-cta:hover { background: var(--white); }
+
+  /* ═══════════════════════════════════════════
+     HERO — Nike energy meets Apple minimalism
+  ═══════════════════════════════════════════ */
+  .hero {
+    min-height: 100vh; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; text-align: center;
+    background: var(--black); color: var(--white);
+    padding: 120px 24px 80px; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: 'TOP PERFORMER';
+    position: absolute; font-size: 18vw; font-weight: 900;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    opacity: 0.02; pointer-events: none; white-space: nowrap;
+    letter-spacing: -0.02em; color: var(--gold);
+  }
+  .hero-eyebrow {
+    font-size: 0.65rem; font-weight: 600; letter-spacing: 6px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 32px; position: relative;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: ''; position: absolute; top: 50%; width: 40px; height: 1px;
+    background: rgba(197,150,47,0.4);
+  }
+  .hero-eyebrow::before { right: calc(100% + 16px); }
+  .hero-eyebrow::after { left: calc(100% + 16px); }
+
+  .hero h1 {
+    font-size: clamp(4rem, 12vw, 10rem); font-weight: 900;
+    line-height: 0.88; letter-spacing: -0.04em;
+    margin-bottom: 32px; max-width: 900px;
+  }
+  .hero h1 .thin { font-weight: 300; color: var(--gray-400); }
+  .hero h1 .gold { color: var(--gold); }
+
+  .hero-statement {
+    font-size: clamp(1rem, 2vw, 1.25rem); color: var(--gray-400);
+    max-width: 520px; line-height: 1.6; margin-bottom: 48px;
+    font-weight: 400;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+  .btn-hero {
+    background: var(--gold); color: var(--black);
+    padding: 16px 40px; border-radius: 0; font-size: 0.75rem;
+    font-weight: 800; text-decoration: none; letter-spacing: 3px;
+    text-transform: uppercase; transition: all 0.4s;
+    border: 2px solid var(--gold);
+  }
+  .btn-hero:hover { background: transparent; color: var(--gold); }
+  .btn-ghost {
+    background: transparent; color: var(--white);
+    padding: 16px 40px; border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 0; font-size: 0.75rem; font-weight: 600;
+    text-decoration: none; letter-spacing: 3px;
+    text-transform: uppercase; transition: all 0.4s;
+  }
+  .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  .hero-scroll {
+    position: absolute; bottom: 32px; left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.6rem; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--gray-400); animation: pulse 2s infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+
+  /* ═══════════════════════════════════════════
+     MARQUEE — Supreme / Off-White industrial
+  ═══════════════════════════════════════════ */
+  .marquee-wrap {
+    background: var(--gold); padding: 14px 0; overflow: hidden;
+    white-space: nowrap;
+  }
+  .marquee {
+    display: inline-block; animation: scroll 30s linear infinite;
+  }
+  .marquee span {
+    font-size: 0.7rem; font-weight: 800; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--black); margin-right: 48px;
+  }
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* ═══════════════════════════════════════════
+     MANIFESTO — Apple-style typography section
+  ═══════════════════════════════════════════ */
+  .manifesto {
+    padding: 140px 24px; background: var(--white); text-align: center;
+  }
+  .manifesto-inner { max-width: 720px; margin: 0 auto; }
+  .manifesto-label {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 40px;
+  }
+  .manifesto h2 {
+    font-size: clamp(1.8rem, 4vw, 3rem); font-weight: 800;
+    line-height: 1.25; color: var(--black); margin-bottom: 32px;
+    letter-spacing: -0.02em;
+  }
+  .manifesto p {
+    font-size: 1.05rem; line-height: 1.8; color: var(--gray-600);
+    margin-bottom: 20px;
+  }
+  .manifesto .accent { color: var(--gold); font-weight: 700; }
+  .manifesto .strike {
+    text-decoration: line-through; color: var(--gray-400);
+    text-decoration-color: var(--red); text-decoration-thickness: 2px;
+  }
+
+  /* ═══════════════════════════════════════════
+     PILLARS — LV grid sophistication
+  ═══════════════════════════════════════════ */
+  .pillars {
+    padding: 120px 24px; background: var(--black); color: var(--white);
+  }
+  .pillars-inner { max-width: 1100px; margin: 0 auto; }
+  .pillars-header { text-align: center; margin-bottom: 80px; }
+  .pillars-label {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+  }
+  .pillars-header h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+    letter-spacing: -0.02em;
+  }
+  .pillars-header h2 .gold { color: var(--gold); }
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: rgba(197,150,47,0.1);
+  }
+  .pillar-cell {
+    background: var(--black); padding: 48px 32px;
+    transition: background 0.4s;
+  }
+  .pillar-cell:hover { background: #0a0a0a; }
+  .pillar-number {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 4px;
+    color: var(--gold); margin-bottom: 16px;
+  }
+  .pillar-name {
+    font-size: 1.1rem; font-weight: 800; margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+  .pillar-detail {
+    font-size: 0.85rem; line-height: 1.6; color: var(--gray-400);
+  }
+
+  /* ═══════════════════════════════════════════
+     ATHLETES — Off-White gallery meets Nike roster
+  ═══════════════════════════════════════════ */
+  .athletes {
+    padding: 120px 24px; background: var(--off-white);
+  }
+  .athletes-inner { max-width: 1100px; margin: 0 auto; }
+  .athletes-header { text-align: center; margin-bottom: 64px; }
+  .athletes-label {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+  }
+  .athletes-header h2 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 900;
+    letter-spacing: -0.02em; color: var(--black);
+  }
+  .athletes-subtitle {
+    font-size: 0.95rem; color: var(--gray-600); margin-top: 12px;
+    max-width: 500px; margin-left: auto; margin-right: auto;
+  }
+  .athletes-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+  }
+  .athlete-card {
+    background: var(--black); padding: 40px 24px;
+    text-align: center; text-decoration: none;
+    transition: all 0.4s; position: relative; overflow: hidden;
+  }
+  .athlete-card::before {
+    content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px; background: var(--gold);
+    transform: scaleX(0); transition: transform 0.4s;
+  }
+  .athlete-card:hover::before { transform: scaleX(1); }
+  .athlete-card:hover { background: #111; }
+  .athlete-emoji {
+    font-size: 2.5rem; margin-bottom: 16px; display: block;
+  }
+  .athlete-name {
+    font-size: 0.95rem; font-weight: 800; color: var(--white);
+    letter-spacing: 1px; margin-bottom: 4px;
+  }
+  .athlete-title {
+    font-size: 0.65rem; color: var(--gold); font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+  }
+  .athlete-arrow {
+    margin-top: 16px; font-size: 0.7rem; color: var(--gray-400);
+    letter-spacing: 3px; text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  .athlete-card:hover .athlete-arrow { color: var(--gold); }
+
+  /* ═══════════════════════════════════════════
+     SOCIAL PROOF — Numbers that command respect
+  ═══════════════════════════════════════════ */
+  .proof {
+    padding: 100px 24px; background: var(--black);
+    border-top: 1px solid rgba(197,150,47,0.1);
+    border-bottom: 1px solid rgba(197,150,47,0.1);
+  }
+  .proof-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; justify-content: space-around;
+    flex-wrap: wrap; gap: 40px; text-align: center;
+  }
+  .proof-item {}
+  .proof-number {
+    font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 900;
+    color: var(--gold); letter-spacing: -0.02em;
+  }
+  .proof-label {
+    font-size: 0.6rem; font-weight: 600; letter-spacing: 4px;
+    text-transform: uppercase; color: var(--gray-400); margin-top: 8px;
+  }
+
+  /* ═══════════════════════════════════════════
+     NOISE SECTION — The "why" — emotional hook
+  ═══════════════════════════════════════════ */
+  .noise-section {
+    padding: 140px 24px; background: var(--white);
+    text-align: center;
+  }
+  .noise-inner { max-width: 700px; margin: 0 auto; }
+  .noise-label {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--red); margin-bottom: 40px;
+  }
+  .noise-section h2 {
+    font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 900;
+    line-height: 1.1; margin-bottom: 40px; letter-spacing: -0.02em;
+  }
+  .noise-section h2 .crossed {
+    text-decoration: line-through; color: var(--gray-400);
+    text-decoration-color: var(--red); text-decoration-thickness: 3px;
+  }
+  .noise-list { text-align: left; margin-bottom: 48px; }
+  .noise-item {
+    padding: 20px 0;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex; align-items: flex-start; gap: 16px;
+  }
+  .noise-x { color: var(--red); font-weight: 900; font-size: 1.2rem; min-width: 20px; }
+  .noise-text { font-size: 0.95rem; line-height: 1.6; color: var(--gray-600); }
+  .noise-text strong { color: var(--black); }
+  .noise-question {
+    font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800;
+    color: var(--black); line-height: 1.3;
+  }
+  .noise-question .gold { color: var(--gold); }
+
+  /* ═══════════════════════════════════════════
+     APP SECTION — Product showcase, Apple-style
+  ═══════════════════════════════════════════ */
+  .app-section {
+    padding: 120px 24px; background: var(--gray-100);
+    text-align: center;
+  }
+  .app-inner { max-width: 800px; margin: 0 auto; }
+  .app-label {
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 5px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 24px;
+  }
+  .app-section h2 {
+    font-size: clamp(2rem, 5vw, 3rem); font-weight: 900;
+    letter-spacing: -0.02em; margin-bottom: 24px;
+  }
+  .app-section h2 .gold { color: var(--gold); }
+  .app-desc {
+    font-size: 1.05rem; line-height: 1.7; color: var(--gray-600);
+    max-width: 550px; margin: 0 auto 48px;
+  }
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 24px; text-align: center; margin-bottom: 48px;
+  }
+  .feature-card {
+    background: var(--white); padding: 32px 24px; border-radius: 0;
+    border: 1px solid var(--gray-200); transition: border-color 0.3s;
+  }
+  .feature-card:hover { border-color: var(--gold); }
+  .feature-icon { font-size: 1.8rem; margin-bottom: 16px; }
+  .feature-name {
+    font-size: 0.85rem; font-weight: 800; margin-bottom: 8px;
+    letter-spacing: 0.5px;
+  }
+  .feature-desc { font-size: 0.8rem; color: var(--gray-600); line-height: 1.5; }
+
+  .app-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-app {
+    background: var(--black); color: var(--white);
+    padding: 16px 36px; border-radius: 0; font-size: 0.75rem;
+    font-weight: 700; text-decoration: none; letter-spacing: 2px;
+    text-transform: uppercase; transition: all 0.3s;
+    border: 2px solid var(--black);
+  }
+  .btn-app:hover { background: var(--gold); color: var(--black); border-color: var(--gold); }
+
+  /* ═══════════════════════════════════════════
+     FINAL CTA — Supreme urgency × Nike energy
+  ═══════════════════════════════════════════ */
+  .final-cta {
+    padding: 160px 24px; background: var(--black);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .final-cta::before {
+    content: 'BLOCK OUT THE NOISE';
+    position: absolute; font-size: 10vw; font-weight: 900;
+    top: 50%; left: 50%; transform: translate(-50%, -50%);
+    opacity: 0.03; pointer-events: none; white-space: nowrap;
+    color: var(--gold);
+  }
+  .final-cta h2 {
+    font-size: clamp(2.5rem, 7vw, 5rem); font-weight: 900;
+    color: var(--white); line-height: 0.95; letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+  .final-cta h2 .gold { color: var(--gold); }
+  .final-sub {
+    font-size: 1.05rem; color: var(--gray-400); max-width: 480px;
+    margin: 0 auto 48px; line-height: 1.6;
+  }
+  .final-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .btn-final {
+    background: var(--gold); color: var(--black);
+    padding: 18px 48px; border-radius: 0; font-size: 0.8rem;
+    font-weight: 800; text-decoration: none; letter-spacing: 3px;
+    text-transform: uppercase; transition: all 0.4s;
+    border: 2px solid var(--gold);
+  }
+  .btn-final:hover {
+    background: transparent; color: var(--gold);
+    box-shadow: 0 0 40px rgba(197,150,47,0.2);
+  }
+  .btn-final-ghost {
+    background: transparent; color: var(--white);
+    padding: 18px 48px; border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 0; font-size: 0.8rem; font-weight: 600;
+    text-decoration: none; letter-spacing: 3px;
+    text-transform: uppercase; transition: all 0.4s;
+  }
+  .btn-final-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* ═══════════════════════════════════════════
+     FOOTER — Minimal, LV-style
+  ═══════════════════════════════════════════ */
+  .footer {
+    background: var(--black); padding: 48px 24px;
+    border-top: 1px solid rgba(197,150,47,0.1);
+    text-align: center;
+  }
+  .footer-logo {
+    font-size: 0.7rem; font-weight: 900; letter-spacing: 6px;
+    color: var(--gold); margin-bottom: 16px;
+  }
+  .footer p { font-size: 0.75rem; color: var(--gray-400); line-height: 1.8; }
+  .footer a { color: var(--gold); text-decoration: none; }
+  .footer-links {
+    margin-top: 16px; display: flex; gap: 24px; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .footer-links a {
+    font-size: 0.65rem; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--gray-400); text-decoration: none; transition: color 0.3s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+  .footer-legal {
+    margin-top: 24px; font-size: 0.65rem; color: rgba(255,255,255,0.2);
+  }
+
+  /* ═══════════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════════ */
+  @media (max-width: 900px) {
+    .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+    .athletes-grid { grid-template-columns: repeat(2, 1fr); }
+    .features-grid { grid-template-columns: 1fr; }
+  }
+  @media (max-width: 600px) {
+    .nav { padding: 0 20px; }
+    .pillars-grid { grid-template-columns: 1fr; }
+    .athletes-grid { grid-template-columns: repeat(2, 1fr); }
+    .hero-actions, .final-actions, .app-cta { flex-direction: column; align-items: center; }
+    .proof-inner { flex-direction: column; gap: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-logo">Top Performer</div>
+  <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="nav-cta">Get the App</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">Your Coach in Your Pocket</div>
+  <h1><span class="thin">Block Out</span><br><span class="gold">The Noise.</span></h1>
+  <p class="hero-statement">The world is loud. The greats learned to silence it. Now it's your turn. Top Performer is the mental performance system used by athletes, founders, and high performers who refuse to be average.</p>
+  <div class="hero-actions">
+    <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-hero">Download Now →</a>
+    <a href="#pillars" class="btn-ghost">Learn the System</a>
+  </div>
+  <div class="hero-scroll">Scroll ↓</div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Block Out the Noise</span>
+    <span>•</span>
+    <span>Dominate Today</span>
+    <span>•</span>
+    <span>Light Up the Scoreboard</span>
+    <span>•</span>
+    <span>Raise Your Floor</span>
+    <span>•</span>
+    <span>Discipline Over Motivation</span>
+    <span>•</span>
+    <span>Prepare for the Fight</span>
+    <span>•</span>
+    <span>Block Out the Noise</span>
+    <span>•</span>
+    <span>Dominate Today</span>
+    <span>•</span>
+    <span>Light Up the Scoreboard</span>
+    <span>•</span>
+    <span>Raise Your Floor</span>
+    <span>•</span>
+    <span>Discipline Over Motivation</span>
+    <span>•</span>
+    <span>Prepare for the Fight</span>
+    <span>•</span>
+  </div>
+</div>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-inner">
+    <div class="manifesto-label">The Philosophy</div>
+    <h2>Every great performer in history had one thing in common.</h2>
+    <p>Not talent. Not luck. Not connections. They had the ability to <span class="accent">block out the noise</span> — the doubt, the critics, the distractions — and lock into what matters.</p>
+    <p>LeBron heard he'd never be Jordan. Serena was told tennis wasn't for her. Goggins was 300 pounds and broken. Messi was told he was too small. They didn't listen. They <span class="accent">dominated</span>.</p>
+    <p>Top Performer isn't another <span class="strike">motivation app</span>. It's a mental performance system built on the same principles that turned underdogs into legends and legends into all-time greats.</p>
+    <p><strong>The question isn't whether you have what it takes. It's whether you'll block out the noise long enough to prove it.</strong></p>
+  </div>
+</section>
+
+<!-- THE 9 PILLARS -->
+<section class="pillars" id="pillars">
+  <div class="pillars-inner">
+    <div class="pillars-header">
+      <div class="pillars-label">The System</div>
+      <h2>The 9 Pillars of a <span class="gold">Top Performer</span></h2>
+    </div>
+    <div class="pillars-grid">
+      <div class="pillar-cell">
+        <div class="pillar-number">01</div>
+        <div class="pillar-name">Master Your Mind & Emotions</div>
+        <div class="pillar-detail">Your mind is either your greatest weapon or your worst enemy. Top Performers choose.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">02</div>
+        <div class="pillar-name">Light Up the Scoreboard</div>
+        <div class="pillar-detail">Results talk. Everything else is noise. Let your performance silence every debate.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">03</div>
+        <div class="pillar-name">Dominate Today</div>
+        <div class="pillar-detail">Yesterday is dead. Tomorrow is a rumor. The only day that matters is this one.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">04</div>
+        <div class="pillar-name">Get Uncomfortable Daily</div>
+        <div class="pillar-detail">Comfort is where performance goes to die. Growth lives on the other side of the line.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">05</div>
+        <div class="pillar-name">Embrace the Friction</div>
+        <div class="pillar-detail">Resistance isn't the enemy — it's the sculptor. Every obstacle is shaping you into something greater.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">06</div>
+        <div class="pillar-name">Raise Your Floor</div>
+        <div class="pillar-detail">Don't chase peaks. Elevate the baseline. When your worst day is elite, you've arrived.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">07</div>
+        <div class="pillar-name">Prepare for the Fight</div>
+        <div class="pillar-detail">The battle is won before it starts. Preparation is the competitive advantage nobody can take from you.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">08</div>
+        <div class="pillar-name">Alive Time Over Dead Time</div>
+        <div class="pillar-detail">Every moment is either building you or breaking you. There is no neutral. Choose alive time.</div>
+      </div>
+      <div class="pillar-cell">
+        <div class="pillar-number">09</div>
+        <div class="pillar-name">Let's Take It On Together</div>
+        <div class="pillar-detail">No one reaches the top alone. Elevate the people around you — their rise is your legacy.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section class="proof">
+  <div class="proof-inner">
+    <div class="proof-item">
+      <div class="proof-number">9</div>
+      <div class="proof-label">Performance Pillars</div>
+    </div>
+    <div class="proof-item">
+      <div class="proof-number">16</div>
+      <div class="proof-label">All-Time Greats Featured</div>
+    </div>
+    <div class="proof-item">
+      <div class="proof-number">∞</div>
+      <div class="proof-label">Potential Unlocked</div>
+    </div>
+    <div class="proof-item">
+      <div class="proof-number">1</div>
+      <div class="proof-label">Decision Away</div>
+    </div>
+  </div>
+</section>
+
+<!-- ATHLETES GRID -->
+<section class="athletes" id="athletes">
+  <div class="athletes-inner">
+    <div class="athletes-header">
+      <div class="athletes-label">The Roster</div>
+      <h2>They Blocked Out the Noise. So Can You.</h2>
+      <p class="athletes-subtitle">Explore the stories of all-time greats who embodied the Top Performer mindset.</p>
+    </div>
+    <div class="athletes-grid">
+      <a class="athlete-card" href="https://belikelebron.com">
+        <span class="athlete-emoji">🏀</span>
+        <div class="athlete-name">LeBron James</div>
+        <div class="athlete-title">The Chosen One</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikeshohei.com">
+        <span class="athlete-emoji">⚾</span>
+        <div class="athlete-name">Shohei Ohtani</div>
+        <div class="athlete-title">Two-Way Phenomenon</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikeserena.com">
+        <span class="athlete-emoji">🎾</span>
+        <div class="athlete-name">Serena Williams</div>
+        <div class="athlete-title">The G.O.A.T.</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikemessi.com">
+        <span class="athlete-emoji">⚽</span>
+        <div class="athlete-name">Lionel Messi</div>
+        <div class="athlete-title">The Little Magician</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikeronaldo.com">
+        <span class="athlete-emoji">⚽</span>
+        <div class="athlete-name">Cristiano Ronaldo</div>
+        <div class="athlete-title">The Machine</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikebrady.com">
+        <span class="athlete-emoji">🏈</span>
+        <div class="athlete-name">Tom Brady</div>
+        <div class="athlete-title">The GOAT</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikesteph.com">
+        <span class="athlete-emoji">🏀</span>
+        <div class="athlete-name">Steph Curry</div>
+        <div class="athlete-title">Baby-Faced Assassin</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikepatrick.com">
+        <span class="athlete-emoji">🏈</span>
+        <div class="athlete-name">Patrick Mahomes</div>
+        <div class="athlete-title">Showtime Kid</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikesabrina.com">
+        <span class="athlete-emoji">🏀</span>
+        <div class="athlete-name">Sabrina Ionescu</div>
+        <div class="athlete-title">Record Breaker</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://beliketravis.com">
+        <span class="athlete-emoji">🏈</span>
+        <div class="athlete-name">Travis Kelce</div>
+        <div class="athlete-title">People's Tight End</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikeoprah.com">
+        <span class="athlete-emoji">✨</span>
+        <div class="athlete-name">Oprah Winfrey</div>
+        <div class="athlete-title">Queen of All Media</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikevirgil.com">
+        <span class="athlete-emoji">🎨</span>
+        <div class="athlete-name">Virgil Abloh</div>
+        <div class="athlete-title">Boundary Breaker</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikegoggins.com">
+        <span class="athlete-emoji">💀</span>
+        <div class="athlete-name">David Goggins</div>
+        <div class="athlete-title">Hardest Man Alive</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://belikejocko.com">
+        <span class="athlete-emoji">⚔️</span>
+        <div class="athlete-name">Jocko Willink</div>
+        <div class="athlete-title">Discipline Machine</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://beliketrevor.com">
+        <span class="athlete-emoji">🏈</span>
+        <div class="athlete-name">Trevor Lawrence</div>
+        <div class="athlete-title">Generational Talent</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+      <a class="athlete-card" href="https://beliketyson.com">
+        <span class="athlete-emoji">🥊</span>
+        <div class="athlete-name">Mike Tyson</div>
+        <div class="athlete-title">Baddest Man Alive</div>
+        <div class="athlete-arrow">Explore →</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- NOISE / EMOTIONAL HOOK -->
+<section class="noise-section">
+  <div class="noise-inner">
+    <div class="noise-label">Be Honest With Yourself</div>
+    <h2>The <span class="crossed">Noise</span> Is Winning.</h2>
+    <div class="noise-list">
+      <div class="noise-item">
+        <div class="noise-x">✕</div>
+        <div class="noise-text"><strong>You scroll instead of preparing.</strong> The algorithm has your attention. Your goals don't.</div>
+      </div>
+      <div class="noise-item">
+        <div class="noise-x">✕</div>
+        <div class="noise-text"><strong>You compare instead of competing.</strong> Other people's highlights are drowning out your own progress.</div>
+      </div>
+      <div class="noise-item">
+        <div class="noise-x">✕</div>
+        <div class="noise-text"><strong>You plan instead of performing.</strong> Another journal. Another app. Another Monday. Still stuck.</div>
+      </div>
+      <div class="noise-item">
+        <div class="noise-x">✕</div>
+        <div class="noise-text"><strong>You know what to do — you're just not doing it.</strong> The gap between where you are and where you could be? That's the noise.</div>
+      </div>
+    </div>
+    <p class="noise-question">What if you had a system to <span class="gold">block it all out</span> — and a coach in your pocket to keep you locked in?</p>
+  </div>
+</section>
+
+<!-- APP SHOWCASE -->
+<section class="app-section" id="app">
+  <div class="app-inner">
+    <div class="app-label">The App</div>
+    <h2>Your Coach. <span class="gold">Your Pocket.</span></h2>
+    <p class="app-desc">Top Performer is a mental performance coaching app built on the 9 Pillars. Daily coaching. Real accountability. No fluff.</p>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-name">Daily Pillar Focus</div>
+        <div class="feature-desc">Each day locks you into one of the 9 Pillars with targeted coaching and actionable prompts.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💀</div>
+        <div class="feature-name">Noise Blocker</div>
+        <div class="feature-desc">Identify what's distracting you, name it, and systematically eliminate it from your day.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📈</div>
+        <div class="feature-name">Scoreboard</div>
+        <div class="feature-desc">Track your performance streaks, daily wins, and growth over time. Light up your own scoreboard.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-name">Greatness Library</div>
+        <div class="feature-desc">Stories, lessons, and mindset frameworks from the all-time greats who blocked out the noise before you.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-name">Morning Lockdown</div>
+        <div class="feature-desc">Start every day with intention. Your morning routine sets the tone — Top Performer makes sure it's elite.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔥</div>
+        <div class="feature-name">Accountability Engine</div>
+        <div class="feature-desc">No one achieves greatness alone. Built-in accountability to keep you honest when motivation fades.</div>
+      </div>
+    </div>
+    <div class="app-cta">
+      <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-app">📱 Download for iOS →</a>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <h2>Stop <span class="gold">Listening.</span><br>Start <span class="gold">Performing.</span></h2>
+  <p class="final-sub">The noise never stops. But you can learn to block it out — one day at a time. The greats did. Now it's your turn.</p>
+  <div class="final-actions">
+    <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-final">🏆 Become a Top Performer →</a>
+    <a href="#athletes" class="btn-final-ghost">Explore the Roster</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">Top Performer</div>
+  <p>Your Coach in Your Pocket &bull; <a href="https://topperformer.ai">topperformer.ai</a></p>
+  <div class="footer-links">
+    <a href="https://apps.apple.com/app/top-performer-coach/id6759122798">iOS App</a>
+    <a href="#pillars">The 9 Pillars</a>
+    <a href="#athletes">The Roster</a>
+    <a href="#app">Features</a>
+  </div>
+  <p class="footer-legal">© 2026 Top Performer. All rights reserved. Athlete pages are created for inspirational purposes and are not affiliated with any featured individuals.</p>
+</footer>
+
+</body>
+</html>

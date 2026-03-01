@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Socket.IO Client Service
+// Top Performer - Socket.IO Client Service
 // ============================================================
 
 import { io } from 'socket.io-client';

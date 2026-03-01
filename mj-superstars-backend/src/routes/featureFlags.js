@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Feature Flags API Routes
+// Top Performer - Feature Flags API Routes
 // Endpoints for retrieving and managing feature flags
 // ============================================================
 

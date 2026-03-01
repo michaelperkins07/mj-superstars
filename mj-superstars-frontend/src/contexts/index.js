@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Context Exports
+// Top Performer - Context Exports
 // ============================================================
 
 export { AuthProvider, useAuth } from './AuthContext';

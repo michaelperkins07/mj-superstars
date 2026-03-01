@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Like Oprah - TOP PERFORMER</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --black: #000;
+            --gold: #C5962F;
+            --dark-gold: #A67C1A;
+            --light-gold: #F5ECD7;
+            --red: #C41E3A;
+            --white: #FFF;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--black);
+            background: var(--white);
+            overflow-x: hidden;
+        }
+        
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+            text-align: center;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '👑';
+            position: absolute;
+            font-size: 400px;
+            opacity: 0.05;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 0;
+        }
+        
+        .hero-badge {
+            display: inline-block;
+            background: var(--light-gold);
+            color: var(--dark-gold);
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 {
+            font-size: 72px;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero h1 .gold {
+            color: var(--gold);
+        }
+        
+        .hero-subtitle {
+            font-size: 20px;
+            max-width: 600px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+            color: #333;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .hero-quote {
+            font-size: 18px;
+            font-style: italic;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background: var(--light-gold);
+            border-left: 4px solid var(--gold);
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 60px auto;
+            max-width: 1000px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--gold);
+            display: block;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Story Section */
+        .story {
+            padding: 80px 20px;
+            background: var(--white);
+            position: relative;
+        }
+        
+        .story-inner {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .story-label {
+            color: var(--gold);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .story h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 30px;
+            line-height: 1.2;
+        }
+        
+        .story p {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #333;
+        }
+        
+        .story .highlight {
+            background: var(--light-gold);
+            padding: 2px 6px;
+            font-weight: 600;
+        }
+        
+        .story .red {
+            color: var(--red);
+            font-weight: 700;
+        }
+        
+        /* Noise Section */
+        .noise {
+            padding: 80px 20px;
+            background: var(--black);
+            color: var(--white);
+            position: relative;
+        }
+        
+        .noise::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(255, 255, 255, 0.03) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            pointer-events: none;
+        }
+        
+        .noise h2 {
+            font-size: 48px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .noise h2 .crossed {
+            text-decoration: line-through;
+            color: #666;
+        }
+        
+        .noise-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .noise-item {
+            display: flex;
+            gap: 15px;
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+        
+        .noise-x {
+            color: var(--red);
+            font-weight: 900;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+        
+        .noise-text {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* Pillars Section */
+        .pillars {
+            padding: 80px 20px;
+            background: var(--white);
+        }
+        
+        .pillars-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .pillars-inner > h2 {
+            font-size: 48px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .pillar-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .pillar-card {
+            padding: 40px 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .pillar-card:hover {
+            border-color: var(--gold);
+            background: var(--light-gold);
+        }
+        
+        .pillar-num {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--gold);
+            margin-bottom: 15px;
+        }
+        
+        .pillar-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .pillar-desc {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #666;
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            padding: 80px 20px;
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+            color: var(--white);
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 20px;
+        }
+        
+        .cta-subtitle {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            color: #ccc;
+        }
+        
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn-primary {
+            background: var(--gold);
+            color: var(--black);
+            padding: 16px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: var(--dark-gold);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: transparent;
+            color: var(--white);
+            padding: 16px 40px;
+            border: 2px solid var(--gold);
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--gold);
+            color: var(--black);
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 40px 20px;
+            background: var(--black);
+            color: var(--white);
+            text-align: center;
+            border-top: 1px solid #333;
+        }
+        
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+        
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer a:hover {
+            color: var(--white);
+        }
+        
+        .footer p {
+            font-size: 12px;
+            color: #888;
+            margin-top: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 48px;
+            }
+            
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            
+            .story h2,
+            .noise h2 {
+                font-size: 32px;
+            }
+            
+            .cta-section h2 {
+                font-size: 32px;
+            }
+            
+            .hero::before {
+                font-size: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">✨ The Queen of All Media</div>
+        <h1>BE LIKE<br><span class="gold">OPRAH</span></h1>
+        <p class="hero-subtitle">"Born into poverty in rural Mississippi. Built the most influential media empire the world has ever seen."</p>
+        <p class="hero-quote">"Turn your wounds into wisdom. You get in life what you have the courage to ask for." - Oprah Winfrey</p>
+        
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-number">25</span>
+                <span class="stat-label">Years (Talk Show)</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">$2.5B+</span>
+                <span class="stat-label">Net Worth</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">100M+</span>
+                <span class="stat-label">Lives Touched</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number">1</span>
+                <span class="stat-label">Of a Kind</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story">
+        <div class="story-inner">
+            <div class="story-label">From Nothing to Everything</div>
+            <h2>From Mississippi to Media Mogul</h2>
+            <p>Born in <span class="highlight">Kosciusko, Mississippi</span>, Oprah Winfrey's early years were marked by poverty and hardship. Raised by her grandmother in rural poverty, she faced abuse as a child and became pregnant at age 14—a tragedy that shaped her resilience and empathy.</p>
+            <p>At 19, she moved to <span class="highlight">Nashville</span> to live with her father, where she discovered broadcasting. This pivotal moment set her on a path that would transform not just her life, but the entire media landscape.</p>
+            <p>Oprah launched <span class="red">The Oprah Winfrey Show</span> and built an unprecedented media empire. She became the <span class="highlight">first Black female billionaire</span>, founded the <span class="highlight">OWN network</span>, and created <span class="highlight">Oprah's Book Club</span>—a cultural force that changed publishing forever.</p>
+            <p>Her influence extends far beyond entertainment. She built leadership academies in South Africa, touched over 100 million lives, and proved that your origins don't determine your destiny. Her philanthropic work and cultural impact have made her <span class="red">one of the most influential people on Earth</span>.</p>
+        </div>
+    </section>
+
+    <!-- Noise Section -->
+    <section class="noise">
+        <h2>Ignore The <span class="crossed">Noise</span></h2>
+        <div class="noise-items">
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text">
+                    <strong>"She's too emotional for TV"</strong><br>
+                    Emotion became her superpower
+                </div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text">
+                    <strong>"A Black woman can't host a national talk show"</strong><br>
+                    25 years, #1 in daytime television
+                </div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text">
+                    <strong>"She should stick to entertainment"</strong><br>
+                    Built schools, influenced elections, changed culture
+                </div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text">
+                    <strong>"She's not a real businesswoman"</strong><br>
+                    $2.5B empire, OWN network, media mogul
+                </div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-x">✕</div>
+                <div class="noise-text">
+                    <strong>"Her best days are behind her"</strong><br>
+                    Still one of the most influential people on Earth
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pillars Section -->
+    <section class="pillars">
+        <div class="pillars-inner">
+            <h2>The 6 Pillars of Oprah's Success</h2>
+            <div class="pillar-cards">
+                <div class="pillar-card">
+                    <div class="pillar-num">1</div>
+                    <div class="pillar-title">Master Your Mind & Emotions</div>
+                    <div class="pillar-desc">Oprah turned childhood trauma into emotional intelligence that became her greatest asset in connecting with millions.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">2</div>
+                    <div class="pillar-title">Embrace the Friction</div>
+                    <div class="pillar-desc">Every obstacle—poverty, discrimination, personal loss—became fuel for growth and deeper understanding of the human experience.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">3</div>
+                    <div class="pillar-title">Raise Your Floor</div>
+                    <div class="pillar-desc">From rural poverty to billionaire status, she continuously elevated her standards and expectations, inspiring others to do the same.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">4</div>
+                    <div class="pillar-title">Dominate Today</div>
+                    <div class="pillar-desc">For 25 years she dominated daytime television, not by chasing trends, but by mastering her craft every single day.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">5</div>
+                    <div class="pillar-title">Let's Take It On Together</div>
+                    <div class="pillar-desc">Her Book Club, her network, her schools—Oprah's empire was built on bringing people together to elevate human potential.</div>
+                </div>
+                <div class="pillar-card">
+                    <div class="pillar-num">6</div>
+                    <div class="pillar-title">Alive Time Over Dead Time</div>
+                    <div class="pillar-desc">Every moment was invested in growth, service, and impact. She transformed pain into purpose and built a legacy of influence.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Block Out<br>Your Noise?</h2>
+        <p class="cta-subtitle">Join thousands of high performers who are mastering their mindset and dominating their potential.</p>
+        <div class="cta-buttons">
+            <a href="https://topperformer.ai" class="btn-primary">Get Top Performer</a>
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">Download App</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-logo">TOP PERFORMER</div>
+        <p><a href="https://topperformer.ai">topperformer.ai</a></p>
+        <p>Disclaimer: This page is not affiliated with or endorsed by Oprah Winfrey.</p>
+    </footer>
+</body>
+</html>

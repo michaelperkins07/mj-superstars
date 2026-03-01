@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Authentication Context
+// Top Performer - Authentication Context
 // Manages user auth state, login/logout, token refresh
 // ============================================================
 

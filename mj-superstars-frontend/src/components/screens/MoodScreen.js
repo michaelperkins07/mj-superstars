@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Mood Screen
+// Top Performer - Mood Screen
 // Check in with yourself. No judgment. Just honesty.
 // ============================================================
 import React, { useState, useEffect, useCallback } from 'react';

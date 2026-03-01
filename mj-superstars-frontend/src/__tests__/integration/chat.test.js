@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Chat Integration Tests
+// Top Performer - Chat Integration Tests
 // ============================================================
 
 import React from 'react';

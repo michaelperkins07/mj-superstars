@@ -16,13 +16,13 @@ let apnProvider = null;
  *   APNS_TEAM_ID    - Team ID from Apple Developer portal
  *   APNS_KEY_PATH   - Path to .p8 key file (or use APNS_KEY_CONTENT)
  *   APNS_KEY_CONTENT - Raw .p8 key content (base64-encoded, for Render)
- *   APNS_BUNDLE_ID  - App bundle ID (com.mjsuperstars.app)
+ *   APNS_BUNDLE_ID  - App bundle ID (com.topperformer.app)
  *   APNS_PRODUCTION - "true" for production, omit for sandbox
  */
 export function initAPNS() {
   const keyId = process.env.APNS_KEY_ID;
   const teamId = process.env.APNS_TEAM_ID;
-  const bundleId = process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app';
+  const bundleId = process.env.APNS_BUNDLE_ID || 'com.topperformer.app';
   const isProduction = process.env.APNS_PRODUCTION === 'true';
 
   if (!keyId || !teamId) {
@@ -68,7 +68,7 @@ export async function sendAPNS(deviceToken, payload) {
     return { sent: false, reason: 'apns_not_configured' };
   }
 
-  const bundleId = process.env.APNS_BUNDLE_ID || 'com.mjsuperstars.app';
+  const bundleId = process.env.APNS_BUNDLE_ID || 'com.topperformer.app';
 
   const notification = new apn.Notification();
   notification.topic = bundleId;

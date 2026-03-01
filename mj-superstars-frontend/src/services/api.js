@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - API Client Service
+// Top Performer - API Client Service
 // ============================================================
 
 import { isQueueable, enqueue, initOfflineSync } from './offlineQueue';

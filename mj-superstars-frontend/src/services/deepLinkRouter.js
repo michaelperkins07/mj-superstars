@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Web Deep Link Router
+// Top Performer - Web Deep Link Router
 // Handles URL-based navigation when the app loads in a browser
 // ============================================================
 

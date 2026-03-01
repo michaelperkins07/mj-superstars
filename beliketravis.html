@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Like Travis - Travis Kelce Athlete Campaign</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000;
+            --gold: #C5962F;
+            --dark-gold: #A67C1A;
+            --light-gold: #F5ECD7;
+            --red: #C41E3A;
+            --white: #FFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, var(--black) 0%, #1a1a1a 100%);
+            overflow: hidden;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: transparent;
+            border: 2px solid var(--gold);
+            color: var(--gold);
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 10vw, 120px);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -2px;
+        }
+
+        .hero h1 .gold {
+            color: var(--gold);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(18px, 4vw, 32px);
+            font-weight: 400;
+            color: var(--light-gold);
+            max-width: 700px;
+            margin: 30px auto;
+            line-height: 1.5;
+        }
+
+        .hero-quote {
+            font-size: clamp(16px, 3vw, 24px);
+            font-style: italic;
+            color: var(--white);
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 30px;
+            border-left: 4px solid var(--gold);
+            background-color: rgba(197, 150, 47, 0.1);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 60px auto;
+            max-width: 1000px;
+            width: 100%;
+            padding: 40px 20px;
+            background-color: rgba(197, 150, 47, 0.15);
+            border-top: 2px solid var(--gold);
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .stat {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .stat h3 {
+            font-size: clamp(16px, 3vw, 24px);
+            color: var(--gold);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .stat p {
+            font-size: 14px;
+            color: var(--light-gold);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Story Section */
+        .story {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(197, 150, 47, 0.3);
+            border-radius: 8px;
+        }
+
+        .story h2 {
+            font-size: clamp(28px, 5vw, 48px);
+            color: var(--gold);
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+
+        .story p {
+            font-size: 16px;
+            line-height: 1.8;
+            color: var(--white);
+            margin-bottom: 20px;
+        }
+
+        /* Noise Section */
+        .noise {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+
+        .noise h2 {
+            font-size: clamp(28px, 5vw, 48px);
+            color: var(--gold);
+            margin-bottom: 40px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .noise-item {
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: rgba(196, 30, 58, 0.15);
+            border-left: 4px solid var(--red);
+            border-radius: 4px;
+        }
+
+        .noise-item p {
+            font-size: 16px;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .noise-item span {
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* Pillars Section */
+        .pillars {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 40px 20px;
+        }
+
+        .pillars h2 {
+            font-size: clamp(28px, 5vw, 48px);
+            color: var(--gold);
+            margin-bottom: 50px;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .pillar-card {
+            padding: 40px 30px;
+            background-color: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(197, 150, 47, 0.4);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            background-color: rgba(197, 150, 47, 0.15);
+            border-color: var(--gold);
+            transform: translateY(-5px);
+        }
+
+        .pillar-card h3 {
+            font-size: 22px;
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .pillar-card p {
+            font-size: 15px;
+            color: var(--white);
+            line-height: 1.7;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            max-width: 900px;
+            margin: 80px auto;
+            padding: 60px 40px;
+            background-color: rgba(197, 150, 47, 0.15);
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(28px, 5vw, 48px);
+            color: var(--gold);
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: var(--white);
+            margin-bottom: 40px;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        @media (min-width: 600px) {
+            .cta-buttons {
+                flex-direction: row;
+                justify-content: center;
+            }
+        }
+
+        .btn-primary {
+            display: inline-block;
+            padding: 16px 40px;
+            background-color: var(--gold);
+            color: var(--black);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-gold);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            padding: 16px 40px;
+            background-color: transparent;
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            border: 2px solid var(--gold);
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gold);
+            color: var(--black);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: rgba(0, 0, 0, 0.8);
+            border-top: 1px solid rgba(197, 150, 47, 0.3);
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .footer p {
+            font-size: 14px;
+            color: var(--light-gold);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-disclaimer {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.5);
+            margin-top: 20px;
+            border-top: 1px solid rgba(197, 150, 47, 0.2);
+            padding-top: 20px;
+        }
+
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 200px;
+            opacity: 0.08;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 30px 15px;
+            }
+
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                margin: 40px auto;
+            }
+
+            .story {
+                margin: 60px 20px;
+                padding: 30px 20px;
+            }
+
+            .pillars {
+                margin: 60px 20px;
+            }
+
+            .cta-section {
+                margin: 60px 20px;
+                padding: 40px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="watermark">🏈</div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">🏈 The People's Tight End</div>
+        <h1>BE LIKE <span class="gold">TRAVIS</span></h1>
+        <p class="hero-subtitle">Cut from his college team. Suspended for a year. Became the greatest tight end in NFL history.</p>
+        <blockquote class="hero-quote">
+            "I always work hard. I always do what I think is right. I try to be myself. I'm real with people. I'm not going to act like I'm somebody I'm not. That's what I'm about." — Travis Kelce
+        </blockquote>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat">
+            <h3>3x</h3>
+            <p>Super Bowl Champion</p>
+        </div>
+        <div class="stat">
+            <h3>9x</h3>
+            <p>Pro Bowl Selection</p>
+        </div>
+        <div class="stat">
+            <h3>#1</h3>
+            <p>All-Time TE Receiving Leader</p>
+        </div>
+        <div class="stat">
+            <h3>∞</h3>
+            <p>Cultural Icon</p>
+        </div>
+    </div>
+
+    <!-- Story Section -->
+    <section class="story">
+        <h2>From Cleveland Heights to King of the Hill</h2>
+        <p>
+            Travis Kelce grew up in Cleveland Heights, Ohio, where he showed athletic promise early. A quarterback and linebacker in high school, he was versatile and competitive. But his path wasn't easy—nothing was handed to him.
+        </p>
+        <p>
+            He walked on to the University of Cincinnati as an unheralded recruit. Then came the setback: a failed drug test resulted in a suspension that forced him to sit out an entire year. At that moment, many would have quit. Many did. Travis didn't.
+        </p>
+        <p>
+            He used that year to get more focused than ever. He came back stronger, more disciplined, more determined. When he entered the NFL Draft, he wasn't a first-round pick. He was a third-round pick—overlooked, underestimated, doubted.
+        </p>
+        <p>
+            Then he dominated. Year after year, he became the greatest tight end in NFL history. With the Kansas City Chiefs, he won three Super Bowls and established himself as an all-time talent. But Travis never stopped evolving. He launched the New Heights podcast, hosted Saturday Night Live, became a global phenomenon through his relationship with Taylor Swift, and dominated the culture beyond football.
+        </p>
+        <p>
+            Yet through all the fame, the entertainment, the headlines—he never lost focus on the game. He never let the noise distract him. Every Sunday, he shows up ready to dominate. This is the Travis Kelce story: from overlooked walk-on to global icon, from suspended to legendary, from doubted to unstoppable.
+        </p>
+    </section>
+
+    <!-- Noise Section -->
+    <section class="noise">
+        <h2>They Said. He Showed.</h2>
+        <div class="noise-item">
+            <p><span>"He got suspended. He's done."</span></p>
+            <p>→ Used that year off to become more focused than ever</p>
+        </div>
+        <div class="noise-item">
+            <p><span>"Third-round pick. He's not elite."</span></p>
+            <p>→ Became the greatest tight end in NFL history</p>
+        </div>
+        <div class="noise-item">
+            <p><span>"He's just Jason Kelce's brother."</span></p>
+            <p>→ Built his own legacy — 3 rings, all-time records</p>
+        </div>
+        <div class="noise-item">
+            <p><span>"He's more entertainer than athlete."</span></p>
+            <p>→ Dominates on the field AND owns the culture</p>
+        </div>
+        <div class="noise-item">
+            <p><span>"He's a distraction to the team."</span></p>
+            <p>→ His teams keep winning Super Bowls</p>
+        </div>
+    </section>
+
+    <!-- Pillars Section -->
+    <section class="pillars">
+        <h2>The Travis Kelce Pillars</h2>
+        <div class="pillars-grid">
+            <div class="pillar-card">
+                <h3>Get Uncomfortable Daily</h3>
+                <p>Travis walked on to Cincinnati as an unheralded recruit. He didn't wait for a comfort zone—he created one by pushing into discomfort. Every day, he chose the harder path, the one that would make him better.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Embrace the Friction</h3>
+                <p>A suspension in college. Third-round draft pick. Doubters everywhere. Travis didn't fight the friction—he used it. Every bit of friction became fuel. Every obstacle became an opportunity to separate himself from the rest.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Alive Time Over Dead Time</h3>
+                <p>That year suspended from Cincinnati? He could have wasted it. Instead, he used every single moment to improve. He chose to be alive during his downtime, not dead. This is what separates legends from the forgotten.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Light Up the Scoreboard</h3>
+                <p>Stats matter. Results matter. Travis doesn't just show up—he puts points on the board. Touchdowns, receptions, yards gained, championships won. He measures success in tangible results, and he delivers them consistently.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Dominate Today</h3>
+                <p>Travis doesn't worry about yesterday's missed catch or tomorrow's opponent. He dominates today. Every practice. Every play. Every moment. This mentality has made him unstoppable, one game at a time.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Let's Take It On Together</h3>
+                <p>Travis is a leader. He brings his teammates with him. With the Chiefs, he's built a culture of winning together. He's real, he's authentic, and he makes everyone around him better. That's the power of togetherness.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Be Like Travis</h2>
+        <p>Live the principles that transformed Travis Kelce from overlooked walk-on to NFL legend. Get started with Top Performer Coach today.</p>
+        <div class="cta-buttons">
+            <a href="https://topperformer.ai" class="btn-primary">Visit Top Performer</a>
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">Download the App</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p><strong>Top Performer Coach</strong> is the app trusted by athletes and high performers worldwide.</p>
+        <p>
+            Learn more at <a href="https://topperformer.ai">topperformer.ai</a> or download the app on
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798">Apple App Store</a>
+        </p>
+        <div class="footer-disclaimer">
+            Disclaimer: This page is not affiliated with Travis Kelce, the Kansas City Chiefs, or the National Football League (NFL). This is an independent campaign inspired by Travis Kelce's journey and public story.
+        </div>
+    </footer>
+</body>
+</html>

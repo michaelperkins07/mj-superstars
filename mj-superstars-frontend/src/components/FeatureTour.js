@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Feature Tour (Post-Onboarding Walkthrough)
+// Top Performer - Feature Tour (Post-Onboarding Walkthrough)
 // Shows key app features after first onboarding
 // ============================================================
 import React, { useState, useCallback } from 'react';

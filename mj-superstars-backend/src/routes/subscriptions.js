@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Subscription Management Routes
+// Top Performer - Subscription Management Routes
 // ============================================================
 
 import { Router } from 'express';

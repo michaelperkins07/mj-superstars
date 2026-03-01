@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top Performer - Your Coach in Your Pocket</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --black: #000000;
+    --gold: #C5962F;
+    --dark-gold: #A67C1A;
+    --light-gold: #F5ECD7;
+    --red: #C41E3A;
+    --dark-gray: #333333;
+    --med-gray: #666666;
+    --light-gray: #F5F5F5;
+    --white: #FFFFFF;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--dark-gray);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* HERO SECTION */
+  .hero {
+    background: linear-gradient(135deg, #000 0%, #1a1a1a 50%, #000 100%);
+    color: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 49px,
+        rgba(197, 150, 47, 0.03) 49px,
+        rgba(197, 150, 47, 0.03) 50px
+      );
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    background: var(--gold);
+    color: var(--black);
+    padding: 8px 24px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  .hero h1 {
+    font-size: clamp(3rem, 8vw, 6rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -2px;
+  }
+
+  .hero h1 .gold { color: var(--gold); }
+
+  .hero-subtitle {
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    color: #aaa;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    line-height: 1.5;
+  }
+
+  .hero-quote {
+    font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+    color: var(--gold);
+    font-style: italic;
+    font-weight: 600;
+    max-width: 700px;
+    margin: 0 auto 48px;
+  }
+
+  .cta-group {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: var(--black);
+    padding: 16px 40px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .btn-primary:hover {
+    background: var(--dark-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(197, 150, 47, 0.3);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: white;
+    padding: 16px 40px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .hero-stat {
+    text-align: center;
+  }
+
+  .hero-stat-number {
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--gold);
+  }
+
+  .hero-stat-label {
+    font-size: 0.85rem;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* MANIFESTO SECTION */
+  .manifesto {
+    background: var(--light-gold);
+    padding: 100px 20px;
+    text-align: center;
+  }
+
+  .manifesto-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .manifesto h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 32px;
+  }
+
+  .manifesto p {
+    font-size: 1.2rem;
+    color: var(--dark-gray);
+    line-height: 1.8;
+    margin-bottom: 24px;
+  }
+
+  .manifesto .highlight {
+    color: var(--gold);
+    font-weight: 700;
+  }
+
+  .divider {
+    width: 80px;
+    height: 4px;
+    background: var(--gold);
+    margin: 40px auto;
+    border-radius: 2px;
+  }
+
+  /* PILLARS SECTION */
+  .pillars {
+    background: white;
+    padding: 100px 20px;
+  }
+
+  .pillars-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--med-gray);
+    margin-bottom: 64px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 32px;
+  }
+
+  .pillar-card {
+    background: var(--light-gray);
+    border-radius: 16px;
+    padding: 40px 32px;
+    border-left: 4px solid var(--gold);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .pillar-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+  }
+
+  .pillar-icon {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+  }
+
+  .pillar-card h3 {
+    font-size: 1.3rem;
+    font-weight: 800;
+    color: var(--black);
+    margin-bottom: 12px;
+  }
+
+  .pillar-card p {
+    color: var(--med-gray);
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  /* CHALLENGE SECTION */
+  .challenge {
+    background: var(--black);
+    color: white;
+    padding: 100px 20px;
+    text-align: center;
+  }
+
+  .challenge-inner {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .challenge h2 {
+    font-size: 2.5rem;
+    font-weight: 900;
+    margin-bottom: 24px;
+  }
+
+  .challenge h2 .gold { color: var(--gold); }
+
+  .challenge p {
+    font-size: 1.15rem;
+    color: #ccc;
+    line-height: 1.7;
+    margin-bottom: 24px;
+  }
+
+  .challenge-steps {
+    display: flex;
+    gap: 24px;
+    margin: 48px 0;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .challenge-step {
+    background: rgba(197, 150, 47, 0.1);
+    border: 1px solid rgba(197, 150, 47, 0.3);
+    border-radius: 12px;
+    padding: 24px;
+    flex: 1;
+    min-width: 220px;
+    max-width: 280px;
+  }
+
+  .step-number {
+    background: var(--gold);
+    color: var(--black);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 1.2rem;
+    margin: 0 auto 16px;
+  }
+
+  .challenge-step h4 {
+    color: var(--gold);
+    margin-bottom: 8px;
+    font-size: 1rem;
+  }
+
+  .challenge-step p {
+    font-size: 0.9rem;
+    color: #999;
+    margin-bottom: 0;
+  }
+
+  .prize-callout {
+    background: linear-gradient(135deg, rgba(197, 150, 47, 0.2), rgba(197, 150, 47, 0.05));
+    border: 2px solid var(--gold);
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: 48px;
+  }
+
+  .prize-callout h3 {
+    color: var(--gold);
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+  }
+
+  .prize-callout p {
+    color: #ccc;
+    font-size: 1rem;
+  }
+
+  /* TESTIMONIALS / PHILOSOPHY */
+  .philosophy {
+    background: var(--light-gray);
+    padding: 100px 20px;
+  }
+
+  .philosophy-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .quote-cards {
+    display: grid;
+    gap: 24px;
+  }
+
+  .quote-card {
+    background: white;
+    border-radius: 12px;
+    padding: 32px;
+    border-left: 4px solid var(--gold);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+
+  .quote-card .quote-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--black);
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+
+  .quote-card .quote-context {
+    font-size: 0.9rem;
+    color: var(--med-gray);
+  }
+
+  /* EMAIL CAPTURE */
+  .email-capture {
+    background: linear-gradient(135deg, var(--gold), var(--dark-gold));
+    padding: 80px 20px;
+    text-align: center;
+  }
+
+  .email-capture-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .email-capture h2 {
+    font-size: 2.2rem;
+    font-weight: 900;
+    color: var(--black);
+    margin-bottom: 16px;
+  }
+
+  .email-capture p {
+    color: var(--dark-gray);
+    margin-bottom: 32px;
+    font-size: 1.1rem;
+  }
+
+  .email-form {
+    display: flex;
+    gap: 12px;
+    max-width: 500px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .email-form input {
+    flex: 1;
+    min-width: 250px;
+    padding: 16px 20px;
+    border: 2px solid var(--black);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    background: white;
+  }
+
+  .email-form input:focus {
+    outline: none;
+    border-color: var(--black);
+    box-shadow: 0 0 0 3px rgba(0,0,0,0.1);
+  }
+
+  .email-form button {
+    background: var(--black);
+    color: var(--gold);
+    padding: 16px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s;
+    white-space: nowrap;
+  }
+
+  .email-form button:hover {
+    background: #222;
+    transform: translateY(-2px);
+  }
+
+  .email-note {
+    font-size: 0.85rem;
+    color: rgba(0,0,0,0.5);
+    margin-top: 16px;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--black);
+    color: #888;
+    padding: 48px 20px;
+    text-align: center;
+  }
+
+  .footer-brand {
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .footer-tagline {
+    color: var(--gold);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+
+  .footer-links {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .footer-links a {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover { color: var(--gold); }
+
+  .footer-copy {
+    font-size: 0.8rem;
+    color: #555;
+  }
+
+  /* APP STORE BADGES */
+  .app-badges {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 32px;
+  }
+
+  .app-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 10px 20px;
+    color: white;
+    font-size: 0.9rem;
+    text-decoration: none;
+    transition: all 0.3s;
+  }
+
+  .app-badge:hover {
+    background: rgba(255,255,255,0.15);
+    border-color: var(--gold);
+  }
+
+  .app-badge-label {
+    font-size: 0.7rem;
+    color: #aaa;
+    display: block;
+  }
+
+  .app-badge-store {
+    font-weight: 700;
+    font-size: 1rem;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .hero { padding: 60px 20px; min-height: auto; }
+    .hero h1 { font-size: 2.5rem; letter-spacing: -1px; }
+    .hero-stats { gap: 24px; }
+    .pillars-grid { grid-template-columns: 1fr; }
+    .challenge-steps { flex-direction: column; align-items: center; }
+    .email-form { flex-direction: column; }
+    .email-form input { min-width: unset; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-badge">The Marathon Continues</span>
+  <h1>DOMINATE<br><span class="gold">TODAY.</span></h1>
+  <p class="hero-subtitle">Take control of your mind, your emotions, and your day. Block the noise. The only competition you're facing is yourself. The rest of the world is losing.</p>
+  <p class="hero-quote">"Life is short. Why live in regret? Whatever you're doing today, add more to it."</p>
+
+  <div class="cta-group">
+    <a href="#download" class="btn-primary">Download Free</a>
+    <a href="#challenge" class="btn-secondary">Join the Challenge</a>
+  </div>
+
+  <div class="app-badges">
+    <a href="#" class="app-badge">
+      <div>
+        <span class="app-badge-label">Download on the</span>
+        <span class="app-badge-store">App Store</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-number">30</div>
+      <div class="hero-stat-label">Day Challenge</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">1%</div>
+      <div class="hero-stat-label">Equity Prize</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-number">24/7</div>
+      <div class="hero-stat-label">Your Coach</div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="manifesto">
+  <div class="manifesto-inner">
+    <h2>This Is the Marathon of Life</h2>
+    <div class="divider"></div>
+    <p>Every single person has untapped potential buried under fear, doubt, and the weight of other people's opinions. We're not here to judge you. We're not here to sell you a fantasy.</p>
+    <p>We're here to help you <span class="highlight">take control of your mind, your emotions, and your life</span>, one day at a time. Block the noise. Make rational decisions. Build structure. Generate the friction that drives real growth.</p>
+    <p>The real battle isn't out there. It's in here. Every day we see increases in violence, road rage, and hate. The world is distracted — lost in the past or worried about the future. <span class="highlight">We're here to help you win today.</span></p>
+    <p>Got an excuse? <span class="highlight">Let's talk about it.</span> Let's figure out how to get through it together. Because excuses are just problems that haven't been solved yet.</p>
+    <div class="divider"></div>
+    <p style="font-weight: 700; color: var(--gold); font-size: 1.3rem;">Hustle and Motivate. The marathon continues. Let's light up the scoreboard.</p>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section class="pillars">
+  <div class="pillars-inner">
+    <h2 class="section-title">How Top Performer Works</h2>
+    <p class="section-subtitle">Nine principles that drive everything we do.</p>
+
+    <div class="pillars-grid">
+      <div class="pillar-card">
+        <div class="pillar-icon">&#129504;</div>
+        <h3>Master Your Mind &amp; Emotions</h3>
+        <p>Love yourself. Have empathy. Don't judge others. Remove hate and remorse from your soul. Manage your ego so you can build real relationships, communicate effectively, and block the noise.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#127919;</div>
+        <h3>Light Up the Scoreboard</h3>
+        <p>The only competition you're facing each day is yourself. The rest of the world is losing, distracted by the past or worried about the future. We're here to help you win today.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#9889;</div>
+        <h3>Dominate Today</h3>
+        <p>Don't overthink it. Whatever you planned to do tomorrow, do a little more today. Those who know what's going on tomorrow will control today.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#128170;</div>
+        <h3>Get Uncomfortable Daily</h3>
+        <p>Do something you don't want to do every single day. That's how you grow. Comfort is where potential goes to die. Step outside your zone and watch what happens.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#128293;</div>
+        <h3>Embrace the Friction</h3>
+        <p>Do something you don't want to do. That's how you start. Trick your mind into believing it can handle more than it thinks it can. The friction is what separates you.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#128200;</div>
+        <h3>Raise Your Floor</h3>
+        <p>It's not about massive overnight transformation. It's about running one more minute, preparing one more thing, doing one more rep. Your worst day should still be a win.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#127942;</div>
+        <h3>Prepare for the Fight</h3>
+        <p>Most people aren't prepared for the day because they have zero structure. Put your pre-workout in a cup the night before. Know the plan. Control the day before it controls you.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#9200;</div>
+        <h3>Alive Time Over Dead Time</h3>
+        <p>Dead time is past, done, gone. The only way to live in alive time is to plan ahead. We help you build structure, set micro-goals, and make every hour count.</p>
+      </div>
+
+      <div class="pillar-card">
+        <div class="pillar-icon">&#128172;</div>
+        <h3>Let's Take It On Together</h3>
+        <p>Not sure where to start? Let's chat about it. We'll help you take on challenges together, work through the excuses, and figure out a path forward. You don't need a plan — you need a conversation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 30-DAY CHALLENGE -->
+<section class="challenge" id="challenge">
+  <div class="challenge-inner">
+    <h2>The 30-Day <span class="gold">Top Performer</span> Challenge</h2>
+    <p>This isn't a giveaway. It's a proving ground. Show up every day, push a little harder, and earn your spot among the best.</p>
+
+    <div class="challenge-steps">
+      <div class="challenge-step">
+        <div class="step-number">1</div>
+        <h4>Set Your Goal</h4>
+        <p>Download the app and set your first daily goal. Start wherever you are.</p>
+      </div>
+      <div class="challenge-step">
+        <div class="step-number">2</div>
+        <h4>Show Up Daily</h4>
+        <p>Complete your goal every day for 30 days. Add a little more each time.</p>
+      </div>
+      <div class="challenge-step">
+        <div class="step-number">3</div>
+        <h4>Earn Your Spot</h4>
+        <p>Top 1% of performers each quarter win prizes. Year 1 grand prize: 1% equity.</p>
+      </div>
+    </div>
+
+    <div class="prize-callout">
+      <h3>Year 1 Grand Prize: 1% Equity</h3>
+      <p>The top performer who wins the contest doesn't just get a trophy. You become an owner. It's a contest to help anyone you know be their best self.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PHILOSOPHY QUOTES -->
+<section class="philosophy">
+  <div class="philosophy-inner">
+    <h2 class="section-title">The Top Performer Mindset</h2>
+    <p class="section-subtitle">Real talk for real people trying to win at life.</p>
+
+    <div class="quote-cards">
+      <div class="quote-card">
+        <p class="quote-text">"Whatever you're doing today, add more to it. If you run, run one more minute each day. That's the game."</p>
+        <p class="quote-context">The compound effect of tiny daily improvements is unstoppable.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"Too many critics, not enough creators. Which one are you?"</p>
+        <p class="quote-context">Stop watching from the sidelines. Get in the arena.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"Everyone wants to make it to the league, but nobody wants to put in the work."</p>
+        <p class="quote-context">The difference between those who can and those who can't is their ability to create a process and control their day.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"When you decide to stop challenging your mind, that's when you've reached your ceiling."</p>
+        <p class="quote-context">Growth never stops. Your mind is a muscle. Use it or lose it.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"Improving ourselves every day should be rule number 1 in life."</p>
+        <p class="quote-context">It's all encompassing. Health, mindset, relationships, career. Everything compounds.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"The only competition you're facing each day is yourself. The rest of the world is losing."</p>
+        <p class="quote-context">Stop comparing. Stop scrolling. Start competing with who you were yesterday.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"Love yourself. Have empathy. Remove hate and remorse from your soul."</p>
+        <p class="quote-context">Real strength isn't ego. It's emotional intelligence. It's choosing empathy over anger.</p>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">"Manage your ego so you can build relationships, communicate effectively, and get further in life."</p>
+        <p class="quote-context">Ego is noise. Block it. The scoreboard rewards those who connect, not those who compete with everyone.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EMAIL CAPTURE -->
+<section class="email-capture" id="download">
+  <div class="email-capture-inner">
+    <h2>Join the Marathon</h2>
+    <p>Get early access, exclusive content, and be first to know when the 30-Day Challenge drops. We're in this together.</p>
+
+    <form class="email-form" onsubmit="handleSubmit(event)">
+      <input type="email" placeholder="Enter your email" required>
+      <button type="submit">Let's Go</button>
+    </form>
+    <p class="email-note">No spam. Just motivation, accountability, and real talk. Unsubscribe anytime.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-brand">TOP PERFORMER</div>
+  <p class="footer-tagline">Hustle and Motivate. The Marathon Continues.</p>
+  <div class="footer-links">
+    <a href="#">Instagram</a>
+    <a href="#">TikTok</a>
+    <a href="#">X (Twitter)</a>
+    <a href="#">Privacy Policy</a>
+    <a href="#">Terms</a>
+  </div>
+  <p class="footer-copy">&copy; 2026 Top Performer. All rights reserved. Built with love in Jacksonville, FL.</p>
+</footer>
+
+<script>
+function handleSubmit(e) {
+  e.preventDefault();
+  const input = e.target.querySelector('input');
+  const email = input.value;
+
+  // Replace with actual email service integration (Mailchimp, ConvertKit, etc.)
+  alert('Welcome to the marathon! We\'ll be in touch at ' + email);
+  input.value = '';
+}
+</script>
+
+</body>
+</html>

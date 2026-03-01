@@ -1,5 +1,5 @@
 // ==========================================================
-// MJ's Superstars - Main App Component
+// Top Performer - Main App Component
 // Handles navigation between Auth, Onboarding, and Main App
 // ==========================================================
 import React, { useState, useEffect, useRef, Suspense } from 'react';

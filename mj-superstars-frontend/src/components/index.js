@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Component Exports
+// Top Performer - Component Exports
 // ============================================================
 
 // Authentication

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Be Like Tyson - The Mike Tyson Story</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #000;
+            --gold: #C5962F;
+            --dark-gold: #A67C1A;
+            --light-gold: #F5ECD7;
+            --red: #C41E3A;
+            --white: #FFF;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--black);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero::before {
+            content: '🥊';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 300px;
+            opacity: 0.03;
+            z-index: 0;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background-color: rgba(197, 150, 47, 0.15);
+            border: 1px solid var(--gold);
+            border-radius: 50px;
+            padding: 10px 20px;
+            margin-bottom: 30px;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: clamp(48px, 8vw, 120px);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 .gold {
+            color: var(--gold);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(16px, 2.5vw, 24px);
+            color: #ccc;
+            max-width: 700px;
+            margin: 0 auto 50px;
+            line-height: 1.7;
+            position: relative;
+            z-index: 1;
+            font-weight: 400;
+        }
+
+        .hero-quote {
+            max-width: 800px;
+            margin: 0 auto 60px;
+            font-size: clamp(18px, 2.2vw, 28px);
+            font-style: italic;
+            color: var(--light-gold);
+            line-height: 1.8;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-quote::before {
+            content: '"';
+            font-size: 60px;
+            color: var(--gold);
+            position: absolute;
+            left: -30px;
+            top: -20px;
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            background: linear-gradient(90deg, rgba(30,30,30,0.95) 0%, rgba(50,50,50,0.95) 100%);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(197, 150, 47, 0.3);
+            border-bottom: 1px solid rgba(197, 150, 47, 0.3);
+            padding: 50px 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 80px 0;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat h3 {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+        }
+
+        .stat p {
+            font-size: clamp(24px, 3vw, 40px);
+            font-weight: 700;
+            color: var(--white);
+        }
+
+        /* Story Section */
+        .story {
+            max-width: 900px;
+            margin: 100px auto;
+            padding: 0 20px;
+        }
+
+        .story h2 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .story h2 .gold {
+            color: var(--gold);
+        }
+
+        .story p {
+            font-size: 18px;
+            line-height: 1.9;
+            color: #ddd;
+            margin-bottom: 25px;
+            text-align: justify;
+        }
+
+        /* Noise Section */
+        .noise {
+            max-width: 1000px;
+            margin: 100px auto;
+            padding: 0 20px;
+        }
+
+        .noise h2 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .noise-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .noise-item {
+            background: rgba(197, 150, 47, 0.08);
+            border-left: 4px solid var(--gold);
+            padding: 25px;
+            border-radius: 4px;
+        }
+
+        .noise-item .noise-myth {
+            color: var(--red);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        .noise-item .noise-myth::before {
+            content: '✗ ';
+        }
+
+        .noise-item .noise-truth {
+            color: var(--light-gold);
+            font-weight: 500;
+            font-size: 16px;
+            line-height: 1.7;
+        }
+
+        .noise-item .noise-truth::before {
+            content: '✓ ';
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        /* Pillars Section */
+        .pillars {
+            max-width: 1200px;
+            margin: 100px auto;
+            padding: 0 20px;
+        }
+
+        .pillars h2 {
+            font-size: clamp(36px, 5vw, 56px);
+            font-weight: 800;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .pillars-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .pillar-card {
+            background: linear-gradient(135deg, rgba(197, 150, 47, 0.1) 0%, rgba(166, 124, 26, 0.05) 100%);
+            border: 1px solid rgba(197, 150, 47, 0.2);
+            padding: 40px 30px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .pillar-card:hover {
+            border-color: var(--gold);
+            background: linear-gradient(135deg, rgba(197, 150, 47, 0.15) 0%, rgba(166, 124, 26, 0.08) 100%);
+            transform: translateY(-5px);
+        }
+
+        .pillar-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gold);
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .pillar-card p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #bbb;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            max-width: 900px;
+            margin: 100px auto;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(197, 150, 47, 0.15) 0%, rgba(166, 124, 26, 0.08) 100%);
+            border: 2px solid var(--gold);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 800;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            font-size: 18px;
+            color: #ccc;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background-color: var(--gold);
+            color: var(--black);
+            padding: 16px 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--dark-gold);
+            border-color: var(--dark-gold);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            background-color: transparent;
+            color: var(--gold);
+            padding: 16px 40px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            border: 2px solid var(--gold);
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--gold);
+            color: var(--black);
+            transform: scale(1.02);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #0a0a0a;
+            border-top: 1px solid rgba(197, 150, 47, 0.2);
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .footer p {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .footer a {
+            color: var(--gold);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer a:hover {
+            color: var(--light-gold);
+        }
+
+        .footer-disclaimer {
+            font-size: 12px;
+            color: #666;
+            margin-top: 20px;
+            font-style: italic;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero {
+                padding: 40px 20px;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                padding: 30px 20px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
+
+            .pillars-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .noise-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">🥊 The Baddest Man on the Planet</div>
+        <h1>BE LIKE <span class="gold">/ TYSON</span></h1>
+        <p class="hero-subtitle">From the streets of Brownsville to the youngest heavyweight champion in history. Fell from the top. Rose again.</p>
+        <p class="hero-quote">Discipline is doing what you don't want to do, but nonetheless doing it like you do want to do it.</p>
+    </section>
+
+    <!-- Stats Bar -->
+    <section class="stats-bar">
+        <div class="stat">
+            <h3>Youngest Champ</h3>
+            <p>20 Years Old</p>
+        </div>
+        <div class="stat">
+            <h3>Record</h3>
+            <p>50 Wins (44 by KO)</p>
+        </div>
+        <div class="stat">
+            <h3>Achievement</h3>
+            <p>Undisputed</p>
+        </div>
+        <div class="stat">
+            <h3>The Real Victory</h3>
+            <p>Reborn</p>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section class="story">
+        <h2>From Brownsville to Baddest <span class="gold">to Reborn</span></h2>
+        <p>Mike Tyson grew up in extreme poverty in Brownsville, Brooklyn. By age 13, he'd been arrested 38 times. The streets had claimed him—or so it seemed. Then Cus D'Amato found him. Cus became more than a trainer; he became the father figure Mike never had. He saw something in that angry kid: raw talent, yes, but more importantly, a desperate hunger to become something more.</p>
+        <p>With singular focus and the peek-a-boo defense system, Tyson trained obsessively. He became the youngest heavyweight champion in history at just 20 years old. He was undisputed. The boxing world feared him. He was invincible—the baddest man on the planet. But then Cus died. The loss devastated him. Without his anchor, Tyson spiraled. The discipline unraveled. Excess replaced training. He spiraled deeper into darkness—prison, bankruptcy, the loss of everything he'd built.</p>
+        <p>But here's where Tyson's story becomes legendary. At absolute rock bottom, he reinvented himself. He got sober. He became vulnerable and honest about his journey. He launched a podcast. At 54 years old, he stepped back into the ring. And something remarkable happened: his comeback became greater than his original dominance ever was. His redemption inspired millions. He became more beloved for how he fell and rose than for all his knockouts combined.</p>
+        <p>This is the Top Performer lesson: Your setback is not your finale. Your comeback can be greater than your peak. Discipline isn't punishment—it's the path to freedom. And the second act of your life can be your masterpiece.</p>
+    </section>
+
+    <!-- Noise Section -->
+    <section class="noise">
+        <h2>The <span class="gold">Noise vs. Reality</span></h2>
+        <div class="noise-grid">
+            <div class="noise-item">
+                <div class="noise-myth">He's just a kid from the streets</div>
+                <div class="noise-truth">Became the youngest heavyweight champion in history at 20</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-myth">He's finished after prison</div>
+                <div class="noise-truth">Rebuilt himself from the ground up into a cultural icon</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-myth">He was all power, no skill</div>
+                <div class="noise-truth">Students of boxing know his peek-a-boo defense was technically brilliant</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-myth">His legacy is ruined</div>
+                <div class="noise-truth">His redemption story inspires millions more than his knockouts ever did</div>
+            </div>
+            <div class="noise-item">
+                <div class="noise-myth">He's too old to matter</div>
+                <div class="noise-truth">Fought at 54, launched a media empire, and became more beloved than ever</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pillars Section -->
+    <section class="pillars">
+        <h2>The Six <span class="gold">Top Performer Pillars</span></h2>
+        <div class="pillars-grid">
+            <div class="pillar-card">
+                <h3>Master Your Mind & Emotions</h3>
+                <p>Tyson had raw power, but Cus D'Amato taught him to master his mind. When he lost that anchor, his emotions controlled him. His comeback proves that emotional mastery is the foundation of all comeback stories.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Get Uncomfortable Daily</h3>
+                <p>Tyson trained in the brutal peek-a-boo system, pushing his body past every limit. He became comfortable being uncomfortable. This discipline created the champion. In his second act, he's still pushing—proving that growth never stops.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Embrace the Friction</h3>
+                <p>His fall from grace, prison time, and complete loss of fortune—these were devastating frictions. But instead of breaking under them, Tyson learned from them. The friction forged his comeback and made him authentic.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Raise Your Floor</h3>
+                <p>A top performer doesn't just aim high; they raise their baseline. Tyson's comeback wasn't about returning to boxing—it was about becoming something greater: a philosopher, podcaster, and symbol of redemption.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Prepare for the Fight</h3>
+                <p>Tyson's preparation was legendary. But the greatest fight wasn't in the ring—it was against his demons. The same discipline that made him champion became the weapon of his greatest comeback.</p>
+            </div>
+            <div class="pillar-card">
+                <h3>Alive Time Over Dead Time</h3>
+                <p>In prison, Tyson could have spent dead time. Instead, he read, reflected, and prepared mentally. Every moment became an opportunity. This shift from dead time to alive time is what made his release a rebirth.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Your Second Act Awaits</h2>
+        <p>Mike Tyson proved that your comeback can be greater than your peak. The Top Performer Coach app helps you master the pillars of elite performance and build the discipline for your greatest chapter.</p>
+        <div class="cta-buttons">
+            <a href="https://topperformer.ai" class="btn-primary">Learn More</a>
+            <a href="https://apps.apple.com/app/top-performer-coach/id6759122798" class="btn-secondary">Download on iOS</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2024 Top Performer. All rights reserved.</p>
+        <p><a href="https://topperformer.ai">Visit TopPerformer.ai</a> | <a href="https://apps.apple.com/app/top-performer-coach/id6759122798">Download App</a></p>
+        <p class="footer-disclaimer">Disclaimer: This page is not affiliated with Mike Tyson. Created as an educational tribute to his story of redemption and discipline.</p>
+    </footer>
+</body>
+</html>

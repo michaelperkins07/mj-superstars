@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Notification Scheduler Service
+// Top Performer - Notification Scheduler Service
 // Handles scheduled check-ins, streak reminders, and nudges
 // ============================================================
 

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Hooks Exports
+// Top Performer - Hooks Exports
 // ============================================================
 
 export { useLogin, useRegister, useChangePassword } from './useAuth';

@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Main Server (Render Production Ready)
+// Top Performer - Main Server (Render Production Ready)
 // ============================================================
 
 import express from 'express';
@@ -358,7 +358,7 @@ const startServer = async () => {
     startMonitoring();
 
     httpServer.listen(PORT, '0.0.0.0', () => {
-      logger.info(`🚀 MJ's Superstars API running on port ${PORT}`);
+      logger.info(`🚀 Top Performer API running on port ${PORT}`);
       logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
       logger.info(`Health check: http://0.0.0.0:${PORT}/health`);
     });

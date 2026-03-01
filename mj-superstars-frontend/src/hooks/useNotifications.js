@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Notification Hooks
+// Top Performer - Notification Hooks
 // Push notifications, local notifications, and haptics
 // ============================================================
 

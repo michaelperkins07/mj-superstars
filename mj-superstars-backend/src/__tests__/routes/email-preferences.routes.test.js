@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Email Preferences Routes Tests (ESM)
+// Top Performer - Email Preferences Routes Tests (ESM)
 // ============================================================
 
 import { jest, describe, test, expect, beforeEach } from '@jest/globals';

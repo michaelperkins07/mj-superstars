@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Mood & Tracker Helpers
+// Top Performer - Mood & Tracker Helpers
 // ============================================================
 
 export const moodEmoji = (score) => {

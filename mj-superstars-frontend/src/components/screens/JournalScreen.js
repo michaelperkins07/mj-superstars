@@ -1,5 +1,5 @@
 // ============================================================
-// MJ's Superstars - Journal Screen
+// Top Performer - Journal Screen
 // No one reads this but you. Be completely honest.
 // ============================================================
 import React, { useState, useEffect, useRef } from 'react';
