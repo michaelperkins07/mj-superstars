@@ -168,9 +168,17 @@ async function handleResponse(response) {
 
   if (!response.ok) {
     // Handle errors from both wrapped and unwrapped responses
-    const error = new Error(json.error || json.data?.error || 'Request failed');
-    error.code = json.code || json.data?.code;
+    // Backend may return error as object { code, message, ... } or as string
+    const errPayload = json.error || json.data?.error;
+    const errMessage = typeof errPayload === 'object' ? (errPayload.message || 'Request failed') : (errPayload || 'Request failed');
+    const errCode = (typeof errPayload === 'object' ? errPayload.code : null) || json.code || json.data?.code;
+    const error = new Error(errMessage);
+    error.code = errCode;
     error.status = response.status;
+    // Attach full payload for rate limit / upgrade info
+    if (typeof errPayload === 'object') {
+      error.details = errPayload;
+    }
     throw error;
   }
 

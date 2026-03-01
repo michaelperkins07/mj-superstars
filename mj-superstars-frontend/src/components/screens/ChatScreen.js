@@ -249,6 +249,13 @@ function ChatScreen() {
       } else {
         const response = await ConversationAPI.sendMessage(conversationId, messageText);
         responseContent = response.mj_response?.content || response.message?.content || response.content || "I hear you. Tell me more about that.";
+
+        // Sync free tier usage from backend (source of truth) into localStorage
+        if (response.free_tier && !isPremium) {
+          const used = response.free_tier.limit - response.free_tier.remaining;
+          const today = new Date().toISOString().slice(0, 10);
+          localStorage.setItem('mj_daily_messages', JSON.stringify({ date: today, count: used }));
+        }
       }
 
       const assistantMessage = {
@@ -261,6 +268,15 @@ function ChatScreen() {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (err) {
       console.error('Chat error:', err);
+
+      // Handle free tier rate limit (429 from backend)
+      if (err.status === 429 || err.code === 'FREE_TIER_LIMIT_REACHED') {
+        setShowUpgradePrompt(true);
+        addToast(err.message || "You've reached today's free message limit.", 'warning');
+        // Don't decrement — undo the optimistic increment since backend rejected it
+        return;
+      }
+
       addToast("Having trouble connecting. Try again in a sec.", 'warning');
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),

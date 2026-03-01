@@ -131,10 +131,10 @@ async function handleSubscriptionEvent(subtype, txnInfo, notification) {
       [isActive, expiresDate, !revocationDate, transactionId]
     );
 
-    // Update user's premium status
+    // Update user's premium status and subscription_status
     await query(
-      `UPDATE users SET is_premium = $1 WHERE id = $2`,
-      [isActive, userId]
+      `UPDATE users SET is_premium = $1, subscription_status = $2 WHERE id = $3`,
+      [isActive, isActive ? 'active' : 'expired', userId]
     );
 
     logger.info('Updated subscription:', {
@@ -210,9 +210,9 @@ async function handleRefundEvent(subtype, txnInfo, notification) {
       [transactionId]
     );
 
-    // Update user's premium status
+    // Update user's premium status and subscription_status
     await query(
-      `UPDATE users SET is_premium = false WHERE id = $1`,
+      `UPDATE users SET is_premium = false, subscription_status = 'expired' WHERE id = $1`,
       [userId]
     );
 
