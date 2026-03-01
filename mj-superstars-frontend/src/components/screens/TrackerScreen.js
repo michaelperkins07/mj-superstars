@@ -1,5 +1,5 @@
 // ============================================================
-// Top Performer - Emotional State Tracker Screen
+// MJ's Superstars - Emotional State Tracker Screen
 // "Be your best self" — Track Confidence, Energy, and Morals
 // ============================================================
 import React, { useState, useEffect, useCallback } from 'react';

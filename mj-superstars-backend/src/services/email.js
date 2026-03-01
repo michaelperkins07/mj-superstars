@@ -152,11 +152,11 @@ class EmailService {
         lastAchievement: stats.last_achievement || 'Keep building!',
       });
 
-      const text = `Hi ${user.first_name},\n\nHere's your weekly digest from Top Performer!\n\nMood: ${stats.avg_mood ? stats.avg_mood.toFixed(1) : 'N/A'}/10\nStreak: ${stats.current_streak || 0} days\nTasks Completed: ${stats.tasks_completed || 0}\nPoints Earned: ${stats.points_earned || 0}\n\nKeep up the great work!\n\nTop Performer Team`;
+      const text = `Hi ${user.first_name},\n\nHere's your weekly digest from MJ's Superstars!\n\nMood: ${stats.avg_mood ? stats.avg_mood.toFixed(1) : 'N/A'}/10\nStreak: ${stats.current_streak || 0} days\nTasks Completed: ${stats.tasks_completed || 0}\nPoints Earned: ${stats.points_earned || 0}\n\nKeep up the great work!\n\nMJ's Superstars Team`;
 
       await this.sendEmail(
         user.email,
-        'Your Weekly Digest - Top Performer',
+        'Your Weekly Digest - MJ's Superstars',
         html,
         text,
         userId,
@@ -224,7 +224,7 @@ class EmailService {
       let nudgeType = 'general';
       let nudgeTitle = 'Keep the Momentum Going!';
       let nudgeMessage =
-        "You're doing amazing on your Top Performer journey. Every small step counts!";
+        "You're doing amazing on your MJ's Superstars journey. Every small step counts!";
 
       if (!hasMoodToday) {
         nudgeType = 'streak_at_risk';
@@ -251,7 +251,7 @@ class EmailService {
         nudgeType,
       });
 
-      const text = `Hi ${user.first_name},\n\n${nudgeTitle}\n\n${nudgeMessage}\n\nHead to Top Performer to continue your journey!\n\nTop Performer Team`;
+      const text = `Hi ${user.first_name},\n\n${nudgeTitle}\n\n${nudgeMessage}\n\nHead to MJ's Superstars to continue your journey!\n\nMJ's Superstars Team`;
 
       await this.sendEmail(user.email, nudgeTitle, html, text, userId, `nudge_${nudgeType}`);
 
@@ -319,11 +319,11 @@ class EmailService {
         pointsEarned: stats.points_earned || 0,
       });
 
-      const text = `Hi there,\n\n${user.first_name} has been crushing their Top Performer goals!\n\nLevel: ${user.level || 1}\nStreak: ${stats.current_streak || 0} days\nTasks Completed This Week: ${stats.tasks_completed || 0}\nPoints Earned This Week: ${stats.points_earned || 0}\n\nYou might want to send them an encouraging message!\n\nTop Performer Team`;
+      const text = `Hi there,\n\n${user.first_name} has been crushing their MJ's Superstars goals!\n\nLevel: ${user.level || 1}\nStreak: ${stats.current_streak || 0} days\nTasks Completed This Week: ${stats.tasks_completed || 0}\nPoints Earned This Week: ${stats.points_earned || 0}\n\nYou might want to send them an encouraging message!\n\nMJ's Superstars Team`;
 
       await this.sendEmail(
         buddyEmail,
-        `${user.first_name}'s Weekly Progress - Top Performer`,
+        `${user.first_name}'s Weekly Progress - MJ's Superstars`,
         html,
         text,
         userId,
@@ -361,11 +361,11 @@ class EmailService {
         streakCount,
       });
 
-      const text = `Hi ${user.first_name},\n\nYour ${streakCount}-day streak is about to end!\n\nLog your mood before midnight to keep your momentum going. You've worked so hard to build this streak!\n\nTop Performer Team`;
+      const text = `Hi ${user.first_name},\n\nYour ${streakCount}-day streak is about to end!\n\nLog your mood before midnight to keep your momentum going. You've worked so hard to build this streak!\n\nMJ's Superstars Team`;
 
       await this.sendEmail(
         user.email,
-        `Your Streak is Almost Gone! - Top Performer`,
+        `Your Streak is Almost Gone! - MJ's Superstars`,
         html,
         text,
         userId,
@@ -464,7 +464,7 @@ class EmailService {
   <div class="container">
     <div class="header">
       <h1>Weekly Digest</h1>
-      <p>Your Top Performer Progress</p>
+      <p>Your MJ's Superstars Progress</p>
     </div>
     <div class="content">
       <p>Hi ${firstName},</p>
@@ -511,10 +511,10 @@ class EmailService {
       </div>
 
       <p style="margin-top: 25px; line-height: 1.6;">You're building amazing habits and making real progress. Keep showing up for yourself!</p>
-      <a href="${process.env.APP_URL || 'https://topperformer.com'}" class="cta-button">View Full Dashboard</a>
+      <a href="${process.env.APP_URL || 'https://mjsuperstars.com'}" class="cta-button">View Full Dashboard</a>
     </div>
     <div class="footer">
-      <p>Top Performer | Manage your <a href="${process.env.APP_URL || 'https://topperformer.com'}/settings/email">email preferences</a></p>
+      <p>MJ's Superstars | Manage your <a href="${process.env.APP_URL || 'https://mjsuperstars.com'}/settings/email">email preferences</a></p>
     </div>
   </div>
 </body>
@@ -564,11 +564,11 @@ class EmailService {
       <div class="message-box">
         <p style="margin: 0; font-size: 16px; line-height: 1.6;">${message}</p>
       </div>
-      <p>Your Top Performer journey is about showing up for yourself, even on the hard days. You've got this!</p>
-      <a href="${process.env.APP_URL || 'https://topperformer.com'}/dashboard" class="cta-button">Go to Dashboard</a>
+      <p>Your MJ's Superstars journey is about showing up for yourself, even on the hard days. You've got this!</p>
+      <a href="${process.env.APP_URL || 'https://mjsuperstars.com'}/dashboard" class="cta-button">Go to Dashboard</a>
     </div>
     <div class="footer">
-      <p>Top Performer | You're doing great!</p>
+      <p>MJ's Superstars | You're doing great!</p>
     </div>
   </div>
 </body>
@@ -605,7 +605,7 @@ class EmailService {
     </div>
     <div class="content">
       <p>Hi there,</p>
-      <p>${userName} has been working hard on their Top Performer journey this week. Here's a snapshot of their progress:</p>
+      <p>${userName} has been working hard on their MJ's Superstars journey this week. Here's a snapshot of their progress:</p>
 
       <div class="stat-box">
         <div class="stat-label">Level</div>
@@ -630,7 +630,7 @@ class EmailService {
       <p style="margin-top: 25px; line-height: 1.6;">Why not send ${userName} an encouraging message? A little motivation from a friend can go a long way!</p>
     </div>
     <div class="footer">
-      <p>Top Performer | Celebrating your buddy's wins!</p>
+      <p>MJ's Superstars | Celebrating your buddy's wins!</p>
     </div>
   </div>
 </body>
@@ -685,10 +685,10 @@ class EmailService {
 
       <p>Remember: consistency is the key to transformation. Every single day you show up for yourself is a victory. You've got this!</p>
 
-      <a href="${process.env.APP_URL || 'https://topperformer.com'}/dashboard" class="cta-button">Log Your Mood Now</a>
+      <a href="${process.env.APP_URL || 'https://mjsuperstars.com'}/dashboard" class="cta-button">Log Your Mood Now</a>
     </div>
     <div class="footer">
-      <p>Top Performer | Keep the momentum going!</p>
+      <p>MJ's Superstars | Keep the momentum going!</p>
     </div>
   </div>
 </body>
@@ -705,7 +705,7 @@ class EmailService {
 // ============================================================
 
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
-const FROM_EMAIL = process.env.FROM_EMAIL || "Top Performer <onboarding@resend.dev>";
+const FROM_EMAIL = process.env.FROM_EMAIL || "MJ's Superstars <onboarding@resend.dev>";
 const APP_URL = process.env.FRONTEND_URL || "https://mj-superstars-app.onrender.com";
 
 async function sendTransactionalEmail({ to, subject, html, text }) {
@@ -737,14 +737,14 @@ async function sendTransactionalEmail({ to, subject, html, text }) {
 
 export async function sendPasswordResetEmail(email, resetToken) {
   const resetUrl = `${APP_URL}/reset-password?token=${resetToken}`;
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;margin:0;padding:0;background:#0f172a;color:#e2e8f0}.container{max-width:480px;margin:0 auto;padding:40px 24px}.logo{text-align:center;margin-bottom:32px}.logo-text{font-size:28px;font-weight:800;color:#7C3AED}.card{background:#1e293b;border-radius:16px;padding:32px 24px;border:1px solid #334155}h1{font-size:22px;color:#f1f5f9}p{font-size:15px;line-height:1.6;color:#94a3b8}.btn{display:inline-block;background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:600}.expire{background:#7C3AED20;border:1px solid #7C3AED40;border-radius:8px;padding:12px 16px;font-size:13px;color:#a78bfa;margin-bottom:16px}.footer{text-align:center;margin-top:32px;font-size:12px;color:#475569}</style></head><body><div class="container"><div class="logo"><span class="logo-text">Top Performer</span></div><div class="card"><h1>Reset Your Password</h1><p>Someone requested a password reset for your account.</p><div class="expire">This link expires in 1 hour</div><div style="text-align:center"><a href="${resetUrl}" class="btn">Reset Password</a></div><p>If you didn't request this, ignore this email.</p></div><div class="footer"><p>Top Performer - Your AI coaching companion</p></div></div></body></html>`;
-  return sendTransactionalEmail({ to: email, subject: "Reset your Top Performer password", html });
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;margin:0;padding:0;background:#0f172a;color:#e2e8f0}.container{max-width:480px;margin:0 auto;padding:40px 24px}.logo{text-align:center;margin-bottom:32px}.logo-text{font-size:28px;font-weight:800;color:#7C3AED}.card{background:#1e293b;border-radius:16px;padding:32px 24px;border:1px solid #334155}h1{font-size:22px;color:#f1f5f9}p{font-size:15px;line-height:1.6;color:#94a3b8}.btn{display:inline-block;background:linear-gradient(135deg,#7C3AED,#06B6D4);color:#fff;text-decoration:none;padding:14px 32px;border-radius:12px;font-weight:600}.expire{background:#7C3AED20;border:1px solid #7C3AED40;border-radius:8px;padding:12px 16px;font-size:13px;color:#a78bfa;margin-bottom:16px}.footer{text-align:center;margin-top:32px;font-size:12px;color:#475569}</style></head><body><div class="container"><div class="logo"><span class="logo-text">MJ's Superstars</span></div><div class="card"><h1>Reset Your Password</h1><p>Someone requested a password reset for your account.</p><div class="expire">This link expires in 1 hour</div><div style="text-align:center"><a href="${resetUrl}" class="btn">Reset Password</a></div><p>If you didn't request this, ignore this email.</p></div><div class="footer"><p>MJ's Superstars - Your AI coaching companion</p></div></div></body></html>`;
+  return sendTransactionalEmail({ to: email, subject: "Reset your MJ's Superstars password", html });
 }
 
 export async function sendWelcomeEmail(email, displayName) {
   const name = displayName || "Superstar";
-  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;margin:0;padding:0;background:#0f172a;color:#e2e8f0}.container{max-width:480px;margin:0 auto;padding:40px 24px}.logo{text-align:center;margin-bottom:32px}.logo-text{font-size:28px;font-weight:800;color:#7C3AED}.card{background:#1e293b;border-radius:16px;padding:32px 24px;border:1px solid #334155}h1{font-size:22px;color:#f1f5f9}p{font-size:15px;line-height:1.6;color:#94a3b8}.highlight{color:#7C3AED;font-weight:600}.footer{text-align:center;margin-top:32px;font-size:12px;color:#475569}</style></head><body><div class="container"><div class="logo"><span class="logo-text">Top Performer</span></div><div class="card"><h1>Welcome, ${name}!</h1><p>I'm <span class="highlight">Top Performer</span>, your personal AI coach. Everything is reps.</p><p>Start by telling me what's on your mind. Let's get it!</p></div><div class="footer"><p>Top Performer - Your AI coaching companion</p></div></div></body></html>`;
-  return sendTransactionalEmail({ to: email, subject: `Welcome to Top Performer, ${name}!`, html });
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>body{font-family:-apple-system,sans-serif;margin:0;padding:0;background:#0f172a;color:#e2e8f0}.container{max-width:480px;margin:0 auto;padding:40px 24px}.logo{text-align:center;margin-bottom:32px}.logo-text{font-size:28px;font-weight:800;color:#7C3AED}.card{background:#1e293b;border-radius:16px;padding:32px 24px;border:1px solid #334155}h1{font-size:22px;color:#f1f5f9}p{font-size:15px;line-height:1.6;color:#94a3b8}.highlight{color:#7C3AED;font-weight:600}.footer{text-align:center;margin-top:32px;font-size:12px;color:#475569}</style></head><body><div class="container"><div class="logo"><span class="logo-text">MJ's Superstars</span></div><div class="card"><h1>Welcome, ${name}!</h1><p>I'm <span class="highlight">MJ's Superstars</span>, your personal AI coach. Everything is reps.</p><p>Start by telling me what's on your mind. Let's get it!</p></div><div class="footer"><p>MJ's Superstars - Your AI coaching companion</p></div></div></body></html>`;
+  return sendTransactionalEmail({ to: email, subject: `Welcome to MJ's Superstars, ${name}!`, html });
 }
 
 export default new EmailService();

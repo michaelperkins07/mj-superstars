@@ -10,7 +10,7 @@ import { sendToUserIOS } from './apns.js';
 // Configure web-push
 if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
   webPush.setVapidDetails(
-    process.env.VAPID_SUBJECT || 'mailto:support@topperformer.app',
+    process.env.VAPID_SUBJECT || 'mailto:support@mjsuperstars.com',
     process.env.VAPID_PUBLIC_KEY,
     process.env.VAPID_PRIVATE_KEY
   );

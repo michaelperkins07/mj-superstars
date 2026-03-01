@@ -185,7 +185,7 @@ export function NotificationPermissionModal({ isOpen, onClose, onEnabled }) {
             </div>
             <h2 className="text-xl font-bold text-white mb-2">No Problem!</h2>
             <p className="text-slate-400 mb-6">
-              You can enable notifications anytime in your device Settings or from the Top Performer settings menu.
+              You can enable notifications anytime in your device Settings or from the MJ's Superstars settings menu.
             </p>
             <button
               onClick={handleSkip}

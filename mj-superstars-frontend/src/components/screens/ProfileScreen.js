@@ -669,7 +669,7 @@ function ProfileScreen() {
         </div>
       </SectionCard>
 
-      <p className="text-center text-slate-600 text-xs mt-4 mb-8">Top Performer v2.0.0</p>
+      <p className="text-center text-slate-600 text-xs mt-4 mb-8">MJ's Superstars v2.0.0</p>
 
       {/* ============================================================ */}
       {/* EDIT MODALS                                                   */}

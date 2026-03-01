@@ -270,7 +270,7 @@ router.get('/unsubscribe/:token', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'You have been unsubscribed from all Top Performer emails. You can manage your preferences anytime in your account settings.',
+      message: 'You have been unsubscribed from all MJ's Superstars emails. You can manage your preferences anytime in your account settings.',
     });
   } catch (error) {
     logger.error('Error processing unsubscribe', { error: error.message });

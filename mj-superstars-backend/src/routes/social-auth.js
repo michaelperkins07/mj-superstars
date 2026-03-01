@@ -171,9 +171,9 @@ const findOrCreateSocialUser = async (provider, providerData) => {
          VALUES ($1, $2, $3, $4, $5)
          RETURNING id, email, display_name, is_premium`,
         [
-          email || `${provider}_${provider_user_id}@social.topperformer.com`,
+          email || `${provider}_${provider_user_id}@social.mjsuperstars.com`,
           crypto.randomBytes(32).toString('hex'), // Random password (social-only users)
-          name || 'Top Performer',
+          name || 'Superstar',
           avatar_url,
           provider
         ]

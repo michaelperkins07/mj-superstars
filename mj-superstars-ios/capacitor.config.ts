@@ -1,8 +1,8 @@
 import { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.topperformer.app',
-  appName: "Top Performer",
+  appId: 'com.mjsuperstars.app',
+  appName: "MJ's Superstars",
   webDir: 'www',
   bundledWebRuntime: false,
 
@@ -32,7 +32,7 @@ const config: CapacitorConfig = {
     preferredContentMode: 'mobile',
 
     // Scheme for custom URL handling
-    scheme: 'topperformer',
+    scheme: 'mjsuperstars',
 
     // Handle external links
     limitsNavigationsToAppBoundDomains: true
@@ -86,7 +86,7 @@ const config: CapacitorConfig = {
     // App preferences/storage
     Preferences: {
       // Group name for iOS shared preferences
-      group: 'group.com.topperformer.app'
+      group: 'group.com.mjsuperstars.app'
     }
   }
 };

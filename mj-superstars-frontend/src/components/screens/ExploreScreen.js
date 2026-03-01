@@ -683,7 +683,7 @@ function ExploreScreen({ onNavigateTo }) {
                       </button>
                       <ShareButton
                         variant="icon"
-                        text={post.content || "Check out this post on Top Performer!"}
+                        text={post.content || "Check out this post on MJ's Superstars!"}
                         shareType="post"
                         contentId={post.id}
                       />

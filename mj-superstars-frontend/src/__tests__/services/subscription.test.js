@@ -1,5 +1,5 @@
 // ============================================================
-// Top Performer - Subscription Service Tests
+// MJ's Superstars - Subscription Service Tests
 // ============================================================
 
 import {

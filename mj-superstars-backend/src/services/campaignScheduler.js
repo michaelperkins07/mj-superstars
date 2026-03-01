@@ -14,7 +14,7 @@ import { addDelayedJob, addScheduledJob } from './jobQueue.js';
 const campaignTemplates = {
   onboardingDrip: {
     day0: {
-      title: 'Welcome to Top Performer! 🌟',
+      title: 'Welcome to MJ's Superstars! 🌟',
       body: 'Glad to have you here. Let\'s start your journey together.'
     },
     day1: {

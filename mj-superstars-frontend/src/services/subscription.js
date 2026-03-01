@@ -1,5 +1,5 @@
 // ============================================================
-// Top Performer - Subscription Service
+// MJ's Superstars - Subscription Service
 // StoreKit 2 integration for iOS subscriptions
 // ============================================================
 

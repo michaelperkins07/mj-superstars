@@ -1,5 +1,5 @@
 // ============================================================
-// Top Performer - 3 Pillars Daily Commitment Screen
+// MJ's Superstars - 3 Pillars Daily Commitment Screen
 // Physical • Mental • Social — Every single day
 // ============================================================
 
